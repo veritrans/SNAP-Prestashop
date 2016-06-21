@@ -21,6 +21,11 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$status = 'token_exist';
 
+		$instruction_url_prefix = "//app.veritrans.co.id";
+		Configuration::get('MT_ENVIRONMENT') == 'production' ? 
+			$instruction_url_prefix = '//app.veritrans.co.id' : 
+			$instruction_url_prefix = '//app.sandbox.veritrans.co.id';
+
 		// error_log("SNAP TOKEN ==============="); //debugan
 		// error_log($_GET['snap_token']); //debugan
 
@@ -29,9 +34,11 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(array(
 			'status' => $status,
+			'instruction_url_prefix' => $instruction_url_prefix,
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
-			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
+			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
+			'shop_url' => __PS_BASE_URI__
 		));
 
 		$this->setTemplate('snappay.tpl');

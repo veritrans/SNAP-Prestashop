@@ -17,7 +17,7 @@ class MidtransPayFailureModuleFrontController extends ModuleFrontController
 		global $smarty;
 
 		// if payment failed, get order_id to generate reorder/re-checkout URL, so that customer could do re-checkout
-		if (null !==Tools::getValue('order_id') && '' !==Tools::getValue('order_id') ){
+		if (null !==Tools::getValue('order_id') && '' !== Tools::getValue('order_id') ){
 			$order_id = Tools::getValue('order_id');
 		}
 		$cart = $this->context->cart;

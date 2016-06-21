@@ -20,9 +20,9 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 			Tools::redirect('index.php?controller=order');
 		$status = 'success';
 
+
 		$this->context->smarty->assign(array(
 			'status' => $status,
-			'transaction_status' => $_GET['transaction_status'],
 			'this_path' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
 		));
