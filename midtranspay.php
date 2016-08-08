@@ -2,11 +2,15 @@
 
 if (!defined('_PS_VERSION_'))
 	exit;
+// TODO refactor code, get rid of installment etc.
+// TODO refactor backend config fields, getrid of enabled payments etc.
 
+// TODO uncomment these, use the real snap php library class (make sure to do this on other file too)
 // require_once('library/veritrans/Veritrans.php');
 // require_once ('library/veritrans/Veritrans/Notification.php');
 // require_once ('library/veritrans/Veritrans/Transaction.php');
 
+// TODO remove theese
 require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans.php');
 require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
 require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
@@ -269,8 +273,8 @@ class MidtransPay extends PaymentModule
 		foreach ($this->config_keys as $key) {
 			$result[$key] = Tools::getValue($key, Configuration::get($key));
 		}
-		//error_log('message fields_value');
-		//error_log(print_r($result,true));
+		//error_log('message fields_value'); // debug
+		//error_log(print_r($result,true)); // debug
 		return $result;
 	}
 
@@ -1108,10 +1112,10 @@ class MidtransPay extends PaymentModule
 				$term = Configuration::get('MT_INSTALLMENTS_'.$name_bank);
 				
 				$key_array = explode('_', $key);
-				//error_log($key);
-				//error_log(print_r($key_array,true));
+				//error_log($key); // debug
+				//error_log(print_r($key_array,true)); // debug
 				$ans[] = $key_array[3];
-				//error_log($key_array[3]);
+				//error_log($key_array[3]); // debug
 			}
     		
 		}
@@ -1416,12 +1420,12 @@ class MidtransPay extends PaymentModule
 			    } else {
 			    	$keys['isWarning'] = false;
 			    }
-			    error_log(print_r($params_all,true));
+			    // error_log(print_r($params_all,true)); // debug
 			  	// $keys['redirect_url'] = Veritrans_Vtweb::getRedirectionUrl($params_all);
 			  	
 			  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
 			  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
-			  	error_log("redirect_url :".$redirect_url);
+			  	// error_log("redirect_url :".$redirect_url); // debug
 			  	$keys['redirect_url'] = $redirect_url;
 			}
 			catch (Exception $e) {
@@ -1461,8 +1465,8 @@ class MidtransPay extends PaymentModule
 		$price = 0;
 
 		foreach ($products as $aProduct) {
-			//error_log('detail product');
-			//error_log(print_r($aProduct,true));
+			//error_log('detail product'); // debug
+			//error_log(print_r($aProduct,true)); // debug
 			$commodities[] = array(
 				"id" => $aProduct['id_product'],
 				"price" =>  $aProduct['price_wt'],
@@ -1488,7 +1492,7 @@ class MidtransPay extends PaymentModule
 				"name" => 'discount from voucher',				
 			);	
 		}
-		//error_log(print_r($commodities,true));
+		//error_log(print_r($commodities,true)); // debug
 		return $commodities;
 	}
 
@@ -1543,25 +1547,25 @@ class MidtransPay extends PaymentModule
 		$history = new OrderHistory();
 		$history->id_order = (int)$midtrans_notification->order_id;
 
-		error_log('message notif');
-		error_log(print_r($midtrans_notification,TRUE));
-		error_log('==============================================');
+		// error_log('message notif'); // debug
+		// error_log(print_r($midtrans_notification,TRUE)); // debug
+		// error_log('=============================================='); // debug
 		
 		// check if order history already been updated to payment success, then save to array $order_history.
 		$order_id_notif = (int)$midtrans_notification->order_id;
 		$order = new Order($order_id_notif);
 		$order_histories = $order->getHistory($this->context->language->id, Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP') );
-		// if (empty($order_histories))
-		// 	error_log("not found in DB");
-		// error_log(print_r($order_histories,true));
-		// print_r($order_histories,true);
+		// if (empty($order_histories))  // debug
+		// 	error_log("not found in DB");  // debug
+		// error_log(print_r($order_histories,true));  // debug
+		// print_r($order_histories,true);  // debug
 
 		//Validating order
 		//if ($midtrans_notification->isVerified())
 		//{
 		  	//$history->id_order = (int)$midtrans_notification->order_id;		  	
-			//error_log('notif verified');
-			//error_log('message notif: '.(int)$midtrans_notification->order_id);
+			//error_log('notif verified'); // debug
+			//error_log('message notif: '.(int)$midtrans_notification->order_id); // debug
 			if ($midtrans_notification->transaction_status == 'capture')				
 		    {
 		     	if ($midtrans_notification->fraud_status== 'accept')
@@ -1573,7 +1577,7 @@ class MidtransPay extends PaymentModule
 			       		echo 'Valid success notification accepted.';
 		       		}
 		       		else{
-		       			error_log("########## Transaction has already been updated to success status once, no need to update again");
+		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
 		       	}
 		       	else if ($midtrans_notification->fraud_status== 'challenge')
@@ -1590,7 +1594,7 @@ class MidtransPay extends PaymentModule
 				     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), $order_id_notif);
 				       	echo 'Valid success notification accepted.';
 				    }else{
-		       			error_log("########## Transaction has already been updated to success status once, no need to update again");
+		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
 		     	}
 		     	else

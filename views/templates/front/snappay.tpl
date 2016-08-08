@@ -85,7 +85,7 @@
 							window.location = "{$shop_url}/index.php?fc=module&module=midtranspay&controller=success&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 
-			        	document.getElementById('instruction-button').href = "{$instruction_url_prefix}"+result.pdf_url;
+			        	document.getElementById('instruction-button').href = result.pdf_url;
 			        	document.getElementById('payment-notice').style.display = "none";
 			        	document.getElementById('pending-notice').style.display = "block";
 			        },

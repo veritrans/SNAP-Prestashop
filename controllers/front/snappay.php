@@ -21,10 +21,11 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$status = 'token_exist';
 
+		// TODO remove these, instruction_url_prefix is no longer needed
 		$instruction_url_prefix = "//app.veritrans.co.id";
-		Configuration::get('MT_ENVIRONMENT') == 'production' ? 
-			$instruction_url_prefix = '//app.veritrans.co.id' : 
-			$instruction_url_prefix = '//app.sandbox.veritrans.co.id';
+		// Configuration::get('MT_ENVIRONMENT') == 'production' ? 
+		// 	$instruction_url_prefix = '//app.veritrans.co.id' : 
+		// 	$instruction_url_prefix = '//app.sandbox.veritrans.co.id';
 
 		// error_log("SNAP TOKEN ==============="); //debugan
 		// error_log($_GET['snap_token']); //debugan
