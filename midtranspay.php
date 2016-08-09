@@ -430,7 +430,7 @@ class MidtransPay extends PaymentModule
 						),
 					array(
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Permata VA',
+						'label' => 'Bank Transfer',
 						'name' => 'MT_ENABLED_PERMATAVA',						
 						'is_bool' => true,
 						'values' => array(
@@ -1293,12 +1293,12 @@ class MidtransPay extends PaymentModule
 			  $conversion_func = function($input) { return $input * intval(Configuration::get('MT_KURS')); };
 			}
 			foreach ($items as &$item) {						
-				$item['price'] = intval(round(call_user_func($conversion_func, $item['price'])));				
+				$item['price'] = intval(ceil(call_user_func($conversion_func, $item['price'])));				
 			}
 		}else if($cart_currency->iso_code == 'IDR')
 		{
 			foreach ($items as &$item) {						
-				$item['price'] = intval(round($item['price']));				
+				$item['price'] = intval(ceil($item['price']));				
 			}
 		}
 				
@@ -1316,7 +1316,8 @@ class MidtransPay extends PaymentModule
 		$warning_redirect = false;
 		$fullPayment = true;
 
-		$installment_type_val = Configuration::get('MT_ENABLE_INSTALLMENT');
+		// $installment_type_val = Configuration::get('MT_ENABLE_INSTALLMENT');
+		$installment_type_val = "off";
 		$param_required;
 		switch ($installment_type_val) {
 			case 'all_product':
@@ -1399,10 +1400,10 @@ class MidtransPay extends PaymentModule
 			'customer_details' => $params_customer_details
 			);
 		
-		if ($gross_amount < 500000){
-			$warning_redirect = true;
-			$keys['message'] = 2;
-		}
+		// if ($gross_amount < 500000){
+		// 	$warning_redirect = true;
+		// 	$keys['message'] = 2;
+		// }
 
 		if( !$warning_redirect && 
 			($isBniInstallment || $isMandiriInstallment) && 
