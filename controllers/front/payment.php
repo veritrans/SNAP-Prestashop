@@ -1,7 +1,5 @@
 <?php
 
-// require_once(dirname(__FILE__).'/../../library/veritrans/Veritrans.php');
-
 class MidtransPayPaymentModuleFrontController extends ModuleFrontController
 {
   public $ssl = true;

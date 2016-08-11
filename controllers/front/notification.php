@@ -1,8 +1,5 @@
 <?php 
 
-// require_once(dirname(__FILE__).'/../../library/veritrans/Veritrans/Notification.php');
-
-
 class MidtransPayNotificationModuleFrontController extends ModuleFrontController
 {
   /**
