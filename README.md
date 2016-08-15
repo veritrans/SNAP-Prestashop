@@ -19,6 +19,8 @@ Midtrans payment gateway is an online payment gateway. They strive to make payme
 * PHP version 5.4 or greater
 * MySQL version 5.0 or greater
 
+#### Installation & Configuration
+
 1. [Download](/archive/master.zip) the modules from this repository.
 2. Extract the modules, then rename the folder modules as **midtranspay** and zip this modules as **midtranspay.zip**
 3. Go to your Prestashop administration page and go to **"Modules and Services > Modules and Services"** menu.
@@ -37,7 +39,7 @@ Midtrans payment gateway is an online payment gateway. They strive to make payme
 
 ### Midtrans MAP Configuration
 
-1. Login to your [Midtrans Acount](https://my.veritrans.co.id), select your environment (sandbox/production), go to menu `settings > configuration`
+1. Login to your [Midtrans Account](https://my.veritrans.co.id), select your environment (sandbox/production), go to menu `settings > configuration`
    * Payment Notification URL: `http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=notification`
    * Finish Redirect URL: `http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=success`
    * Unfinish Redirect URL: `http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=back`
