@@ -6,14 +6,14 @@ if (!defined('_PS_VERSION_'))
 // TODO refactor backend config fields, getrid of enabled payments etc.
 
 // TODO uncomment these, use the real snap php library class (make sure to do this on other file too)
-// require_once('library/veritrans/Veritrans.php');
-// require_once ('library/veritrans/Veritrans/Notification.php');
-// require_once ('library/veritrans/Veritrans/Transaction.php');
+require_once('library/veritrans/Veritrans.php');
+require_once ('library/veritrans/Veritrans/Notification.php');
+require_once ('library/veritrans/Veritrans/Transaction.php');
 
 // TODO remove theese
-require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans.php');
-require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
-require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
+// require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans.php');
+// require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
+// require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
 
 class MidtransPay extends PaymentModule
 {
