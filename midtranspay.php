@@ -409,234 +409,215 @@ class MidtransPay extends PaymentModule
 					// 		),
 					// 	//'class' => ''
 					// 	),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Credit Card',
-						'name' => 'MT_ENABLED_CREDIT_CARD',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'credit_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'credit_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Bank Transfer',
-						'name' => 'MT_ENABLED_PERMATAVA',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'permatava_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'permatava_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Mandiri Billpayment',
-						'name' => 'MT_ENABLED_MANDIRI_BILL',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'mandiri_bill_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'mandiri_bill_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'CIMB Clicks',
-						'name' => 'MT_ENABLED_CIMB',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'cimb_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'cimb_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Mandiri ClickPay',
-						'name' => 'MT_ENABLED_MANDIRI',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'mandiri_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'mandiri_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'BRI E-Pay',
-						'name' => 'MT_ENABLED_BRIEPAY',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'briepay_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'briepay_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Telkomsel T-Cash',
-						'name' => 'MT_ENABLED_TELKOMSEL_CASH',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'telkomsel_cash_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'telkomsel_cash_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'XL Tunai',
-						'name' => 'MT_ENABLED_XL_TUNAI',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'xl_tunai_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'xl_tunai_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
 					// array(
 					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'BBM MONEY',
-					// 	'name' => 'MT_ENABLED_BBM_MONEY',						
+					// 	'label' => 'Credit Card',
+					// 	'name' => 'MT_ENABLED_CREDIT_CARD',						
 					// 	'is_bool' => true,
 					// 	'values' => array(
 					// 		array(
-					// 			'id' => 'bbm_money_yes',
+					// 			'id' => 'credit_yes',
 					// 			'value' => 1,
 					// 			'label' => 'Yes'
 					// 			),
 					// 		array(
-					// 			'id' => 'bbm_money_no',
+					// 			'id' => 'credit_no',
 					// 			'value' => 0,
 					// 			'label' => 'No'
 					// 			)
 					// 		),
 					// 	//'class' => ''
 					// 	),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Indomaret',
-						'name' => 'MT_ENABLED_INDOMARET',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'indomaret_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'indomaret_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Indosat Dompetku',
-						'name' => 'MT_ENABLED_INDOSAT_DOMPETKU',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'indosat_dompetku_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'indosat_dompetku_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Mandiri Ecash',
-						'name' => 'MT_ENABLED_MANDIRI_ECASH',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'mandiri_ecash_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'mandiri_ecash_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => ''
-						),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Bank Transfer',
+					// 	'name' => 'MT_ENABLED_PERMATAVA',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'permatava_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'permatava_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Mandiri Billpayment',
+					// 	'name' => 'MT_ENABLED_MANDIRI_BILL',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'mandiri_bill_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'mandiri_bill_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'CIMB Clicks',
+					// 	'name' => 'MT_ENABLED_CIMB',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'cimb_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'cimb_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Mandiri ClickPay',
+					// 	'name' => 'MT_ENABLED_MANDIRI',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'mandiri_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'mandiri_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'BRI E-Pay',
+					// 	'name' => 'MT_ENABLED_BRIEPAY',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'briepay_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'briepay_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Telkomsel T-Cash',
+					// 	'name' => 'MT_ENABLED_TELKOMSEL_CASH',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'telkomsel_cash_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'telkomsel_cash_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'XL Tunai',
+					// 	'name' => 'MT_ENABLED_XL_TUNAI',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'xl_tunai_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'xl_tunai_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Indomaret',
+					// 	'name' => 'MT_ENABLED_INDOMARET',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'indomaret_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'indomaret_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Indosat Dompetku',
+					// 	'name' => 'MT_ENABLED_INDOSAT_DOMPETKU',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'indosat_dompetku_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'indosat_dompetku_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
+					// array(
+					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+					// 	'label' => 'Mandiri Ecash',
+					// 	'name' => 'MT_ENABLED_MANDIRI_ECASH',						
+					// 	'is_bool' => true,
+					// 	'values' => array(
+					// 		array(
+					// 			'id' => 'mandiri_ecash_yes',
+					// 			'value' => 1,
+					// 			'label' => 'Yes'
+					// 			),
+					// 		array(
+					// 			'id' => 'mandiri_ecash_no',
+					// 			'value' => 0,
+					// 			'label' => 'No'
+					// 			)
+					// 		),
+					// 	//'class' => ''
+					// 	),
 					/*array(
 						'type' => 'select',
 						'label' => 'Enable Installments',
@@ -738,7 +719,7 @@ class MidtransPay extends PaymentModule
 						),
 					array(
 						'type' => 'select',
-						'label' => 'Map payment CHALLENGE status to:',
+						'label' => 'Map payment PENDING/CHALLENGE status to:',
 						'name' => 'MT_PAYMENT_CHALLENGE_STATUS_MAP',
 						'required' => true,
 						'options' => array(
@@ -1391,7 +1372,7 @@ class MidtransPay extends PaymentModule
 		// 	);
 
 		$params_all = array(
-			'enabled_payments' => $list_enable_payments,
+			// 'enabled_payments' => $list_enable_payments, // Disable customize payment from config
 			'transaction_details' => array(
 				'order_id' => $this->currentOrder, 
 				'gross_amount' => $gross_amount

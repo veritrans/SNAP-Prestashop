@@ -52,7 +52,7 @@
 		{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
 	</h4>
 
-	<a href="#" id='instruction-button' title="{l s='View Payment Instruction'}" class="button-exclusive btn btn-success">{l s='View Payment Instruction'} <i class="icon-chevron-right right"></i></a>
+	<a  target="_blank" href="#" id='instruction-button' title="{l s='View Payment Instruction'}" class="button-exclusive btn btn-success">{l s='View Payment Instruction'} <i class="icon-chevron-right right"></i></a>
 </div>
 
 <br/><br/><br/>
