@@ -23,20 +23,10 @@ elseif (!Customer::getAddressesTotalById((int)($cookie->id_customer)))
 $midtransPay = new MidtransPay();
 $keys = $midtransPay->execValidation($cart);
 
-$midtrans_api_version = Configuration::get('VT_API_VERSION');
-$midtrans_payment_method = Configuration::get('VT_PAYMENT_TYPE');
-
 if ($keys['errors'])
 {
 	var_dump($keys['errors']);
 	exit;
 } else
 {
-	if ($midtrans_api_version == 2 && $midtrans_payment_method == 'vtweb')
-	{
-		Tools::redirectLink($keys['redirect_url']);
-	} else if ($midtrans_api_version == 2 && $midtrans_payment_method == 'vtdirect')
-	{
-
-	}
 }

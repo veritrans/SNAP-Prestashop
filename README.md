@@ -10,6 +10,11 @@ Let your Prestashop store integrated with Veritrans&nbsp;  payment gateway.
 
 Veritrans&nbsp;  payment gateway is an online payment gateway. They strive to make payments simple for both the merchant and customers. With this plugin you can allow online payment on your Prestashop store using Veritrans&nbsp;  payment gateway.
 
+Payment Method Feature:
+- Veritrans&nbsp; Snap all payment method fullpayment
+- Credit card online & offline installment payment
+- Credit card BIN & bank transfer promo payment
+- Credit card MIGS acquiring channel
 
 ### Installation Instruction
 

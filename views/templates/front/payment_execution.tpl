@@ -13,23 +13,28 @@
 		<p class="warning">{$error_message}</p>
 	{else}
 		<h3 class="page-subheading">{l s='Payment via Midtrans.' mod='midtranspay'}</h3>
-		{* <form action="{$url}" method="post" name="payment_form" class="std"> *}
-		{if (version_compare(Configuration::get('PS_VERSION_DB'), '1.5') == -1)}
-			<form action="{$base_dir|cat:'modules/midtranspay/validation.php'}" method="post" class="std"> 
-		{else}
-			<form action="{$link->getModuleLink('midtranspay', 'validation', [], true)}" method="post" class="std"> 
-		{/if}
+			{* Additional feature check *}
+
+			{if isset($smarty.get.feature)}
+				<form action="{$link->getModuleLink('midtranspay', 'validation', ['feature' => $smarty.get.feature], true)}" method="post" class="std"> 
+			{else}
+				<form action="{$link->getModuleLink('midtranspay', 'validation', [], true)}" method="post" class="std"> 
+			{/if}
+
 			<p>
 				<img src="{$this_path}Midtrans.png" alt="{l s='Midtrans' mod='midtranspay'}" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
-				<br/><b>{l s='You have chosen to pay via Midtrans.' mod='midtranspay'}</b><br/>
+				<br/>
+				<b>{l s='You have chosen to pay via Midtrans.' mod='midtranspay'}</b>
+				<br/>
 			</p>
 
 			<p style="margin-top:20px;">
 				- {l s='The total amount of your order is' mod='midtranspay'}
-				<span id="amount" class="price">{displayPrice price=$total}</span>
+					<span id="amount" class="price">{displayPrice price=$total}</span>
 				{if $use_taxes == 1}
-		    	{l s='(tax incl.)' mod='midtranspay'}
-		    {/if}<br/>
+		    		{l s='(tax incl.)' mod='midtranspay'}
+		   		{/if}
+		   			<br/>
 				-
 				{if $currencies|@count > 1}
 					{l s='We allow several currencies to be sent via Midtrans.' mod='midtranspay'}
@@ -45,23 +50,6 @@
 					<input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
 				{/if}
 			</p>
-
-			{if $payment_type == 'vtdirect'}
-				<h3 class="page-subheading">Credit Card Information</h3>
-				<div class="form-group">
-					<label for="">Credit Card Number</label>	
-					<input type="text" class="form-control">
-				</div>
-				<div class="form-group">
-					<label for="">Card Expiry</label>	
-					<input type="text" class="form-control">
-					<input type="text" class="form-control">
-				</div>
-				<div class="form-group">
-					<label for="">CVV</label>
-					<input type="text" class="form-control">
-				</div>					
-			{/if}
 
 			<h3 class="page-subheading">Confirm Order</h3>
 			
