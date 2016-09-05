@@ -99,36 +99,49 @@
   // });
   
   // Add listener to switch elements
-  $("#MT_ENABLED_INSTALLMENTON_BTN_on").change(function(e, data) {
-    toggleENABLED_INSTALLMENTON_BTN();
-  });
-  $("#MT_ENABLED_INSTALLMENTOFF_BTN_on").change(function(e, data) {
-    toggleENABLED_INSTALLMENTOFF_BTN();
-  });
-  $("#MT_ENABLED_PROMO_BTN_on").change(function(e, data) {
-    toggleENABLED_PROMO_BTN();
-  });
-  $("#MT_ENABLED_MIGS_BTN_on").change(function(e, data) {
-    toggleENABLED_MIGS_BTN();
-  });
-  $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").change(function(e, data) {
-    toggleENABLED_INSTALLMENTMIGS_BTN();
-  });
+  function addListenerToSwitch(){
+    $("#MT_ENABLED_INSTALLMENTON_BTN_on").change(function(e, data) {
+      toggleENABLED_INSTALLMENTON_BTN();
+    });
+    $("#MT_ENABLED_INSTALLMENTOFF_BTN_on").change(function(e, data) {
+      toggleENABLED_INSTALLMENTOFF_BTN();
+    });
+    $("#MT_ENABLED_PROMO_BTN_on").change(function(e, data) {
+      toggleENABLED_PROMO_BTN();
+    });
+    $("#MT_ENABLED_MIGS_BTN_on").change(function(e, data) {
+      toggleENABLED_MIGS_BTN();
+    });
+    $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").change(function(e, data) {
+      toggleENABLED_INSTALLMENTMIGS_BTN();
+    });
 
-  $("#MT_ENABLED_INSTALLMENTON_BTN_off").change(function(e, data) {
+    $("#MT_ENABLED_INSTALLMENTON_BTN_off").change(function(e, data) {
+      toggleENABLED_INSTALLMENTON_BTN();
+    });
+    $("#MT_ENABLED_INSTALLMENTOFF_BTN_off").change(function(e, data) {
+      toggleENABLED_INSTALLMENTOFF_BTN();
+    });
+    $("#MT_ENABLED_PROMO_BTN_off").change(function(e, data) {
+      toggleENABLED_PROMO_BTN();
+    });
+    $("#MT_ENABLED_MIGS_BTN_off").change(function(e, data) {
+      toggleENABLED_MIGS_BTN();
+    });
+    $("#MT_ENABLED_INSTALLMENTMIGS_BTN_off").change(function(e, data) {
+      toggleENABLED_INSTALLMENTMIGS_BTN();
+    });
+  }
+
+  function initializeVisibility(){
     toggleENABLED_INSTALLMENTON_BTN();
-  });
-  $("#MT_ENABLED_INSTALLMENTOFF_BTN_off").change(function(e, data) {
     toggleENABLED_INSTALLMENTOFF_BTN();
-  });
-  $("#MT_ENABLED_PROMO_BTN_off").change(function(e, data) {
-    toggleENABLED_PROMO_BTN();
-  });
-  $("#MT_ENABLED_MIGS_BTN_off").change(function(e, data) {
     toggleENABLED_MIGS_BTN();
-  });
-  $("#MT_ENABLED_INSTALLMENTMIGS_BTN_off").change(function(e, data) {
+    toggleENABLED_PROMO_BTN();
     toggleENABLED_INSTALLMENTMIGS_BTN();
-  });
+  }
+
+  addListenerToSwitch();
+  initializeVisibility();
 
 });

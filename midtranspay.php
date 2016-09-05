@@ -5,14 +5,14 @@
 // v offline installment
 // v online installment
 // v bin filter
-// fix text config fields
+// v fix text config fields
 // v test on migs version
-// certain product
-// add if else checker
-// add javascript to handle option toggle hide-show
-// arrange config
-// add illegible for installment message in payment.tpl
-// add throw catch when notif url is opened by get method
+// - certain product
+// - add if else checker
+// v add javascript to handle option toggle hide-show
+// v arrange config
+// v add illegible for installment message in payment.tpl
+// - add throw catch when notif url is opened by get method
 
 
 if (!defined('_PS_VERSION_'))
@@ -1193,6 +1193,8 @@ class MidtransPay extends PaymentModule
 		$installment_note = '';
 		if ($cart->getOrderTotal() >= Configuration::get('MT_MINAMOUNT')) {
 			$installment_note = 'available'; }
+		else {
+			$installment_note = "unavailable";}
 
 		$this->context->smarty->assign(array(
 			'cart' => $cart,
@@ -1208,6 +1210,7 @@ class MidtransPay extends PaymentModule
 			'MT_TITLE_INSTALLMENTON_BTN' => Configuration::get('MT_TITLE_INSTALLMENTON_BTN'),
 			'MT_ENABLED_PROMO_BTN' => Configuration::get('MT_ENABLED_PROMO_BTN'),
 			'MT_TITLE_PROMO_BTN' => Configuration::get('MT_TITLE_PROMO_BTN'),
+			'MT_MINAMOUNT' => Configuration::get('MT_MINAMOUNT'),
 			'this_path' => $this->_path,
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'
 		));

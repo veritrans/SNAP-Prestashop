@@ -8,7 +8,7 @@
 <!-- <form action="{$link->getModuleLink('midtranspay', 'validation', [], true)}" method="post"> -->
 <img src="{$this_path}Midtrans.png" alt="{l s='midtrans' mod='midtranspay'}" width="120" height="21" style=" float:left; margin: 0px 10px 5px 0px;" /></h3> <br/>
 <div class="text-center">
-{if ($smarty.get.status_code == '200' || $smarty.get.status_code == '201' || $status == 'success') && $transaction_status != 'pending'}
+{if ($smarty.get.status_code == '200' || $smarty.get.status_code == '201' || $status == 'success')}
 	<p>
 		<b><h3 class="alert alert-success">{l s='Your payment on %s is complete!' sprintf= $shop_name mod='midtranspay'}</h3></b>
 		<!-- {$smarty.get.order_id} -->
@@ -26,7 +26,7 @@
 	</p>
 	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
 	<i class="icon-refresh"></i>&nbsp;{l s='Re-Checkout'}</a>
-{elseif $transaction_status == 'pending'}
+{elseif $status == 'pending'}
 	<p>
 		<b><h3 class="alert alert-info">{l s='Awaiting your payment' mod='midtranspay'}</h3></b>
 	</p>
