@@ -12,7 +12,7 @@
 // v add javascript to handle option toggle hide-show
 // v arrange config
 // v add illegible for installment message in payment.tpl
-// - add throw catch when notif url is opened by get method
+// v add throw catch when notif url is opened by get method
 
 
 if (!defined('_PS_VERSION_'))
@@ -1814,7 +1814,15 @@ class MidtransPay extends PaymentModule
 		Veritrans_Config::$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production' ? true : false;
 		Veritrans_Config::$serverKey = Configuration::get('MT_SERVER_KEY');
 
-		$midtrans_notification = new Veritrans_Notification();
+		// try to create notification object from post notif, if fail display error
+		try {
+			$midtrans_notification = new Veritrans_Notification();
+		} catch (Exception $e) {
+			echo "Error processing notification. This endpoint shouldn't be open by browser (HTTP GET method) - \n " .$e->getMessage();
+			exit;
+		}
+
+		// $midtrans_notification = new Veritrans_Notification();
 		$history = new OrderHistory();
 		$history->id_order = (int)$midtrans_notification->order_id;
 
@@ -1875,13 +1883,13 @@ class MidtransPay extends PaymentModule
 
 		     }else if ($midtrans_notification->transaction_status == 'pending'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_CHALLENGE_STATUS_MAP'), $order_id_notif);
-		       	echo 'Pending notification accepted.';
+		       	echo 'Valid Pending notification accepted.';
 		     }else if ($midtrans_notification->transaction_status == 'cancel'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
-		       	echo 'Pending notification accepted.';
+		       	echo 'Valid Cancel notification accepted.';
 		     }else if ($midtrans_notification->transaction_status == 'expire'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
-		       	echo 'Expire notification accepted.';
+		       	echo 'Valid Expire notification accepted.';
 		     }
 			 else
 		     {
