@@ -85,7 +85,7 @@
   <div class="col-xs-12 col-md-6">
     <p class="payment_module">
         <a class="cheque" title="Installment unavailable">
-        <span>Credit Card installment is not available for this product, product is below minimum price for installment ({$MT_MINAMOUNT})</span>
+        <span>Credit Card installment is not available for this product, product is below minimum price for installment (IDR {$MT_MINAMOUNT})</span>
       </a>
     </p>  
   </div>

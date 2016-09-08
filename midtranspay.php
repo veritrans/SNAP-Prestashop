@@ -1189,12 +1189,15 @@ class MidtransPay extends PaymentModule
 		$cart = $this->context->cart;
 
 		// error_log( $cart->getOrderTotal(). " ### " . Configuration::get('MT_MINAMOUNT')); // debugan
-		// check if gross amount is above installment amount threshold
+		// check if gross amount is above installment amount threshold && installment is enabled
 		$installment_note = '';
-		if ($cart->getOrderTotal() >= Configuration::get('MT_MINAMOUNT')) {
+		$installmentEnabled = false;
+		if ( Configuration::get('MT_ENABLED_INSTALLMENTON_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') ){
+			$installmentEnabled = true; }
+		if ($installmentEnabled && $cart->getOrderTotal() >= Configuration::get('MT_MINAMOUNT')) {
 			$installment_note = 'available'; }
-		else {
-			$installment_note = "unavailable";}
+		else if ($installmentEnabled){
+			$installment_note = 'unavailable'; }
 
 		$this->context->smarty->assign(array(
 			'cart' => $cart,
