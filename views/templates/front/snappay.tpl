@@ -108,7 +108,7 @@
 
 	console.log('Loading snap JS library now!');
 	// Loading SNAP JS Library to the page		
-	loadExtScript('https://app.sandbox.veritrans.co.id/snap/snap.js');
+	loadExtScript('{$snap_script_url}');
 	console.log('Snap library is loaded now');
 	// Call execSnapCont() 
 	execSnapCont();

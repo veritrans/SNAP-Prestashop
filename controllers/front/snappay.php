@@ -35,6 +35,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(array(
 			'status' => $status,
+			'snap_script_url' => $_GET['prod'] == "1" ? "https://app.veritrans.co.id/snap/snap.js" : "https://app.sandbox.veritrans.co.id/snap/snap.js",
 			'instruction_url_prefix' => $instruction_url_prefix,
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
