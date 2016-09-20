@@ -52,9 +52,7 @@ Payment Method Feature:
 
 #### Get help
 
-* [Veritrans sandbox login](https://my.sandbox.veritrans.co.id/)
-* [Veritrans sandbox registration](https://my.sandbox.veritrans.co.id/register)
+* [SNAP-Prestashop Wiki](https://github.com/veritrans/SNAP-Prestashop/wiki)
 * [Veritrans registration](https://my.veritrans.co.id/register)
-* [Veritrans documentation](http://docs.veritrans.co.id)
-* [Veritrans Prestashop Documentation](http://docs.veritrans.co.id/vtweb/integration_prestashop.html)
-* Technical support [support@veritrans.co.id](mailto:support@veritrans.co.id)
+* [SNAP documentation](http://snap-docs.veritrans.co.id)
+* Can't find answer you looking for? email to [support@veritrans.co.id](mailto:support@veritrans.co.id)
