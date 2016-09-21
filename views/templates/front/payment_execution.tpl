@@ -22,13 +22,12 @@
 			{/if}
 
 			<p>
-				<img src="{$this_path}Midtrans.png" alt="{l s='Midtrans' mod='midtranspay'}" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
-				<br/>
-				<b>{l s='You have chosen to pay via Midtrans.' mod='midtranspay'}</b>
-				<br/>
+				<img src="{$this_path}Midtrans.png" alt="{l s='Midtrans' mod='midtranspay'}" height="49" style="margin: 0px 10px 5px 0px;" />
 			</p>
 
-			<p style="margin-top:20px;">
+			<p style="margin-top:10px;">
+				<b>{l s='You have chosen to pay via Midtrans.' mod='midtranspay'}</b>
+				<br/>
 				- {l s='The total amount of your order is' mod='midtranspay'}
 					<span id="amount" class="price">{displayPrice price=$total}</span>
 				{if $use_taxes == 1}
@@ -53,10 +52,10 @@
 
 			<h3 class="page-subheading">Confirm Order</h3>
 			
-			<p class="cart_navigation clearfix" id="cart_navigation">
-				<a href="{$link->getPageLink('order', true, NULL, "step=3")}" class="button_large">{l s='Other payment methods' mod='midtranspay'}
+			<p class="cart_navigation" id="cart_navigation">
+				<a href="{$link->getPageLink('order', true, NULL, "step=3")}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i>{l s='Other payment methods' mod='midtranspay'}
 				</a>
-				<input type="submit" value="{l s='Place my order' mod='midtranspay'}" class="exclusive_large" />
+				<button type="submit" class="button btn btn-default button-medium" /><span>{l s='Place my order' mod='midtranspay'}</span></button>
 			</p>
 		</form>
 	{/if}
