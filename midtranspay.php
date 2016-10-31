@@ -1582,7 +1582,7 @@ class MidtransPay extends PaymentModule
 	    	$params_all = $this->addPromoParam($params_all);
 			// add discount
 			$cartRule = new CartRule();
-			$code = $cartRule->getIdByCode('veritrans');
+			$code = $cartRule->getIdByCode('onlinepromo');
 			$cart->addCartRule($code);
 	    }
 
