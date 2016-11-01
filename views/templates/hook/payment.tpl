@@ -1,3 +1,4 @@
+{if $MT_DISABLE_NON_MIGS_BTN != 1 }
 <div class="row">
   <div class="col-xs-12 col-md-6">
     <p class="payment_module">
@@ -12,6 +13,7 @@
     </p>  
   </div>
 </div>
+{/if}
 
 {* Other additional payment method goes below *}
 

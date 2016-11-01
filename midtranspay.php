@@ -104,6 +104,7 @@ class MidtransPay extends PaymentModule
 			'MT_TITLE_MIGS_BTN',
 			'MT_BINS_MIGS_BTN',
 			'MT_ACQ_MIGS_BTN',
+			'MT_DISABLE_NON_MIGS_BTN',
 			'MT_ENABLED_INSTALLMENTMIGS_BTN',
 			'MT_TITLE_INSTALLMENTMIGS_BTN',
 			'MT_BINS_INSTALLMENTMIGS_BTN',
@@ -189,6 +190,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_ACQ_MIGS_BTN', "");
 		if (!isset($config['MT_ENABLED_INSTALLMENTMIGS_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTMIGS_BTN', 0);
+		if (!isset($config['MT_DISABLE_NON_MIGS_BTN']))
+			Configuration::set('MT_DISABLE_NON_MIGS_BTN', 0);
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTMIGS_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTMIGS_BTN', 0);
@@ -1020,6 +1023,29 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Specify your acquiring bank for MIGS Credit Card Payment. Leave blank if you are not sure',
 						'class' => 'advanced-migs'
 						),
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Disable Non MIGS Channel Acquiring button?</strong>',
+						'desc' => 'Select yes if you only have MIGS channel acquiring',
+						'name' => 'MT_DISABLE_NON_MIGS_BTN',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'disable_non_migs_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'disable_non_migs_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),						
+						// 'desc' => 'Enable additional button for Credit Card with MIGS channel as acquirer',
+						'class' => 'advanced-migs'
+						//'class' => ''
+						),
 					// Installment MIGS
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1206,6 +1232,7 @@ class MidtransPay extends PaymentModule
 			'installment_note' => $installment_note,
 			'MT_ENABLED_MIGS_BTN' => Configuration::get('MT_ENABLED_MIGS_BTN'),
 			'MT_TITLE_MIGS_BTN' => Configuration::get('MT_TITLE_MIGS_BTN'),
+			'MT_DISABLE_NON_MIGS_BTN' => Configuration::get('MT_DISABLE_NON_MIGS_BTN'),
 			'MT_ENABLED_INSTALLMENTMIGS_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN'),
 			'MT_TITLE_INSTALLMENTMIGS_BTN' => Configuration::get('MT_TITLE_INSTALLMENTMIGS_BTN'),
 			'MT_ENABLED_INSTALLMENTOFF_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN'),
@@ -1688,7 +1715,10 @@ class MidtransPay extends PaymentModule
 	    	
 	    	// add bank & channel migs params
 	        if (strlen(Configuration::get('MT_ACQ_MIGS_BTN')) > 0) {
-	        	$params_all['credit_card']['bank'] = strtoupper (Configuration::get('MT_ACQ_MIGS_BTN')); }
+	        	$params_all['credit_card']['bank'] = strtoupper (Configuration::get('MT_ACQ_MIGS_BTN')); 
+	        }else{
+	        	$params_all['credit_card']['bank'] = "BCA";
+	        }
 	        $params_all['credit_card']['channel'] = "migs";
 			
 			// add bin params
