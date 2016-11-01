@@ -22,7 +22,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		$status = 'token_exist';
 
 		// TODO remove these, instruction_url_prefix is no longer needed
-		$instruction_url_prefix = "//app.veritrans.co.id";
+		$instruction_url_prefix = "//app.midtrans.com";
 		// Configuration::get('MT_ENVIRONMENT') == 'production' ? 
 		// 	$instruction_url_prefix = '//app.veritrans.co.id' : 
 		// 	$instruction_url_prefix = '//app.sandbox.veritrans.co.id';
@@ -35,7 +35,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(array(
 			'status' => $status,
-			'snap_script_url' => $_GET['prod'] == "1" ? "https://app.veritrans.co.id/snap/snap.js" : "https://app.sandbox.veritrans.co.id/snap/snap.js",
+			'snap_script_url' => $_GET['prod'] == "1" ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
 			'instruction_url_prefix' => $instruction_url_prefix,
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
