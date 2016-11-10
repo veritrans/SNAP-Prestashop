@@ -33,6 +33,9 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		// Add snap JS libray
 		// $this->context->controller->addJS('https://app.sandbox.veritrans.co.id/snap/assets/snap.js');
 
+		$moduleUrl = substr($this->context->link->getModuleLink('midtranspay','?'), 0, -1);
+		// error_log($moduleUrl); // debugan
+
 		$this->context->smarty->assign(array(
 			'status' => $status,
 			'snap_script_url' => $_GET['prod'] == "1" ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
@@ -40,9 +43,9 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
-			'shop_url' => __PS_BASE_URI__
+			'shop_url' => __PS_BASE_URI__,
+			'moduleUrl' => $moduleUrl
 		));
-
 		$this->setTemplate('snappay.tpl');
 	}
 

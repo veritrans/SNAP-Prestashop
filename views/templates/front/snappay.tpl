@@ -77,12 +77,12 @@
 				{
 					onSuccess: function(result){
 						console.log(result);
-						window.location = "{$shop_url}/index.php?fc=module&module=midtranspay&controller=success&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleUrl}success?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
 			        	
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
-							window.location = "{$shop_url}/index.php?fc=module&module=midtranspay&controller=success&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+							window.location = "{$moduleUrl}success?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 
 			        	document.getElementById('instruction-button').href = result.pdf_url;
@@ -91,7 +91,7 @@
 			        },
 					onError: function(result){
 						console.log(result);
-						window.location = "{$shop_url}/index.php?fc=module&module=midtranspay&controller=failure&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleUrl}failure?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					}
 
 				});
