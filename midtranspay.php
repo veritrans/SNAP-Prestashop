@@ -1422,12 +1422,12 @@ class MidtransPay extends PaymentModule
 		
 		// Build billing address param
     	$params_billing_address = array(
-    			'first_name' => $billing_address->firstname, 
-				'last_name' => $billing_address->lastname, 
-				'address' => $billing_address->address1,
-				'city' => $billing_address->city, 
-				'postal_code' => $billing_address->postcode, 
-				'phone' => $this->determineValidPhone($billing_address->phone, $billing_address->phone_mobile), 
+    			'first_name' => (string)$billing_address->firstname, 
+				'last_name' => (string)$billing_address->lastname, 
+				'address' => (string)$billing_address->address1,
+				'city' => (string)$billing_address->city, 
+				'postal_code' => (string)$billing_address->postcode, 
+				'phone' => (string)$this->determineValidPhone($billing_address->phone, $billing_address->phone_mobile), 
 				'country_code' => 'IDN'
     		);
 
@@ -1438,12 +1438,12 @@ class MidtransPay extends PaymentModule
 			{
 				// Build shipping address param
 				$params_shipping_address = array(
-					'first_name' => $delivery_address->firstname, 
-					'last_name' => $delivery_address->lastname, 
-					'address' => $delivery_address->address1,
-					'city' => $delivery_address->city,
-					'postal_code' => $delivery_address->postcode,
-					'phone' => $this->determineValidPhone($delivery_address->phone, $delivery_address->phone_mobile), 
+					'first_name' => (string)$delivery_address->firstname, 
+					'last_name' => (string)$delivery_address->lastname, 
+					'address' => (string)$delivery_address->address1,
+					'city' => (string)$delivery_address->city,
+					'postal_code' => (string)$delivery_address->postcode,
+					'phone' => (string)$this->determineValidPhone($delivery_address->phone, $delivery_address->phone_mobile), 
 					'country_code' => 'IDN'
 					);																								
 			} else
@@ -1454,10 +1454,10 @@ class MidtransPay extends PaymentModule
     	
     	// Build customer details param
 		$params_customer_details = array(
-			'first_name' => $billing_address->firstname, 
-			'last_name' =>  $billing_address->lastname, 
-			'email' => $customer->email, 
-			'phone' => $this->determineValidPhone($billing_address->phone, $billing_address->phone_mobile), 
+			'first_name' => (string)$billing_address->firstname, 
+			'last_name' =>  (string)$billing_address->lastname, 
+			'email' => (string)$customer->email, 
+			'phone' => (string)$this->determineValidPhone($billing_address->phone, $billing_address->phone_mobile), 
 			'billing_address' => $params_billing_address, 
 			'shipping_address' => $params_shipping_address
 			);
