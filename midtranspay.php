@@ -1840,7 +1840,28 @@ class MidtransPay extends PaymentModule
 		}
 	}
 
-	
+	// Response early with 200 OK status for Midtrans notification & handle HTTP GET
+	public function earlyResponse(){
+		if ( $_SERVER['REQUEST_METHOD'] == 'GET' ){
+			die('This endpoint should not be opened using browser (HTTP GET). This endpoint is for Midtrans notification URL (HTTP POST)');
+			exit();
+		}
+
+		ob_start();
+
+		$input_source = "php://input";
+		$raw_notification = json_decode(file_get_contents($input_source), true);
+		echo "Notification Received: \n";
+		print_r($raw_notification);
+		
+		header('Connection: close');
+		header('Content-Length: '.ob_get_length());
+		ob_end_flush();
+		ob_flush();
+		flush();
+	}
+
+
 	public function execNotification()
 	{
 		$veritrans = new Veritrans_Config();
@@ -1848,13 +1869,9 @@ class MidtransPay extends PaymentModule
 		Veritrans_Config::$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production' ? true : false;
 		Veritrans_Config::$serverKey = Configuration::get('MT_SERVER_KEY');
 
-		// try to create notification object from post notif, if fail display error
-		try {
-			$midtrans_notification = new Veritrans_Notification();
-		} catch (Exception $e) {
-			echo "Error processing notification. This endpoint shouldn't be open by browser (HTTP GET method) - \n " .$e->getMessage();
-			exit;
-		}
+		// Response first, then try to create notification object from post notif
+		$this->earlyResponse();
+		$midtrans_notification = new Veritrans_Notification();
 
 		// $midtrans_notification = new Veritrans_Notification();
 		$history = new OrderHistory();
