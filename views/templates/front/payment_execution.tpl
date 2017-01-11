@@ -47,6 +47,10 @@
 				{else}
 					{l s='We allow the following currency to be sent via Midtrans:' mod='midtranspay'}&nbsp;<b>{$currencies.0.name}</b>
 					<input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
+					<script type="text/javascript">
+						// Auto submit to cut unnecessary step
+    					setTimeout(function(){ document.getElementById('place-order').click(); }, 100); 
+					</script>
 				{/if}
 			</p>
 
@@ -55,7 +59,7 @@
 			<p class="cart_navigation" id="cart_navigation">
 				<a href="{$link->getPageLink('order', true, NULL, "step=3")}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i>{l s='Other payment methods' mod='midtranspay'}
 				</a>
-				<button type="submit" class="button btn btn-default button-medium" /><span>{l s='Place my order' mod='midtranspay'}</span></button>
+				<button type="submit" id="place-order" class="button btn btn-default button-medium" /><span>{l s='Place my order' mod='midtranspay'}</span></button>
 			</p>
 		</form>
 	{/if}
