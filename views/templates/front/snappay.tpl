@@ -65,7 +65,8 @@
 		// Append script to doc
 		var s = document.createElement('script');
 		s.src = src;
-		document.body.appendChild(s);
+		a = document.body.appendChild(s);
+		a.setAttribute('data-client-key',"{l s='%s' sprintf= $client_key mod='midtranspay'}");
 	}
 
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry

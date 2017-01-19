@@ -13,7 +13,8 @@
 // v arrange config
 // v add illegible for installment message in payment.tpl
 // v add throw catch when notif url is opened by get method
-//   add production snap.js url
+// v add production snap.js url
+// v add client key script tag
 
 
 if (!defined('_PS_VERSION_'))
