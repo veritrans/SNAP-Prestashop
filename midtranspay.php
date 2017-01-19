@@ -1628,7 +1628,7 @@ class MidtransPay extends PaymentModule
 		try {
 		    // error_log(print_r($params_all,true)); // debug
 		  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
-		  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken , 'prod' => Configuration::get('MT_ENVIRONMENT') == 'production' ? "1" : "0"]);
+		  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
 		  	// error_log("redirect_url :".$redirect_url); // debug
 		  	$keys['redirect_url'] = $redirect_url;
 		} catch (Exception $e) {

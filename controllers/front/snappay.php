@@ -29,7 +29,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(array(
 			'status' => $status,
-			'snap_script_url' => $_GET['prod'] == "1" ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
+			'snap_script_url' => Configuration::get('MT_ENVIRONMENT') == 'production' ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
 			'client_key' => Configuration::get('MT_CLIENT_KEY'),
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
