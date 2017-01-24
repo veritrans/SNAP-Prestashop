@@ -20,7 +20,7 @@ Payment Method Feature:
 
 #### Minimum Requirements
 
-* Prestashop 1.6 or greater
+* Prestashop 1.6
 * PHP version 5.4 or greater
 * MySQL version 5.0 or greater
 
