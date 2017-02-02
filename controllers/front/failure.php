@@ -24,13 +24,17 @@ class MidtransPayFailureModuleFrontController extends ModuleFrontController
 		$status = 'failure';
 
 		$this->context->smarty->assign(array(
+			'shop_name' => $this->context->shop->name,
 			'status' => $status,
-			'order_id' => $order_id,
+			'order_id' => $cart->id,
 			'this_path' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
 		));
 
-		$this->setTemplate('notification.tpl');
+		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
+			$this->setTemplate('module:midtranspay/views/templates/front/notification.tpl');
+		else
+			$this->setTemplate('module:midtranspay/views/templates/front/notification17.tpl');
 	}
 
 }

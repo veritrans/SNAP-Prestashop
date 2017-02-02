@@ -15,6 +15,16 @@
 // v add throw catch when notif url is opened by get method
 // v add production snap.js url
 // v add client key script tag
+// 
+// TODO 1.7
+// Add description field
+// Test notif & url
+// v Additional feature
+// Test additional feature
+// v Mutiple getPaymentOptions
+// Backward compatibility
+// Check MT_MINAMOUNT strlen
+// v Prettify payment page
 
 
 if (!defined('_PS_VERSION_'))
@@ -23,7 +33,7 @@ if (!defined('_PS_VERSION_'))
 // TODO refactor backend config fields, getrid of enabled payments etc.
 
 // TODO uncomment these, use the real snap php library class (make sure to do this on other file too)
-require_once('library/veritrans/Veritrans.php');
+require_once ('library/veritrans/Veritrans.php');
 require_once ('library/veritrans/Veritrans/Notification.php');
 require_once ('library/veritrans/Veritrans/Transaction.php');
 
@@ -31,6 +41,8 @@ require_once ('library/veritrans/Veritrans/Transaction.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
+
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class MidtransPay extends PaymentModule
 {
@@ -271,12 +283,15 @@ class MidtransPay extends PaymentModule
 			!$this->registerHook('payment') ||
 			!$this->registerHook('header') ||
 			!$this->registerHook('backOfficeHeader') ||
-			!$this->registerHook('orderConfirmation'))
+			!$this->registerHook('orderConfirmation') || 
+			!$this->registerHook('paymentReturn') || 
+			!$this->registerHook('paymentOptions')
+			)
 			return false;
 		
-		include_once(_PS_MODULE_DIR_ . '/' . $this->name . '/mtpay_install.php');
-		$mtpay_install = new MidtransPayInstall();
-		$mtpay_install->createTable();
+		// include_once(_PS_MODULE_DIR_ . '/' . $this->name . '/mtpay_install.php');
+		// $mtpay_install = new MidtransPayInstall();
+		// $mtpay_install->createTable();
 
 		return true;
 	}
@@ -1207,6 +1222,91 @@ class MidtransPay extends PaymentModule
 		return $this->hookDisplayPayment($params);				
 	}
 
+    public function hookPaymentOptions($params)
+    {
+        if (!$this->active || !$this->checkCurrency($params['cart'])) {
+            return; }
+    	$orderTotal = $this->context->cart->getOrderTotal();
+
+        $payment_options = array();
+
+        if (Configuration::get('MT_DISABLE_NON_MIGS_BTN') != 1) {
+            $payment_options[] = $this->getSnapFullpaymentOption(); }
+    	if (Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
+    		$payment_options[] = $this->getSnapMigsOption(); }
+    	if (Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+    		$payment_options[] = $this->getSnapPromoOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentMigsOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTON_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentOnlineOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentOfflineOption(); }
+
+        return $payment_options;
+    }
+
+    public function getSnapFullpaymentOption()
+    {
+    	$snapFullpayment = new PaymentOption();
+    	$snapFullpayment->setCallToActionText($this->l(Configuration::get('MT_DISPLAY_TITLE')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $snapFullpayment;
+    }
+
+    public function getSnapMigsOption()
+    {
+    	$paymentOption = new PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_MIGS_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_MIGS_BTN'] , true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapPromoOption()
+    {
+    	$paymentOption = new PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_PROMO_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_PROMO_BTN'] , true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentMigsOption()
+    {
+    	$paymentOption = new PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTMIGS_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTMIGS_BTN'] , true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentOnlineOption()
+    {
+    	$paymentOption = new PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTON_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTON_BTN'] , true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentOfflineOption()
+    {
+    	$paymentOption = new PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTOFF_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTOFF_BTN'] , true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+
 	public function hookDisplayPayment($params)
 	{
 		if (!$this->active)
@@ -1380,26 +1480,9 @@ class MidtransPay extends PaymentModule
 	// Retrocompatibility 1.4
 	public function execValidation($cart)
 	{
-		error_log( 'execValidation $_GET[] = ' . print_r($_GET,true) ); // debugan
+		// error_log( 'execValidation $_GET[] = ' . print_r($_GET,true) ); // debugan
 		global $cookie;
-
-		if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->active)
-			Tools::redirect('index.php?controller=order&step=1');
-
-		// Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
-		$authorized = false;
-		foreach (Module::getPaymentModules() as $module)
-			if ($module['name'] == 'midtranspay')
-			{
-				$authorized = true;
-				break;
-			}
-		if (!$authorized)
-			die($this->module->l('This payment method is not available.', 'validation'));
-
 		$customer = new Customer($cart->id_customer);
-		if (!Validate::isLoadedObject($customer))
-			Tools::redirect('index.php?controller=order&step=1');
 
 		$veritrans = new Veritrans_Config();
 		// Config setup
@@ -1463,7 +1546,7 @@ class MidtransPay extends PaymentModule
 			'shipping_address' => $params_shipping_address
 			);
 
-		$items = $this->addCommodities($cart, $shipping_cost, $usd);				
+		$items = $this->addCommodities($cart, $shipping_cost, $usd);
 		
 		// convert the currency
 		$cart_currency = new Currency($cart->id_currency);
@@ -1485,9 +1568,6 @@ class MidtransPay extends PaymentModule
 				$item['price'] = intval(ceil($item['price']));				
 			}
 		}
-				
-
-		$this->validateOrder($cart->id, Configuration::get('MT_ORDER_STATE_ID'), $cart->getOrderTotal(true, Cart::BOTH), $this->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);				
 		
 		$gross_amount = 0;
 		unset($item);
@@ -1505,16 +1585,13 @@ class MidtransPay extends PaymentModule
 		$param_required;
 		switch ($installment_type_val) {
 			case 'all_product':
-								
-				if ($isBniInstallment){					
-					//$bni_term2 = $this->getTermInstallment('BNI');
+				if ($isBniInstallment){
 					$a = Configuration::get('MT_INSTALLMENTS_BNI');
 					$term = explode(',',$a);
 					$bni_term = $term;
 					//error_log(print_r($bni_term,true));
 					//error_log($bni_term,true);
 				}					
-							
 				if ($isMandiriInstallment){
 
 					$mandiri_term =	$this->getTermInstallment('MANDIRI');
@@ -1576,17 +1653,12 @@ class MidtransPay extends PaymentModule
 
 		$params_all = array(
 			'transaction_details' => array(
-				'order_id' => $this->currentOrder, 
+				'order_id' => $cart->id, 
 				'gross_amount' => $gross_amount
 				),
 			'item_details' => $items,
 			'customer_details' => $params_customer_details
 			);
-		
-		// if ($gross_amount < 500000){
-		// 	$warning_redirect = true;
-		// 	$keys['message'] = 2;
-		// }
 
 		if( !$warning_redirect && 
 			($isBniInstallment || $isMandiriInstallment) && 
@@ -1604,15 +1676,11 @@ class MidtransPay extends PaymentModule
 	   	/** 
 	    * Add additional features param
 	    */
-
-	    // Promo payment
-	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
-	    	$params_all = $this->addPromoParam($params_all);
-			// add discount
-			$cartRule = new CartRule();
-			$code = $cartRule->getIdByCode('onlinepromo');
-			$cart->addCartRule($code);
-	    }
+		
+		// Promo payment, coupled with validation17.php->addPromoFeature()
+		if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+			$params_all = $this->addPromoParam($params_all);
+		}
 
 	    // MIGS CC fullpayment
 	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_MIGS_BTN' && Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
@@ -1620,13 +1688,15 @@ class MidtransPay extends PaymentModule
 	    }
 
 	    // Check for eligible installment, then add isntallment param
-	    if ($gross_amount >= Configuration::get('MT_MINAMOUNT')){
+	    if (isset($_GET['feature']) && $gross_amount >= Configuration::get('MT_MINAMOUNT')){
 	    	$params_all = $this->addInstallmentParam($params_all);
 	    }
 
 		// Get SNAP token, then create redirect url
 		try {
 		    // error_log(print_r($params_all,true)); // debug
+		    $this->validateOrder($cart->id, Configuration::get('MT_ORDER_STATE_ID'), $cart->getOrderTotal(true, Cart::BOTH), $this->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+		    $params_all['transaction_details']['order_id'] = $this->currentOrder; // OrderID is only available after validateOrder
 		  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
 		  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
 		  	// error_log("redirect_url :".$redirect_url); // debug
@@ -1641,12 +1711,15 @@ class MidtransPay extends PaymentModule
 
 	public function addInstallmentParam($params_all)
 	{
-		if (!isset($_GET['feature']))
+		if (!isset($_GET['feature'])
+			|| !($_GET['feature'] == 'MT_ENABLED_INSTALLMENTMIGS_BTN' || 
+				$_GET['feature'] == 'MT_ENABLED_INSTALLMENTOFF_BTN'  ||
+				$_GET['feature'] == 'MT_ENABLED_INSTALLMENTON_BTN' )
+			)
 			return $params_all;
 
     	$params_all['enabled_payments'][] = 'credit_card';
 		$params_all['credit_card']['installment']['required'] = true;
-
 		// Build terms array
 		$terms = array(3,6,9,12,15,18,21,24,27,30,33,36);
 		
@@ -1795,7 +1868,7 @@ class MidtransPay extends PaymentModule
 				"id" => 'DISCOUNT_VOUCHER',
 				"price" => $discount, // defer currency conversion until the very last time
 				"quantity" => '1',
-				"name" => 'discount from voucher',				
+				"name" => 'Discount from promo',				
 			);	
 		}
 		//error_log(print_r($commodities,true)); // debug
@@ -1852,8 +1925,10 @@ class MidtransPay extends PaymentModule
 
 		$input_source = "php://input";
 		$raw_notification = json_decode(file_get_contents($input_source), true);
+		echo "<pre> \n";
 		echo "Notification Received: \n";
 		print_r($raw_notification);
+		echo "</pre> \n";
 		
 		header('Connection: close');
 		header('Content-Length: '.ob_get_length());
