@@ -1,7 +1,5 @@
-{*
-* TODO implement dynamic description
-*}
-
+{if $MT_DISPLAY_DESCRIPTION}
 <section>
-  <p>{l s='Add some details about the payment option' mod='midtranspay'}</p>
+  <p>{$MT_DISPLAY_DESCRIPTION}</p>
 </section>
+{/if}

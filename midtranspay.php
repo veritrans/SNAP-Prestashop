@@ -17,10 +17,10 @@
 // v add client key script tag
 // 
 // TODO 1.7
-// Add description field
+// v Add description field
 // Test notif & url
 // v Additional feature
-// Test additional feature
+// v Test additional feature
 // v Mutiple getPaymentOptions
 // Backward compatibility
 // Check MT_MINAMOUNT strlen
@@ -82,6 +82,7 @@ class MidtransPay extends PaymentModule
 		// key length must be between 0-32 chars to maintain compatibility with <= 1.5
 		$this->config_keys = array(			
 			'MT_DISPLAY_TITLE',
+			'MT_DISPLAY_DESCRIPTION',
 			'MT_CLIENT_KEY',
 			'MT_SERVER_KEY',
 			'MT_API_VERSION',
@@ -159,6 +160,8 @@ class MidtransPay extends PaymentModule
 
 		if (!isset($config['MT_DISPLAY_TITLE']))
 			Configuration::set('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
+		if (!isset($config['MT_DISPLAY_DESCRIPTION']))
+			Configuration::set('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		if (!isset($config['MT_SANITIZED']))
 			Configuration::set('MT_SANITIZED', 1);	
 		if (!isset($config['MT_3D_SECURE']))
@@ -444,10 +447,17 @@ class MidtransPay extends PaymentModule
 				'input' => array(
 					array(
 						'type' => 'text',
-						'label' => 'Payment Button Display Text',
+						'label' => 'Payment Option Display Text',
 						'name' => 'MT_DISPLAY_TITLE',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout. e.g: Credit Card Payment, Online Payment etc. Leave blank for default title.'
+						'desc' => 'Customize payment option title that will be displayed to your customer when they checkout. e.g: Credit Card Payment, Online Payment etc.'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Payment Option Description Text',
+						'name' => 'MT_DISPLAY_DESCRIPTION',
+						'required' => false,
+						'desc' => 'Customize payment option description'
 						),
 					array(
 						'type' => 'select',
@@ -902,7 +912,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button Online Installment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTON_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Online Installment. e.g: Credit Card Installment Payment etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Online Installment. e.g: Credit Card Installment Payment etc.',
 						'class' => 'advanced-on'
 						),
 					array(
@@ -940,7 +950,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button Offline Installment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTOFF_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Offline Installment. e.g: Credit Card Installment Payment etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Offline Installment. e.g: Credit Card Installment Payment etc.',
 						'class' => 'advanced-off'
 						),
 					array(
@@ -978,7 +988,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Promo Button Display Text',
 						'name' => 'MT_TITLE_PROMO_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc.',
 						'class' => 'advanced-promo'
 						),
 					array(
@@ -1023,7 +1033,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button CC MIGS fullpayment Display Text',
 						'name' => 'MT_TITLE_MIGS_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS fullpayment. e.g: BCA Credit Card, Maybank Credit Card, etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS fullpayment. e.g: BCA Credit Card, Maybank Credit Card, etc.',
 						'class' => 'advanced-migs'
 						),
 					array(
@@ -1091,7 +1101,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button CC Online Installment MIGS fullpayment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTMIGS_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS online installment. e.g: Installment BCA Credit Card, Maybank Installment, etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS online installment. e.g: Installment BCA Credit Card, Maybank Installment, etc.',
 						'class' => 'advanced-insmigs'
 						),
 					array(
@@ -1249,10 +1259,14 @@ class MidtransPay extends PaymentModule
 
     public function getSnapFullpaymentOption()
     {
+		$this->context->smarty->assign(array(
+				'MT_DISPLAY_DESCRIPTION' =>  $this->l(Configuration::get('MT_DISPLAY_DESCRIPTION')) 
+    		)
+    	);
     	$snapFullpayment = new PaymentOption();
     	$snapFullpayment->setCallToActionText($this->l(Configuration::get('MT_DISPLAY_TITLE')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $snapFullpayment;
     }
@@ -1261,8 +1275,8 @@ class MidtransPay extends PaymentModule
     {
     	$paymentOption = new PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_MIGS_BTN')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_MIGS_BTN'] , true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_MIGS_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $paymentOption;
     }
@@ -1271,8 +1285,8 @@ class MidtransPay extends PaymentModule
     {
     	$paymentOption = new PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_PROMO_BTN')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_PROMO_BTN'] , true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_PROMO_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $paymentOption;
     }
@@ -1281,8 +1295,8 @@ class MidtransPay extends PaymentModule
     {
     	$paymentOption = new PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTMIGS_BTN')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTMIGS_BTN'] , true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTMIGS_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $paymentOption;
     }
@@ -1291,8 +1305,8 @@ class MidtransPay extends PaymentModule
     {
     	$paymentOption = new PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTON_BTN')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTON_BTN'] , true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTON_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $paymentOption;
     }
@@ -1301,8 +1315,8 @@ class MidtransPay extends PaymentModule
     {
     	$paymentOption = new PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTOFF_BTN')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTOFF_BTN'] , true));
-    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTOFF_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $paymentOption;
     }
