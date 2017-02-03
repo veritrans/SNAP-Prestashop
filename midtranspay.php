@@ -25,6 +25,7 @@
 // Backward compatibility
 // Check MT_MINAMOUNT strlen
 // v Prettify payment page
+// create tutorial
 
 
 if (!defined('_PS_VERSION_'))
@@ -1250,8 +1251,8 @@ class MidtransPay extends PaymentModule
     {
     	$snapFullpayment = new PaymentOption();
     	$snapFullpayment->setCallToActionText($this->l(Configuration::get('MT_DISPLAY_TITLE')))
-    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true))
-    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true));
+    					// ->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
     					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
     	return $snapFullpayment;
     }

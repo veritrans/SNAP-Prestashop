@@ -14,21 +14,21 @@
 		{if $status == 'token_exist'}
 			<!-- <script src="https://app.sandbox.veritrans.co.id/snap/snap.js"></script> -->
 			<p>
-				<h3 class="alert alert-info">{l s='Please complete your payment...' mod='midtranspay'}</h3>
+				<h3 class="alert alert-info">{l s='Please complete your payment ...' mod='midtranspay'}</h3>
 			</p>
 
 			<p>
 				{l s='Continue payment via payment popup window.' mod='midtranspay'} <br/>
 				{l s='Or click button below:' mod='midtranspay'} <br/><br/>
 				
-				<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> <i class="material-icons">payment</i> &nbsp; {l s='Proceed to Payment'}</a> 			<br/><br/>
+				<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> <i class="material-icons">payment</i> &nbsp; {l s='Proceed to Payment'} <i class="material-icons">chevron_right</i> </a> 			<br/><br/>
 
 				{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='customer support team. ' mod='midtranspay'}</a><br/><br/>
 			</p>
 
 		{else}
 			<p>
-				<h3 class="alert alert-danger">{l s='Payment Error!' mod='midtranspay'}</h3>
+				<h3 class="alert alert-danger"> <i class="material-icons">warning</i> {l s='Payment Error!' mod='midtranspay'}</h3>
 			</p>
 
 			<p class="warning">
@@ -43,7 +43,7 @@
 		
 		<div class="text-xs-center" id="pending-notice" style="display:none;">
 			<p>
-				<h3 class="alert alert-warning">{l s='Awaiting your payment'}</h3>
+				<h3 class="alert alert-warning"> <i class="material-icons">schedule</i> {l s='Awaiting your payment ... '}</h3>
 			</p>
 			<p class="warning">
 				{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
@@ -74,14 +74,15 @@
 			try{
 				snap.pay("{$snap_token}", 
 				{
+					skipOrderSummary: true,
 					onSuccess: function(result){
 						console.log(result);
-						window.location = "{$moduleUrl}success?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleSuccessUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
 			        	
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
-							window.location = "{$moduleUrl}success?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+							window.location = "{$moduleSuccessUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 
 			        	document.getElementById('instruction-button').href = result.pdf_url;
@@ -90,7 +91,7 @@
 			        },
 					onError: function(result){
 						console.log(result);
-						window.location = "{$moduleUrl}failure?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleFailureUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					}
 
 				});
