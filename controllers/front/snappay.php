@@ -25,6 +25,8 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		// $this->context->controller->addJS('https://app.sandbox.veritrans.co.id/snap/assets/snap.js');
 
 		$moduleUrl = substr($this->context->link->getModuleLink('midtranspay','?'), 0, -1);
+		$moduleSuccessUrl = $this->context->link->getModuleLink('midtranspay','success');
+		$moduleFailureUrl = $this->context->link->getModuleLink('midtranspay','failure');
 		// error_log($moduleUrl); // debugan
 
 		$this->context->smarty->assign(array(
@@ -36,7 +38,9 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'this_path' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
 			'shop_url' => __PS_BASE_URI__,
-			'moduleUrl' => $moduleUrl
+			'moduleUrl' => $moduleUrl,
+			'moduleSuccessUrl' => $moduleSuccessUrl,
+			'moduleFailureUrl' => $moduleFailureUrl,
 		));
 		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
 			$this->setTemplate('module:midtranspay/views/templates/front/snappay.tpl');

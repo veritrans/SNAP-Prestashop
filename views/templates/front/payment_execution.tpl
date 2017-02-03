@@ -49,7 +49,7 @@
 					<input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
 					<script type="text/javascript">
 						// Auto submit to cut unnecessary step
-    					setTimeout(function(){ document.getElementById('place-order').click(); }, 100); 
+    					setTimeout(function(){ document.getElementById('place-order').click(); document.getElementById('place-order').style.visibility = "hidden"; }, 100); 
 					</script>
 				{/if}
 			</p>
