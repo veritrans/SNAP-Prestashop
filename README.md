@@ -4,7 +4,7 @@ Midtrans&nbsp; Prestashop Payment Gateway Module
 
 
 Midtrans&nbsp; :heart: Prestashop!
-Integrate you Prestashop store with Midtrans&nbsp; Snap payment gateway.
+Integrate your Prestashop store with Midtrans&nbsp; Snap payment gateway.
 
 ### Description
 
