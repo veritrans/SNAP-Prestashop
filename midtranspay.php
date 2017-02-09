@@ -136,6 +136,9 @@ class MidtransPay extends PaymentModule
 			'MT_TITLE_PROMO_BTN',
 			'MT_METHOD_PROMO_BTN',
 			'MT_BINS_PROMO_BTN',
+			'MT_ENABLED_EXPIRY',
+			'MT_EXPIRY_DURATION',
+			'MT_EXPIRY_UNIT',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -244,6 +247,12 @@ class MidtransPay extends PaymentModule
 		if (!isset($config['MT_BINS_PROMO_BTN']))
 			Configuration::set('MT_BINS_PROMO_BTN', "");
 
+		if (!isset($config['MT_ENABLED_EXPIRY']))
+			Configuration::set('MT_ENABLED_EXPIRY', 0);
+		if (!isset($config['MT_EXPIRY_DURATION']))
+			Configuration::set('MT_EXPIRY_DURATION', 24);
+		if (!isset($config['MT_EXPIRY_UNIT']))
+			Configuration::set('MT_EXPIRY_UNIT', "hours");
 
 		parent::__construct();
 
@@ -322,6 +331,9 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_TITLE_PROMO_BTN', "Online Payment Promo via Midtrans");
 		Configuration::updateGlobalValue('MT_METHOD_PROMO_BTN', "");
 		Configuration::updateGlobalValue('MT_BINS_PROMO_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
+		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
+		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
 
 		return true;
 	}
@@ -1146,6 +1158,44 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Specify your acquiring bank for MIGS Online Installment. Leave blank if you are not sure.',
 						'class' => 'advanced-insmigs'
 						),
+					// Custom Expiry
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Custom Expiry Feature?</strong>',
+						'name' => 'MT_ENABLED_EXPIRY',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'expiry_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'expiry_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),						
+						// 'desc' => 'Enable online installment (MIGS channel) payment support, please makesure you have complete the business requirements.',
+						'class' => 'advanced-expiry'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Duration',
+						'name' => 'MT_EXPIRY_DURATION',
+						'required' => false,
+						'desc' => 'Duration in number. e.g: 30.',
+						'class' => 'advanced-expiry'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Time Unit',
+						'name' => 'MT_EXPIRY_UNIT',
+						'desc' => 'Time unit of the duration. e.g: minutes',
+						'class' => 'advanced-expiry'
+						),
 					
 					),
 				'submit' => array(
@@ -1733,6 +1783,18 @@ class MidtransPay extends PaymentModule
 	    // Check for eligible installment, then add isntallment param
 	    if (isset($_GET['feature']) && $gross_amount >= Configuration::get('MT_MINAMOUNT')){
 	    	$params_all = $this->addInstallmentParam($params_all);
+	    }
+
+	    // Add custom expiry params
+	    if (Configuration::get('MT_ENABLED_EXPIRY') == 1){
+	    	$time = time();
+	    	$time += 30; // add 30 seconds to allow margin of error
+	    	// error_log(date("Y-m-d h:i:s O",$time)); // debugan
+	    	$params_all['expiry'] = array(
+	    			'start_time' => date("Y-m-d H:i:s O",$time), 
+	    			'unit' => Configuration::get('MT_EXPIRY_UNIT'), 
+	    			'duration'  => Configuration::get('MT_EXPIRY_DURATION'),
+	    		);
 	    }
 
 		// Get SNAP token, then create redirect url

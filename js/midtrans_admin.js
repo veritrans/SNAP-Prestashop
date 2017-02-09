@@ -88,6 +88,13 @@
       hideOptions('advanced-insmigs', "class");
   }
 
+  function toggleMT_ENABLED_EXPIRY(){
+    if ($("#MT_ENABLED_EXPIRY_on").prop('checked'))
+      showOptions('advanced-expiry', "class");
+    else if ($("#MT_ENABLED_EXPIRY_off").prop('checked'))
+      hideOptions('advanced-expiry', "class");
+  }
+
 
   // toggleAdvanced();
 
@@ -115,6 +122,9 @@
     $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").change(function(e, data) {
       toggleENABLED_INSTALLMENTMIGS_BTN();
     });
+    $("#MT_ENABLED_EXPIRY_on").change(function(e, data) {
+      toggleMT_ENABLED_EXPIRY();
+    });
 
     $("#MT_ENABLED_INSTALLMENTON_BTN_off").change(function(e, data) {
       toggleENABLED_INSTALLMENTON_BTN();
@@ -131,6 +141,9 @@
     $("#MT_ENABLED_INSTALLMENTMIGS_BTN_off").change(function(e, data) {
       toggleENABLED_INSTALLMENTMIGS_BTN();
     });
+    $("#MT_ENABLED_EXPIRY_off").change(function(e, data) {
+      toggleMT_ENABLED_EXPIRY();
+    });
   }
 
   function initializeVisibility(){
@@ -139,6 +152,7 @@
     toggleENABLED_MIGS_BTN();
     toggleENABLED_PROMO_BTN();
     toggleENABLED_INSTALLMENTMIGS_BTN();
+    toggleMT_ENABLED_EXPIRY();
   }
 
   addListenerToSwitch();
