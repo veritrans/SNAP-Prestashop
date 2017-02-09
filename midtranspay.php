@@ -139,6 +139,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_EXPIRY',
 			'MT_EXPIRY_DURATION',
 			'MT_EXPIRY_UNIT',
+			'MT_ENABLED_SAVECARD',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -253,6 +254,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_EXPIRY_DURATION', 24);
 		if (!isset($config['MT_EXPIRY_UNIT']))
 			Configuration::set('MT_EXPIRY_UNIT', "hours");
+		if (!isset($config['MT_ENABLED_SAVECARD']))
+			Configuration::set('MT_ENABLED_SAVECARD', 0);
 
 		parent::__construct();
 
@@ -334,6 +337,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
 		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
 		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
+		Configuration::updateGlobalValue('MT_ENABLED_SAVECARD', 0);
 
 		return true;
 	}
@@ -1176,8 +1180,7 @@ class MidtransPay extends PaymentModule
 								'value' => 0,
 								'label' => 'No'
 								)
-							),						
-						// 'desc' => 'Enable online installment (MIGS channel) payment support, please makesure you have complete the business requirements.',
+							),
 						'class' => 'advanced-expiry'
 						//'class' => ''
 						),
@@ -1196,7 +1199,28 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Time unit of the duration. e.g: minutes',
 						'class' => 'advanced-expiry'
 						),
-					
+					// SaveCard
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Save Card?</strong>',
+						'name' => 'MT_ENABLED_SAVECARD',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'savecard_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'savecard_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-savecard'
+						//'class' => ''
+						),
 					),
 				'submit' => array(
 					'title' => $this->l('Save'),
@@ -1796,6 +1820,14 @@ class MidtransPay extends PaymentModule
 	    			'duration'  => Configuration::get('MT_EXPIRY_DURATION'),
 	    		);
 	    }
+
+	    // Add custom expiry params
+	    if (Configuration::get('MT_ENABLED_SAVECARD') == 1){
+	    	$params_all['user_id'] = crypt((string)$customer->email,Configuration::get('MT_SERVER_KEY'));
+	    	$params_all['credit_card']['save_card'] = true;
+	    }
+
+	    // error_log(print_r($params_all,true)); // debugan
 
 		// Get SNAP token, then create redirect url
 		try {
