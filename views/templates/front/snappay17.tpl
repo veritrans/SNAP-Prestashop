@@ -43,7 +43,7 @@
 		
 		<div class="text-xs-center" id="pending-notice" style="display:none;">
 			<p>
-				<h3 class="alert alert-warning"> <i class="material-icons">schedule</i> {l s='Awaiting your payment ... '}</h3>
+				<h3 class="alert alert-info"> <i class="material-icons">schedule</i> {l s='Awaiting your payment ... '}</h3>
 			</p>
 			<p class="warning">
 				{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
@@ -118,9 +118,11 @@
 	var clickCount = 0;
 	var payButton = document.getElementById('pay-button');
 	payButton.onclick = function(){
-		execSnapCont();
-		if(clickCount >= 2)
+		if(clickCount >= 2){
 			location.reload();
+			return;
+		}
+		execSnapCont();
 		clickCount++;
 	};
 </script>
