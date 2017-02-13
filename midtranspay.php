@@ -1821,7 +1821,7 @@ class MidtransPay extends PaymentModule
 	    		);
 	    }
 
-	    // Add custom expiry params
+	    // Add savecard params
 	    if (Configuration::get('MT_ENABLED_SAVECARD') == 1){
 	    	$params_all['user_id'] = crypt((string)$customer->email,Configuration::get('MT_SERVER_KEY'));
 	    	$params_all['credit_card']['save_card'] = true;
