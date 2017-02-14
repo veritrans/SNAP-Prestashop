@@ -1423,6 +1423,18 @@ class MidtransPay extends PaymentModule
     	return $paymentOption;
     }
 
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+
+        $this->smarty->assign(array(
+            'shop_name' => $this->context->shop->name,
+        ));
+
+        return $this->fetch('module:'.$this->name.'/views/templates/hook/payment_return.tpl');
+    }
 
 	public function hookDisplayPayment($params)
 	{
