@@ -59,7 +59,7 @@
 
 
 <script type="text/javascript">
-
+document.addEventListener("DOMContentLoaded", function(event) {
 	//* #############======= Load JS with JS way, no need js load from php or JQuery - simpler version ======= Worked with some retry
 	function loadExtScript(src) {
 		// Append script to doc
@@ -121,4 +121,5 @@
 	payButton.onclick = function(){
 		execSnapCont();
 	};
+});
 </script>
