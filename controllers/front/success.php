@@ -37,7 +37,7 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 		));
 
 		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
-			$this->setTemplate('module:midtranspay/views/templates/front/notification.tpl');
+			$this->setTemplate('notification.tpl');
 		else
 			$this->setTemplate('module:midtranspay/views/templates/front/notification17.tpl');	
 	}

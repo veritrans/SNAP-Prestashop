@@ -23,10 +23,10 @@ class MidtransPayBackModuleFrontController extends ModuleFrontController
 		}
 
 		// set order status in backend to be failure
-		$history = new OrderHistory();
-		$history->id_order = $order_id;
-		$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id);
-		$history->add(true);
+		// $history = new OrderHistory();
+		// $history->id_order = $order_id;
+		// $history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id);
+		// $history->add(true);
 		//
 		
 		$cart = $this->context->cart;

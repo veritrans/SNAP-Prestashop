@@ -43,7 +43,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'moduleFailureUrl' => $moduleFailureUrl,
 		));
 		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
-			$this->setTemplate('module:midtranspay/views/templates/front/snappay.tpl');
+			$this->setTemplate('snappay.tpl');
 		else
 			$this->setTemplate('module:midtranspay/views/templates/front/snappay17.tpl');
 	}
