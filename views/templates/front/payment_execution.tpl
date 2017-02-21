@@ -12,7 +12,7 @@
 	{elseif $error_message != ""}
 		<p class="warning">{$error_message}</p>
 	{else}
-		<h3 class="page-subheading">{l s='Payment via Midtrans.' mod='midtranspay'}</h3>
+		<h3 id="loading-text" class="page-subheading">{l s='Payment via Midtrans.' mod='midtranspay'}</h3>
 			{* Additional feature check *}
 
 			{if isset($smarty.get.feature)}
@@ -49,7 +49,11 @@
 					<input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
 					<script type="text/javascript">
 						// Auto submit to cut unnecessary step
-    					setTimeout(function(){ document.getElementById('place-order').click(); document.getElementById('place-order').style.visibility = "hidden"; }, 100); 
+    					setTimeout(function(){ 
+    						document.getElementById('place-order').click(); 
+    						document.getElementById('cart_navigation').style.visibility = "hidden"; 
+    						document.getElementById('loading-text').innerHTML = "Loading... Payment via Midtrans."; 
+    					}, 100); 
 					</script>
 				{/if}
 			</p>
