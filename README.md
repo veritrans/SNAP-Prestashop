@@ -16,6 +16,7 @@ Payment Method Feature:
 - BIN, bank transfer, and other channel promo payment
 - MIGS acquiring channel
 - Custom expiry
+- Custom fields
 
 ### Installation Instruction
 

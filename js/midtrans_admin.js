@@ -95,6 +95,13 @@
       hideOptions('advanced-expiry', "class");
   }
 
+  function toggleMT_ENABLED_FIELDS(){
+    if ($("#MT_ENABLED_FIELDS_on").prop('checked'))
+      showOptions('advanced-fields', "class");
+    else if ($("#MT_ENABLED_FIELDS_off").prop('checked'))
+      hideOptions('advanced-fields', "class");
+  }
+
 
   // toggleAdvanced();
 
@@ -125,6 +132,9 @@
     $("#MT_ENABLED_EXPIRY_on").change(function(e, data) {
       toggleMT_ENABLED_EXPIRY();
     });
+    $("#MT_ENABLED_FIELDS_on").change(function(e, data) {
+      toggleMT_ENABLED_FIELDS();
+    });
 
     $("#MT_ENABLED_INSTALLMENTON_BTN_off").change(function(e, data) {
       toggleENABLED_INSTALLMENTON_BTN();
@@ -144,6 +154,9 @@
     $("#MT_ENABLED_EXPIRY_off").change(function(e, data) {
       toggleMT_ENABLED_EXPIRY();
     });
+    $("#MT_ENABLED_FIELDS_off").change(function(e, data) {
+      toggleMT_ENABLED_FIELDS();
+    });
   }
 
   function initializeVisibility(){
@@ -153,6 +166,7 @@
     toggleENABLED_PROMO_BTN();
     toggleENABLED_INSTALLMENTMIGS_BTN();
     toggleMT_ENABLED_EXPIRY();
+    toggleMT_ENABLED_FIELDS();
   }
 
   addListenerToSwitch();

@@ -140,6 +140,8 @@ class MidtransPay extends PaymentModule
 			'MT_EXPIRY_DURATION',
 			'MT_EXPIRY_UNIT',
 			'MT_ENABLED_SAVECARD',
+			'MT_ENABLED_FIELDS',
+			'MT_FILEDS',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -256,6 +258,10 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_EXPIRY_UNIT', "hours");
 		if (!isset($config['MT_ENABLED_SAVECARD']))
 			Configuration::set('MT_ENABLED_SAVECARD', 0);
+		if (!isset($config['MT_ENABLED_FIELDS']))
+			Configuration::set('MT_ENABLED_FIELDS', 0);
+		if (!isset($config['MT_FILEDS']))
+			Configuration::set('MT_FILEDS', "");
 
 		parent::__construct();
 
@@ -338,6 +344,8 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
 		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
 		Configuration::updateGlobalValue('MT_ENABLED_SAVECARD', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_FIELDS', 0);
+		Configuration::updateGlobalValue('MT_FILEDS', "");
 
 		return true;
 	}
@@ -1221,6 +1229,36 @@ class MidtransPay extends PaymentModule
 						'class' => 'advanced-savecard'
 						//'class' => ''
 						),
+					// Custom Fields
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Custom Fields Feature?</strong>',
+						'name' => 'MT_ENABLED_FIELDS',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-fields'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Custom Fields',
+						'name' => 'MT_FILEDS',
+						'required' => false,
+						'desc' => 'Up to 3 custom fields separated by coma (,). e.g: Order from web, Prestashop, Processing',
+						'class' => 'advanced-fields'
+						),
 					),
 				'submit' => array(
 					'title' => $this->l('Save'),
@@ -1831,6 +1869,14 @@ class MidtransPay extends PaymentModule
 	    			'unit' => Configuration::get('MT_EXPIRY_UNIT'), 
 	    			'duration'  => Configuration::get('MT_EXPIRY_DURATION'),
 	    		);
+	    }
+
+	    // Add custom fields params
+	    if (Configuration::get('MT_ENABLED_FIELDS') == 1){
+	    	$custom_fields_params = explode(",",Configuration::get('MT_FILEDS'));
+			$params_all['custom_field1'] = !empty($custom_fields_params[0]) ? $custom_fields_params[0] : null;
+			$params_all['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
+			$params_all['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;	
 	    }
 
 	    // Add savecard params
