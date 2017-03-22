@@ -1880,8 +1880,8 @@ class MidtransPay extends PaymentModule
 	    }
 
 	    // Add savecard params
-	    if (Configuration::get('MT_ENABLED_SAVECARD') == 1){
-	    	$params_all['user_id'] = crypt((string)$customer->email,Configuration::get('MT_SERVER_KEY'));
+	    if (Configuration::get('MT_ENABLED_SAVECARD') == 1 && $this->context->customer->isLogged()){
+	    	$params_all['user_id'] = crypt($params_customer_details['email'].$params_customer_details['phone'],Configuration::get('MT_SERVER_KEY'));
 	    	$params_all['credit_card']['save_card'] = true;
 	    }
 
