@@ -17,6 +17,7 @@ Payment Method Feature:
 - MIGS acquiring channel
 - Custom expiry
 - Custom fields
+- Two-click & One-click feature
 
 ### Installation Instruction
 

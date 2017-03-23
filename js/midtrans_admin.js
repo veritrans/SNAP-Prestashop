@@ -175,6 +175,6 @@
   function hideSavecard(hideSavecard = true){
     if (hideSavecard)
       $('#MT_ENABLED_SAVECARD_on').parent().parent().parent().hide();
-  } hideSavecard(true);
+  } hideSavecard(false);
 
 });
