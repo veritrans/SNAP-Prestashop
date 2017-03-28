@@ -1,5 +1,6 @@
 {extends "$layout"}
 {block name="content"}
+<script src="{$snap_script_url}" data-client-key="{$client_key}" id="snap_script"></script>
 <section id="main">
 	<header class="page-header">
 		<h1>{l s='Payment Step' mod='midtranspay'}</h1>
@@ -21,7 +22,7 @@
 				{l s='Continue payment via payment popup window.' mod='midtranspay'} <br/>
 				{l s='Or click button below:' mod='midtranspay'} <br/><br/>
 				
-				<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> <i class="material-icons">payment</i> &nbsp; {l s='Proceed to Payment'} <i class="material-icons">chevron_right</i> </a> 			<br/><br/>
+				<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> &nbsp; {l s='Loading Payment..'} </a> 			<br/><br/>
 
 				{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='customer support team. ' mod='midtranspay'}</a><br/><br/>
 			</p>
@@ -61,6 +62,9 @@
 document.addEventListener("DOMContentLoaded", function(event) { 
 	//* #############======= Load JS with JS way, no need js load from php or JQuery - simpler version ======= Worked with some retry
 	function loadExtScript(src) {
+		// if snap.js is loaded from html script tag, don't load again
+		if (document.getElementById('snap_script'))
+			return;
 		// Append script to doc
 		var s = document.createElement('script');
 		s.src = src;
@@ -111,13 +115,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	// Loading SNAP JS Library to the page		
 	loadExtScript('{$snap_script_url}');
 	console.log('Snap library is loaded now');
-	// Call execSnapCont() 
-	execSnapCont();
 	/**
 	 */
-	
 	var clickCount = 0;
 	var payButton = document.getElementById('pay-button');
+	payButton.innerHTML = '<i class="material-icons">payment</i> &nbsp; {l s="Proceed to Payment"} <i class="material-icons">chevron_right</i>';
 	payButton.onclick = function(){
 		if(clickCount >= 2){
 			location.reload();
@@ -126,6 +128,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		execSnapCont();
 		clickCount++;
 	};
+	
+	// Call execSnapCont() 
+	execSnapCont();
 });
 </script>
 {/block}
