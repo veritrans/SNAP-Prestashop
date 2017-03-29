@@ -1,6 +1,6 @@
 {extends "$layout"}
 {block name="content"}
-<script src="{$snap_script_url}" data-client-key="{$client_key}" id="snap_script"></script>
+<script data-cfasync="false" src="{$snap_script_url}" data-client-key="{$client_key}" id="snap_script"></script>
 <section id="main">
 	<header class="page-header">
 		<h1>{l s='Payment Step' mod='midtranspay'}</h1>
@@ -58,7 +58,7 @@
 </section>
 
 
-<script type="text/javascript">
+<script data-cfasync="false" type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) { 
 	//* #############======= Load JS with JS way, no need js load from php or JQuery - simpler version ======= Worked with some retry
 	function loadExtScript(src) {
@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		s.src = src;
 		a = document.body.appendChild(s);
 		a.setAttribute('data-client-key',"{$client_key}");
+		a.setAttribute('data-cfasync','false');
 	}
 
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
@@ -123,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	payButton.onclick = function(){
 		if(clickCount >= 2){
 			location.reload();
+			payButton.innerHTML = 'Loading...';
 			return;
 		}
 		execSnapCont();
