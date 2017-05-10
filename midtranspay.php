@@ -1980,7 +1980,7 @@ class MidtransPay extends PaymentModule
 	public function addMIGSFullpaymentParam($params_all)
 	{
 	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_MIGS_BTN' && Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
-	        $params_all['enabled_payments'][] = 'credit_card';
+	        // $params_all['enabled_payments'][] = 'credit_card';
 	    	
 	    	// add bank & channel migs params
 	        if (strlen(Configuration::get('MT_ACQ_MIGS_BTN')) > 0) {
