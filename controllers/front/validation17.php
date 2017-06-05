@@ -29,8 +29,8 @@ class MidtransPayValidation17ModuleFrontController extends ModuleFrontController
 
         $midtranspay = new MidtransPay();
         $keys = $midtranspay->execValidation($cart);
-        if ($keys['isWarning']){          
-            Tools::redirectLink('index.php?fc=module&module=midtranspay&controller=warning&redirlink='.$keys['redirect_url'].'&message='.$keys['message']); }
+        // if ($keys['isWarning']){          
+        //     Tools::redirectLink('index.php?fc=module&module=midtranspay&controller=warning&redirlink='.$keys['redirect_url'].'&message='.$keys['message']); }
         Tools::redirectLink($keys['redirect_url']);
     }
 

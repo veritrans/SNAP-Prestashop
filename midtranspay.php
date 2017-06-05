@@ -1634,16 +1634,6 @@ class MidtransPay extends PaymentModule
 		return $term2;
 	}
 
-	public function isInstallmentCart($products){		
-		foreach($products as $prod){
-			$str_attr = $prod['attributes_small'];
-			if (strpos(strtolower($str_attr), 'installment') !== FALSE){				
-				return true;
-			}    
-		}		
-		return false;
-	}
-
 	// Retrocompatibility 1.4
 	public function execValidation($cart)
 	{
@@ -1747,77 +1737,6 @@ class MidtransPay extends PaymentModule
 		$warning_redirect = false;
 		$fullPayment = true;
 
-		// $installment_type_val = Configuration::get('MT_ENABLE_INSTALLMENT');
-		$installment_type_val = "off";
-		$param_required;
-		switch ($installment_type_val) {
-			case 'all_product':
-				if ($isBniInstallment){
-					$a = Configuration::get('MT_INSTALLMENTS_BNI');
-					$term = explode(',',$a);
-					$bni_term = $term;
-					//error_log(print_r($bni_term,true));
-					//error_log($bni_term,true);
-				}					
-				if ($isMandiriInstallment){
-
-					$mandiri_term =	$this->getTermInstallment('MANDIRI');
-					
-					$a = Configuration::get('MT_INSTALLMENTS_MANDIRI');
-					$term = explode(',',$a);
-					$mandiri_term = $term;
-
-					//error_log($mandiri_term,true);
-					//error_log(print_r($mandiri_term,true));
-				}				
-				
-				$param_installment = array();
-				if ($isBniInstallment){
-					$param_installment['bni'] = $bni_term;
-				}
-
-				if ($isMandiriInstallment){
-					$param_installment['mandiri'] = $mandiri_term;
-				}
-				$param_required = "false";
-				$fullPayment = false;
-				break;
-			case 'certain_product':
-				$param_installment = null;
-				$products_cart = $cart->getProducts();
-				$num_product = count($products_cart);
-				if($num_product == 1){
-					$attr_product = explode(',',$products_cart[0]['attributes_small']);
-					foreach($attr_product as $att){
-						$att_trim = ltrim($att);						
-						$att_arr = explode(' ',$att_trim);
-						//error_log(print_r($att_arr,true));
-						if(strtolower($att_arr[0]) == 'installment'){
-							$fullPayment = false;
-							$param_installment = array();
-							$param_installment[strtolower($att_arr[1])] = array($att_arr[2]);
-						} 						
-					}
-				} else {
-					$warning_redirect = true;
-					$keys['message'] = 1;
-				}
-				$param_required = "true";				
-				break;						
-			case 'off':
-				$param_installment = null;
-				break;
-		}		
-	
-
-		//error_log($param_installment,true);
-		// $param_payment_option = array(
-		// 	'installment' => array(
-		// 						'required' => $param_required,
-		// 						'installment_terms' => $param_installment 
-		// 					)
-		// 	);
-
 		$params_all = array(
 			'transaction_details' => array(
 				'order_id' => $cart->id, 
@@ -1833,12 +1752,6 @@ class MidtransPay extends PaymentModule
 
 			$params_all['vtweb']['payment_options'] = $param_payment_option;		
 		}
-
-	    if ($this->isInstallmentCart($cart->getProducts()) || ($installment_type_val == 'all_product')){
-	    	$keys['isWarning'] = $warning_redirect;
-	    } else {
-	    	$keys['isWarning'] = false;
-	    }
 
 	   	/** 
 	    * Add additional features param
