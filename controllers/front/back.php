@@ -39,7 +39,7 @@ class MidtransPayBackModuleFrontController extends ModuleFrontController
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
 		));
 
-		$this->setTemplate('notification.tpl');
+		$this->setTemplate('payment_result.tpl');
 	}
 
 }
