@@ -86,8 +86,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
 							window.location = "{$moduleSuccessUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
-
-			        	document.getElementById('instruction-button').href = result.pdf_url;
+						if (typeof result.pdf_url == 'undefined'){ // if no link, hide btn
+							document.getElementById('instruction-button').style.display = "none";
+						} else {
+			        		document.getElementById('instruction-button').href = result.pdf_url;
+						}
 			        	document.getElementById('payment-notice').style.display = "none";
 			        	document.getElementById('pending-notice').style.display = "block";
 			        },
