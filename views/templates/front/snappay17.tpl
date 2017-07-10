@@ -60,24 +60,13 @@
 
 <script data-cfasync="false" type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) { 
-	//* #############======= Load JS with JS way, no need js load from php or JQuery - simpler version ======= Worked with some retry
-	function loadExtScript(src) {
-		// if snap.js is loaded from html script tag, don't load again
-		if (document.getElementById('snap_script'))
-			return;
-		// Append script to doc
-		var s = document.createElement('script');
-		s.src = src;
-		a = document.body.appendChild(s);
-		a.setAttribute('data-client-key',"{$client_key}");
-		a.setAttribute('data-cfasync','false');
-	}
-
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
+	var execCount = 0;
 	function execSnapCont(){
 		var callbackTimer = setInterval(function() {
 			var snapExecuted = false;
 			try{
+				console.log('Popup attempt:',++execCount);
 				snap.pay("{$snap_token}", 
 				{
 					skipOrderSummary: true,
@@ -114,13 +103,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			}
 		}, 1000);
 	};
-
-	console.log('Loading snap JS library now!');
-	// Loading SNAP JS Library to the page		
-	loadExtScript('{$snap_script_url}');
-	console.log('Snap library is loaded now');
-	/**
-	 */
 	var clickCount = 0;
 	var payButton = document.getElementById('pay-button');
 	payButton.innerHTML = '<i class="material-icons">payment</i> &nbsp; {l s="Proceed to Payment"} <i class="material-icons">chevron_right</i>';

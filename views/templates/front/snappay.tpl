@@ -1,4 +1,5 @@
 {capture name=path}{l s='Midtrans payment.' mod='midtranspay'}{/capture}
+<script src="{$snap_script_url}" data-client-key="{$client_key}" id="snap_script"></script>
 <h2>{l s='Order summary' mod='midtranspay'}</h2>
 
 {assign var='current_step' value='payment'}
@@ -22,7 +23,7 @@
 	<h4 class="warning">
 		{l s='Continue payment via payment popup window.' mod='midtranspay'} <br/>
 		{l s='Or click button below:' mod='midtranspay'} <br/><br/>
-		<a id='pay-button' title="{l s='Do Payment!'}" class="button-exclusive btn btn-success">{l s='Proceed to Payment'} <i class="icon-chevron-right right"></i></a>
+		<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> &nbsp; {l s='Loading Payment..'} </a>
 		<br/><br/>
 		{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='customer support team. ' mod='midtranspay'}</a>.<br/><br/>
 	</h4>
@@ -60,20 +61,12 @@
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) {
-	//* #############======= Load JS with JS way, no need js load from php or JQuery - simpler version ======= Worked with some retry
-	function loadExtScript(src) {
-		// Append script to doc
-		var s = document.createElement('script');
-		s.src = src;
-		a = document.body.appendChild(s);
-		a.setAttribute('data-client-key',"{l s='%s' sprintf= $client_key mod='midtranspay'}");
-	}
-
-	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
+	var execCount = 0;
 	function execSnapCont(){
 		var callbackTimer = setInterval(function() {
 			var snapExecuted = false;
 			try{
+				console.log('Popup attempt:',++execCount);
 				snap.pay("{l s='%s' sprintf= $snap_token mod='midtranspay'}", 
 				{
 					skipOrderSummary: true,
@@ -90,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 							document.getElementById('instruction-button').style.display = "none";
 						} else {
 			        		document.getElementById('instruction-button').href = result.pdf_url;
+			        		// window.open(result.pdf_url,'_blank');
 						}
 			        	document.getElementById('payment-notice').style.display = "none";
 			        	document.getElementById('pending-notice').style.display = "block";
@@ -103,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				snapExecuted = true; // if SNAP popup executed, change flag to stop the retry.
 			} catch (e){ 
 				console.log(e);
-				console.log('Snap s.goHome not ready yet... Retrying in 1000ms!');
+				console.log('Exception when calling snap.pay()... Retrying in 1000ms!');
 			}
 			if (snapExecuted) {
 				clearInterval(callbackTimer);
@@ -111,18 +105,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}, 1000);
 	};
 
-	console.log('Loading snap JS library now!');
-	// Loading SNAP JS Library to the page		
-	loadExtScript('{$snap_script_url}');
-	console.log('Snap library is loaded now');
+	var clickCount = 0;
+	var payButton = document.getElementById('pay-button');
+	payButton.innerHTML = 'Proceed to Payment <i class="icon-chevron-right right"></i>';
+	payButton.onclick = function(){
+		if(clickCount >= 2){
+			location.reload();
+			payButton.innerHTML = 'Loading...';
+			return;
+		}
+		execSnapCont();
+		clickCount++;
+	};
 	// Call execSnapCont() 
 	execSnapCont();
-	/**
-	 */
-	
-	var payButton = document.getElementById('pay-button');
-	payButton.onclick = function(){
-		execSnapCont();
-	};
 });
 </script>
