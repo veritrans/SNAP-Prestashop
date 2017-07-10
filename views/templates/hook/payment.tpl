@@ -15,7 +15,9 @@
 </div>
 {/if}
 
+{* ========================================== *}
 {* Other additional payment method goes below *}
+{* ========================================== *}
 
 {if isset($MT_ENABLED_MIGS_BTN) && $MT_ENABLED_MIGS_BTN == 1 }
 <div class="row">
@@ -92,4 +94,66 @@
     </p>  
   </div>
 </div>
+{/if}
+
+{* ========================================== *}
+{* Additional Custom VA Button goes below *}
+{* ========================================== *}
+
+{if isset($MT_ENABLED_CUSTOMVA_BTN) && $MT_ENABLED_CUSTOMVA_BTN == 1}
+  {if in_array('bca', $MT_LIST_CUSTOMVA)}
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="payment_module">
+
+        <a class="bankwire" href="{$link->getModuleLink('midtranspay', 'payment', ['feature' => 'MT_ENABLED_CUSTOMVA_BTN','bank' => 'bca'], true)}" title="Pay Via Midtrans BCA Bank Transfer">
+          <img src="//github.com/veritrans/logo/raw/master/logo/bca_va.jpg" alt="{l s='Pay via Midtrans' mod='midtranspay'}" height="60px"/>
+          Bank Transfer BCA
+        </a>
+      </p>  
+    </div>
+  </div>
+  {/if}
+
+  {if in_array('mandiri', $MT_LIST_CUSTOMVA)}
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="payment_module">
+
+        <a class="bankwire" href="{$link->getModuleLink('midtranspay', 'payment', ['feature' => 'MT_ENABLED_CUSTOMVA_BTN','bank' => 'mandiri'], true)}" title="Pay Via Midtrans Mandiri Bank Transfer">
+          <img src="//github.com/veritrans/logo/raw/master/logo/mandiri_atm.png" alt="{l s='Pay via Midtrans' mod='midtranspay'}" height="60px"/>
+          Bank Transfer Mandiri
+        </a>
+      </p>  
+    </div>
+  </div>
+  {/if}
+
+  {if in_array('permata', $MT_LIST_CUSTOMVA)}
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="payment_module">
+
+        <a class="bankwire" href="{$link->getModuleLink('midtranspay', 'payment', ['feature' => 'MT_ENABLED_CUSTOMVA_BTN','bank' => 'permata'], true)}" title="Pay Via Midtrans Mandiri Bank Transfer">
+          <img src="//github.com/veritrans/logo/raw/master/logo/permata.png" alt="{l s='Pay via Midtrans' mod='midtranspay'}" height="60px"/>
+          Bank Transfer Permata
+        </a>
+      </p>  
+    </div>
+  </div>
+  {/if}
+
+  {if in_array('other_va', $MT_LIST_CUSTOMVA)}
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="payment_module">
+
+        <a class="bankwire" href="{$link->getModuleLink('midtranspay', 'payment', ['feature' => 'MT_ENABLED_CUSTOMVA_BTN','bank' => 'other_va'], true)}" title="Pay Via Midtrans Any Bank Transfer">
+          <!-- <img src="//github.com/veritrans/logo/raw/master/logo/mandiri_atm.png" alt="{l s='Pay via Midtrans' mod='midtranspay'}" height="60px"/> -->
+          Other Bank (Transfer From Any Bank)
+        </a>
+      </p>  
+    </div>
+  </div>
+  {/if}
 {/if}

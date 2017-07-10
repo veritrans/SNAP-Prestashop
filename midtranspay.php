@@ -142,6 +142,8 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_SAVECARD',
 			'MT_ENABLED_FIELDS',
 			'MT_FILEDS',
+			'MT_ENABLED_CUSTOMVA_BTN',
+			'MT_LIST_CUSTOMVA',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -262,6 +264,10 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_ENABLED_FIELDS', 0);
 		if (!isset($config['MT_FILEDS']))
 			Configuration::set('MT_FILEDS', "");
+		if (!isset($config['MT_ENABLED_CUSTOMVA_BTN']))
+			Configuration::set('MT_ENABLED_CUSTOMVA_BTN', 0);
+		if (!isset($config['MT_LIST_CUSTOMVA']))
+			Configuration::set('MT_LIST_CUSTOMVA', "permata,mandiri,other_va");
 
 		parent::__construct();
 
@@ -346,6 +352,8 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_ENABLED_SAVECARD', 0);
 		Configuration::updateGlobalValue('MT_ENABLED_FIELDS', 0);
 		Configuration::updateGlobalValue('MT_FILEDS', "");
+		Configuration::updateGlobalValue('MT_ENABLED_CUSTOMVA_BTN', 0);
+		Configuration::updateGlobalValue('MT_LIST_CUSTOMVA', "");
 
 		return true;
 	}
@@ -1259,6 +1267,36 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Up to 3 custom fields separated by coma (,). e.g: Order from web, Prestashop, Processing',
 						'class' => 'advanced-fields'
 						),
+					// Custom VA button
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Separated Bank Transfer Button?</strong>',
+						'name' => 'MT_ENABLED_CUSTOMVA_BTN',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-fields'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Displayed Banks',
+						'name' => 'MT_LIST_CUSTOMVA',
+						'required' => true,
+						'desc' => 'bank names separated by coma (,). e.g: permata,mandiri,bca,other_va',
+						'class' => 'advanced-customva'
+						),
 					),
 				'submit' => array(
 					'title' => $this->l('Save'),
@@ -1508,6 +1546,9 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTON_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTON_BTN'),
 			'MT_TITLE_INSTALLMENTON_BTN' => Configuration::get('MT_TITLE_INSTALLMENTON_BTN'),
 			'MT_ENABLED_PROMO_BTN' => Configuration::get('MT_ENABLED_PROMO_BTN'),
+			'MT_ENABLED_CUSTOMVA_BTN' => 1,
+			'MT_LIST_CUSTOMVA' => explode(',', Configuration::get('MT_LIST_CUSTOMVA')),
+			// 'MT_LIST_CUSTOMVA' => ['permata','bca','other_va'],
 			'MT_TITLE_PROMO_BTN' => Configuration::get('MT_TITLE_PROMO_BTN'),
 			'MT_MINAMOUNT' => Configuration::get('MT_MINAMOUNT'),
 			'this_path' => $this->_path,
@@ -1772,6 +1813,11 @@ class MidtransPay extends PaymentModule
 	    	$params_all = $this->addInstallmentParam($params_all);
 	    }
 
+	    // Custom VA Button
+	   	if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_CUSTOMVA_BTN' && Configuration::get('MT_ENABLED_CUSTOMVA_BTN') != 1) {
+			$params_all = $this->addCustomVAparam($params_all,$_GET['bank']);
+		}
+		
 	    // Add custom expiry params
 	    if (Configuration::get('MT_ENABLED_EXPIRY') == 1){
 	    	$time = time();
@@ -1930,6 +1976,18 @@ class MidtransPay extends PaymentModule
 				$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
 	    }
 
+		return $params_all;
+	}
+
+	public function addCustomVAparam($params_all,$bank)
+	{
+		$bank_mapping = array(
+			'permata' => 'permata_va', 
+			'bca' => 'bca_va', 
+			'mandiri' => 'echannel',
+			'other_va' => 'other_va'
+		);
+    	$params_all['enabled_payments'] = [ $bank_mapping[$bank] ];
 		return $params_all;
 	}
 
