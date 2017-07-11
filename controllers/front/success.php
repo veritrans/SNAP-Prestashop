@@ -23,7 +23,7 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 		// if 1.7, go to new finish page
 		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') != -1) {
 			// If async payment denied (CIMB, klikpay, etc), redir to failure page
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['id']) ) {
 				parse_str(file_get_contents("php://input"), $data);
 				if (json_decode(urldecode($data['response']),true)['transaction_status'] == 'deny') { 
 					Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure') ); exit();
@@ -46,7 +46,7 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 		}
 
 		// If async payment denied (CIMB, klikpay, etc), redir to failure page
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['id']) ) {
 			parse_str(file_get_contents("php://input"), $data);
 			if (json_decode(urldecode($data['response']),true)['transaction_status'] == 'deny') { 
 				Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure').'?&status_code=202' ); exit();
