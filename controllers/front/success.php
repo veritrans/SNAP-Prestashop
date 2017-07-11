@@ -29,7 +29,15 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 					Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure') ); exit();
 				}
 				$order_id = json_decode(urldecode($data['response']),true)['order_id'];
-			} else {
+			}else if (isset($_GET['id'])) {
+				Veritrans_Config::$serverKey = Configuration::get('MT_SERVER_KEY');
+				Veritrans_Config::$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production' ? true : false;
+				$status = Veritrans_Transaction::status($_GET['id']);
+				if($status->transaction_status == 'deny'){
+					Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure') ); exit();
+				}
+				$order_id = $status->order_id;
+			}else {
 				$order_id = $_GET['order_id'];	
 			}
 			$midtranspay = Module::getInstanceByName('midtranspay');
@@ -44,6 +52,17 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 				Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure').'?&status_code=202' ); exit();
 			}
 		};
+		// If BCA klikpay, get status then redirect accordingly.
+		if (isset($_GET['id'])){
+			Veritrans_Config::$serverKey = Configuration::get('MT_SERVER_KEY');
+			Veritrans_Config::$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production' ? true : false;
+			$status = Veritrans_Transaction::status($_GET['id']);
+			if($status->transaction_status == 'deny'){
+				Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure').'?&status_code=202' ); exit();
+			} else {
+				Tools::redirect( $this->context->link->getModuleLink('midtranspay','success').'?&status_code=200' ); exit();
+			}
+		}
 		$this->context->smarty->assign(array(
 			'order_id' => $cart->id,
 			'status' => $status,
