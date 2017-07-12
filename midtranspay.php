@@ -43,7 +43,6 @@ require_once ('library/veritrans/Veritrans/Transaction.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
 
-use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class MidtransPay extends PaymentModule
 {
@@ -1441,7 +1440,7 @@ class MidtransPay extends PaymentModule
 				'MT_DISPLAY_DESCRIPTION' =>  $this->l(Configuration::get('MT_DISPLAY_DESCRIPTION')) 
     		)
     	);
-    	$snapFullpayment = new PaymentOption();
+    	$snapFullpayment = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$snapFullpayment->setCallToActionText($this->l(Configuration::get('MT_DISPLAY_TITLE')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
@@ -1451,7 +1450,7 @@ class MidtransPay extends PaymentModule
 
     public function getSnapMigsOption()
     {
-    	$paymentOption = new PaymentOption();
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_MIGS_BTN')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_MIGS_BTN'] , true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
@@ -1461,7 +1460,7 @@ class MidtransPay extends PaymentModule
 
     public function getSnapPromoOption()
     {
-    	$paymentOption = new PaymentOption();
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_PROMO_BTN')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_PROMO_BTN'] , true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
@@ -1471,7 +1470,7 @@ class MidtransPay extends PaymentModule
 
     public function getSnapInstallmentMigsOption()
     {
-    	$paymentOption = new PaymentOption();
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTMIGS_BTN')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTMIGS_BTN'] , true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
@@ -1481,7 +1480,7 @@ class MidtransPay extends PaymentModule
 
     public function getSnapInstallmentOnlineOption()
     {
-    	$paymentOption = new PaymentOption();
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTON_BTN')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTON_BTN'] , true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
@@ -1491,7 +1490,7 @@ class MidtransPay extends PaymentModule
 
     public function getSnapInstallmentOfflineOption()
     {
-    	$paymentOption = new PaymentOption();
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
     	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTOFF_BTN')))
     					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTOFF_BTN'] , true))
     					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
@@ -1814,7 +1813,7 @@ class MidtransPay extends PaymentModule
 	    }
 
 	    // Custom VA Button
-	   	if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_CUSTOMVA_BTN' && Configuration::get('MT_ENABLED_CUSTOMVA_BTN') != 1) {
+	   	if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_CUSTOMVA_BTN' && Configuration::get('MT_ENABLED_CUSTOMVA_BTN') == 1) {
 			$params_all = $this->addCustomVAparam($params_all,$_GET['bank']);
 		}
 		
