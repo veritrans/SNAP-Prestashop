@@ -1984,9 +1984,9 @@ class MidtransPay extends PaymentModule
 			'permata' => 'permata_va', 
 			'bca' => 'bca_va', 
 			'mandiri' => 'echannel',
-			'other_va' => 'other_va'
+			'other_va' => 'other_va,permata_va'
 		);
-    	$params_all['enabled_payments'] = [ $bank_mapping[$bank] ];
+    	$params_all['enabled_payments'] = explode(',', $bank_mapping[$bank]);
 		return $params_all;
 	}
 
