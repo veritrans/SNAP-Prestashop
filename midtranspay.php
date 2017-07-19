@@ -143,6 +143,7 @@ class MidtransPay extends PaymentModule
 			'MT_FILEDS',
 			'MT_ENABLED_CUSTOMVA_BTN',
 			'MT_LIST_CUSTOMVA',
+			'MT_ENABLED_IGNORE_DENY',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -267,6 +268,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_ENABLED_CUSTOMVA_BTN', 0);
 		if (!isset($config['MT_LIST_CUSTOMVA']))
 			Configuration::set('MT_LIST_CUSTOMVA', "permata,mandiri,other_va");
+		if (!isset($config['MT_ENABLED_IGNORE_DENY']))
+			Configuration::set('MT_ENABLED_IGNORE_DENY', 0);
 
 		parent::__construct();
 
@@ -353,6 +356,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_FILEDS', "");
 		Configuration::updateGlobalValue('MT_ENABLED_CUSTOMVA_BTN', 0);
 		Configuration::updateGlobalValue('MT_LIST_CUSTOMVA', "");
+		Configuration::updateGlobalValue('MT_ENABLED_IGNORE_DENY', 0);
 
 		return true;
 	}
@@ -1296,6 +1300,28 @@ class MidtransPay extends PaymentModule
 						'desc' => 'bank names separated by coma (,). e.g: permata,mandiri,bca,other_va',
 						'class' => 'advanced-customva'
 						),
+					// Ignore Deny Notification
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => 'Don\'t change order status when credit card transaction failed?',
+						'name' => 'MT_ENABLED_IGNORE_DENY',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-ignore'
+						//'class' => ''
+						)
 					),
 				'submit' => array(
 					'title' => $this->l('Save'),
@@ -2137,29 +2163,22 @@ class MidtransPay extends PaymentModule
 		  	//$history->id_order = (int)$midtrans_notification->order_id;		  	
 			//error_log('notif verified'); // debug
 			//error_log('message notif: '.(int)$midtrans_notification->order_id); // debug
-			if ($midtrans_notification->transaction_status == 'capture')				
-		    {
-		     	if ($midtrans_notification->fraud_status== 'accept')
-		     	{
+			if ($midtrans_notification->transaction_status == 'capture'){
+		     	if ($midtrans_notification->fraud_status== 'accept'){
 		     		// if order history !contains payment accepted, then update DB. Else, don't update DB
-		     		if (empty($order_histories))
-		     		{
+		     		if (empty($order_histories)){
 			       		$history->changeIdOrderState(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), $order_id_notif);
 			       		echo 'Valid success notification accepted.';
-		       		}
-		       		else{
+		       		} else{
 		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
-		       	}
-		       	else if ($midtrans_notification->fraud_status== 'challenge')
-		     	{
+		       	} else if ($midtrans_notification->fraud_status== 'challenge'){
 		       		$history->changeIdOrderState(Configuration::get('MT_PAYMENT_CHALLENGE_STATUS_MAP'), $order_id_notif);
 		       		echo 'Valid challenge notification accepted.';
 		     	} 		       	
 		     } else if ($midtrans_notification->transaction_status == 'settlement'){
 
-		     	if($midtrans_notification->payment_type != 'credit_card')
-		     	{
+		     	if($midtrans_notification->payment_type != 'credit_card'){
 		     		// if order history !contains payment accepted, then update DB. Else, don't update DB
 		     		if (empty($order_histories)){
 				     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), $order_id_notif);
@@ -2168,8 +2187,7 @@ class MidtransPay extends PaymentModule
 		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
 		     	}
-		     	else
-		     	{
+		     	else{
 		     		echo 'Credit card settlement notification accepted.';	
 		     	}
 
@@ -2182,9 +2200,8 @@ class MidtransPay extends PaymentModule
 		     }else if ($midtrans_notification->transaction_status == 'expire'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Expire notification accepted.';
-		     }
-			 else
-		     {
+		     }else{
+		       if(Configuration::get('MT_ENABLED_IGNORE_DENY' == 1)){exit;die('ignored');}
 		       $history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       echo 'Valid failure notification accepted';
 		     }
