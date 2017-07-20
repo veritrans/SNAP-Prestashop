@@ -267,7 +267,7 @@ class MidtransPay extends PaymentModule
 		if (!isset($config['MT_ENABLED_CUSTOMVA_BTN']))
 			Configuration::set('MT_ENABLED_CUSTOMVA_BTN', 0);
 		if (!isset($config['MT_LIST_CUSTOMVA']))
-			Configuration::set('MT_LIST_CUSTOMVA', "permata,mandiri,other_va");
+			Configuration::set('MT_LIST_CUSTOMVA', "bca,mandiri,permata,other_va");
 		if (!isset($config['MT_ENABLED_IGNORE_DENY']))
 			Configuration::set('MT_ENABLED_IGNORE_DENY', 0);
 
@@ -2201,7 +2201,7 @@ class MidtransPay extends PaymentModule
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Expire notification accepted.';
 		     }else{
-		       if(Configuration::get('MT_ENABLED_IGNORE_DENY' == 1)){exit;die('ignored');}
+		       if(Configuration::get('MT_ENABLED_IGNORE_DENY' == 1)){exit;return;}
 		       $history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       echo 'Valid failure notification accepted';
 		     }
