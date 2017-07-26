@@ -1988,7 +1988,6 @@ class MidtransPay extends PaymentModule
 			return $params_all;
 
     	$params_all['enabled_payments'][] = 'credit_card';
-		$params_all['credit_card']['installment']['required'] = true;
 
 		// Promo Payment
 	    if ($_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
