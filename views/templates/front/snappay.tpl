@@ -72,12 +72,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					skipOrderSummary: true,
 					onSuccess: function(result){
 						console.log(result);
-						window.location = "{$moduleSuccessUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
 			        	
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
-							window.location = "{$moduleSuccessUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+							window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 						if (typeof result.pdf_url == 'undefined'){ // if no link, hide btn
 							document.getElementById('instruction-button').style.display = "none";
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			        },
 					onError: function(result){
 						console.log(result);
-						window.location = "{$moduleFailureUrl}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = "{$moduleFailureUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					}
 
 				});
