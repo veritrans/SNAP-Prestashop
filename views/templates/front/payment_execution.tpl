@@ -16,7 +16,11 @@
 			{* Additional feature check *}
 
 			{if isset($smarty.get.feature)}
-				<form action="{$link->getModuleLink('midtranspay', 'validation', ['feature' => $smarty.get.feature], true)}" method="post" class="std"> 
+				{if  isset($smarty.get.bank)}
+					<form action="{$link->getModuleLink('midtranspay', 'validation', ['feature' => $smarty.get.feature, 'bank' => $smarty.get.bank], true)}" method="post" class="std"> 
+				{else}
+					<form action="{$link->getModuleLink('midtranspay', 'validation', ['feature' => $smarty.get.feature], true)}" method="post" class="std"> 
+				{/if}
 			{else}
 				<form action="{$link->getModuleLink('midtranspay', 'validation', [], true)}" method="post" class="std"> 
 			{/if}

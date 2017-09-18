@@ -15,6 +15,17 @@
 // v add throw catch when notif url is opened by get method
 // v add production snap.js url
 // v add client key script tag
+// 
+// TODO 1.7
+// v Add description field
+// v Test notif & url
+// v Additional feature
+// v Test additional feature
+// v Mutiple getPaymentOptions
+// Backward compatibility
+// v Check MT_MINAMOUNT strlen
+// v Prettify payment page
+// v create tutorial
 
 
 if (!defined('_PS_VERSION_'))
@@ -23,7 +34,7 @@ if (!defined('_PS_VERSION_'))
 // TODO refactor backend config fields, getrid of enabled payments etc.
 
 // TODO uncomment these, use the real snap php library class (make sure to do this on other file too)
-require_once('library/veritrans/Veritrans.php');
+require_once ('library/veritrans/Veritrans.php');
 require_once ('library/veritrans/Veritrans/Notification.php');
 require_once ('library/veritrans/Veritrans/Transaction.php');
 
@@ -31,6 +42,7 @@ require_once ('library/veritrans/Veritrans/Transaction.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Notification.php');
 // require_once(dirname(__FILE__).'/../veritranspay/library/veritrans/Veritrans/Transaction.php');
+
 
 class MidtransPay extends PaymentModule
 {
@@ -53,6 +65,8 @@ class MidtransPay extends PaymentModule
 	public $midtrans_environment;
 
 	public $config_keys;
+	public $hooks = array('payment','header','backOfficeHeader','orderConfirmation','paymentReturn','paymentOptions');
+
 
 	public function __construct()
 	{
@@ -69,6 +83,7 @@ class MidtransPay extends PaymentModule
 		// key length must be between 0-32 chars to maintain compatibility with <= 1.5
 		$this->config_keys = array(			
 			'MT_DISPLAY_TITLE',
+			'MT_DISPLAY_DESCRIPTION',
 			'MT_CLIENT_KEY',
 			'MT_SERVER_KEY',
 			'MT_API_VERSION',
@@ -120,6 +135,15 @@ class MidtransPay extends PaymentModule
 			'MT_TITLE_PROMO_BTN',
 			'MT_METHOD_PROMO_BTN',
 			'MT_BINS_PROMO_BTN',
+			'MT_ENABLED_EXPIRY',
+			'MT_EXPIRY_DURATION',
+			'MT_EXPIRY_UNIT',
+			'MT_ENABLED_SAVECARD',
+			'MT_ENABLED_FIELDS',
+			'MT_FILEDS',
+			'MT_ENABLED_CUSTOMVA_BTN',
+			'MT_LIST_CUSTOMVA',
+			'MT_ENABLED_IGNORE_DENY',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -146,6 +170,8 @@ class MidtransPay extends PaymentModule
 
 		if (!isset($config['MT_DISPLAY_TITLE']))
 			Configuration::set('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
+		if (!isset($config['MT_DISPLAY_DESCRIPTION']))
+			Configuration::set('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		if (!isset($config['MT_SANITIZED']))
 			Configuration::set('MT_SANITIZED', 1);	
 		if (!isset($config['MT_3D_SECURE']))
@@ -174,7 +200,7 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_ENABLED_INDOSAT_DOMPETKU', 0);
 		if (!isset($config['MT_ENABLED_MANDIRI_ECASH']))
 			Configuration::set('MT_ENABLED_MANDIRI_ECASH', 0);
-		if (!isset($config['MT_MINAMOUNT'])  || strlen($config['MT_MINAMOUNT']) < 1)
+		if (!isset($config['MT_MINAMOUNT']))
 			Configuration::set('MT_MINAMOUNT', 500000);
 
 		// Additional feature vars
@@ -183,7 +209,7 @@ class MidtransPay extends PaymentModule
 
 		if (!isset($config['MT_ENABLED_MIGS_BTN']))
 			Configuration::set('MT_ENABLED_MIGS_BTN', 0);
-		if (!isset($config['MT_TITLE_MIGS_BTN']) || strlen($config['MT_TITLE_MIGS_BTN']) < 1)
+		if (!isset($config['MT_TITLE_MIGS_BTN']))
 			Configuration::set('MT_TITLE_MIGS_BTN', "Online Payment via Midtrans - MIGS channel");
 		if (!isset($config['MT_BINS_MIGS_BTN']))
 			Configuration::set('MT_BINS_MIGS_BTN', "");
@@ -196,7 +222,7 @@ class MidtransPay extends PaymentModule
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTMIGS_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTMIGS_BTN', 0);
-		if (!isset($config['MT_TITLE_INSTALLMENTMIGS_BTN']) || strlen($config['MT_TITLE_INSTALLMENTMIGS_BTN']) < 1)
+		if (!isset($config['MT_TITLE_INSTALLMENTMIGS_BTN']))
 			Configuration::set('MT_TITLE_INSTALLMENTMIGS_BTN', "Credit Card Installment Payment via Midtrans - MIGS channel");
 		if (!isset($config['MT_BINS_INSTALLMENTMIGS_BTN']))
 			Configuration::set('MT_BINS_INSTALLMENTMIGS_BTN', "");
@@ -205,27 +231,45 @@ class MidtransPay extends PaymentModule
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTOFF_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTOFF_BTN', 0);
-		if (!isset($config['MT_TITLE_INSTALLMENTOFF_BTN']) || strlen($config['MT_TITLE_INSTALLMENTOFF_BTN']) < 1)
+		if (!isset($config['MT_TITLE_INSTALLMENTOFF_BTN']))
 			Configuration::set('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
 		if (!isset($config['MT_BINS_INSTALLMENTOFF_BTN']))
 			Configuration::set('MT_BINS_INSTALLMENTOFF_BTN', "");
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTON_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTON_BTN', 0);
-		if (!isset($config['MT_TITLE_INSTALLMENTON_BTN']) || strlen($config['MT_TITLE_INSTALLMENTON_BTN']) < 1)
+		if (!isset($config['MT_TITLE_INSTALLMENTON_BTN']))
 			Configuration::set('MT_TITLE_INSTALLMENTON_BTN', "Credit Card Installment via Midtrans");
 		if (!isset($config['MT_BINS_INSTALLMENTON_BTN']))
 			Configuration::set('MT_BINS_INSTALLMENTON_BTN', "");
 
 		if (!isset($config['MT_ENABLED_PROMO_BTN']))
 			Configuration::set('MT_ENABLED_PROMO_BTN', 0);
-		if (!isset($config['MT_TITLE_PROMO_BTN']) || strlen($config['MT_TITLE_PROMO_BTN']) < 1)
+		if (!isset($config['MT_TITLE_PROMO_BTN']))
 			Configuration::set('MT_TITLE_PROMO_BTN', "Online Payment Promo via Midtrans");
 		if (!isset($config['MT_METHOD_PROMO_BTN']))
 			Configuration::set('MT_METHOD_PROMO_BTN', "");
 		if (!isset($config['MT_BINS_PROMO_BTN']))
 			Configuration::set('MT_BINS_PROMO_BTN', "");
 
+		if (!isset($config['MT_ENABLED_EXPIRY']))
+			Configuration::set('MT_ENABLED_EXPIRY', 0);
+		if (!isset($config['MT_EXPIRY_DURATION']))
+			Configuration::set('MT_EXPIRY_DURATION', 24);
+		if (!isset($config['MT_EXPIRY_UNIT']))
+			Configuration::set('MT_EXPIRY_UNIT', "hours");
+		if (!isset($config['MT_ENABLED_SAVECARD']))
+			Configuration::set('MT_ENABLED_SAVECARD', 0);
+		if (!isset($config['MT_ENABLED_FIELDS']))
+			Configuration::set('MT_ENABLED_FIELDS', 0);
+		if (!isset($config['MT_FILEDS']))
+			Configuration::set('MT_FILEDS', "");
+		if (!isset($config['MT_ENABLED_CUSTOMVA_BTN']))
+			Configuration::set('MT_ENABLED_CUSTOMVA_BTN', 0);
+		if (!isset($config['MT_LIST_CUSTOMVA']))
+			Configuration::set('MT_LIST_CUSTOMVA', "bca,mandiri,permata,other_va");
+		if (!isset($config['MT_ENABLED_IGNORE_DENY']))
+			Configuration::set('MT_ENABLED_IGNORE_DENY', 0);
 
 		parent::__construct();
 
@@ -271,12 +315,48 @@ class MidtransPay extends PaymentModule
 			!$this->registerHook('payment') ||
 			!$this->registerHook('header') ||
 			!$this->registerHook('backOfficeHeader') ||
-			!$this->registerHook('orderConfirmation'))
+			!$this->registerHook('orderConfirmation') || 
+			!$this->registerHook('paymentReturn') || 
+			!$this->registerHook('paymentOptions')
+			)
 			return false;
-		
-		include_once(_PS_MODULE_DIR_ . '/' . $this->name . '/mtpay_install.php');
-		$mtpay_install = new MidtransPayInstall();
-		$mtpay_install->createTable();
+
+		// Set default config values
+		Configuration::updateGlobalValue('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
+		Configuration::updateGlobalValue('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
+		Configuration::updateGlobalValue('MT_SANITIZED', 1);	
+		Configuration::updateGlobalValue('MT_3D_SECURE', 1);
+		Configuration::updateGlobalValue('MT_MINAMOUNT', 500000);
+		Configuration::updateGlobalValue('MT_ENABLED_ADV', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_MIGS_BTN', 0);
+		Configuration::updateGlobalValue('MT_TITLE_MIGS_BTN', "Online Payment via Midtrans - MIGS channel");
+		Configuration::updateGlobalValue('MT_BINS_MIGS_BTN', "");
+		Configuration::updateGlobalValue('MT_ACQ_MIGS_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTMIGS_BTN', 0);
+		Configuration::updateGlobalValue('MT_DISABLE_NON_MIGS_BTN', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTMIGS_BTN', 0);
+		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTMIGS_BTN', "Credit Card Installment Payment via Midtrans - MIGS channel");
+		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTMIGS_BTN', "");
+		Configuration::updateGlobalValue('MT_ACQ_INSTALLMENTMIGS_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTOFF_BTN', 0);
+		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
+		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTOFF_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTON_BTN', 0);
+		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTON_BTN', "Credit Card Installment via Midtrans");
+		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTON_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_PROMO_BTN', 0);
+		Configuration::updateGlobalValue('MT_TITLE_PROMO_BTN', "Online Payment Promo via Midtrans");
+		Configuration::updateGlobalValue('MT_METHOD_PROMO_BTN', "");
+		Configuration::updateGlobalValue('MT_BINS_PROMO_BTN', "");
+		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
+		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
+		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
+		Configuration::updateGlobalValue('MT_ENABLED_SAVECARD', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_FIELDS', 0);
+		Configuration::updateGlobalValue('MT_FILEDS', "");
+		Configuration::updateGlobalValue('MT_ENABLED_CUSTOMVA_BTN', 0);
+		Configuration::updateGlobalValue('MT_LIST_CUSTOMVA', "");
+		Configuration::updateGlobalValue('MT_ENABLED_IGNORE_DENY', 0);
 
 		return true;
 	}
@@ -284,6 +364,9 @@ class MidtransPay extends PaymentModule
 	public function uninstall()
 	{
 		$status = true;
+		foreach ($this->hooks as $hook) {
+            $this->unregisterHook($hook);
+        }
 
 		$midtrans_payment_waiting_order_state_id = Configuration::get('MT_ORDER_STATE_ID');
 		if ($midtrans_payment_waiting_order_state_id)
@@ -291,7 +374,10 @@ class MidtransPay extends PaymentModule
 			$order_state = new OrderStateCore($midtrans_payment_waiting_order_state_id);
 			$order_state->delete();
 		}
-		
+
+		foreach ($this->config_keys as $key) {
+        	Configuration::deleteByName($key);
+		}
 		
 		if (!parent::uninstall())
 			$status = false;
@@ -428,10 +514,17 @@ class MidtransPay extends PaymentModule
 				'input' => array(
 					array(
 						'type' => 'text',
-						'label' => 'Payment Button Display Text',
+						'label' => 'Payment Option Display Text',
 						'name' => 'MT_DISPLAY_TITLE',
+						'required' => true,
+						'desc' => 'Customize payment option title that will be displayed to your customer when they checkout. e.g: Credit Card Payment, Online Payment etc.'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Payment Option Description Text',
+						'name' => 'MT_DISPLAY_DESCRIPTION',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout. e.g: Credit Card Payment, Online Payment etc. Leave blank for default title.'
+						'desc' => 'Customize payment option description'
 						),
 					array(
 						'type' => 'select',
@@ -827,10 +920,6 @@ class MidtransPay extends PaymentModule
 						'name' => 'MT_KURS',
 						'desc' => 'Midtrans will use this rate to convert prices to IDR when there are no default conversion system.'
 						),
-					// TODO add config separator & JS for additional features
-					
-					// Additional features vars QWQW
-					
 					// array(						
 					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
 					// 	'label' => '<strong>Show Advanced Features</strong>',
@@ -886,7 +975,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button Online Installment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTON_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Online Installment. e.g: Credit Card Installment Payment etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Online Installment. e.g: Credit Card Installment Payment etc.',
 						'class' => 'advanced-on'
 						),
 					array(
@@ -924,7 +1013,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button Offline Installment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTOFF_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Offline Installment. e.g: Credit Card Installment Payment etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Offline Installment. e.g: Credit Card Installment Payment etc.',
 						'class' => 'advanced-off'
 						),
 					array(
@@ -962,7 +1051,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Promo Button Display Text',
 						'name' => 'MT_TITLE_PROMO_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc.',
 						'class' => 'advanced-promo'
 						),
 					array(
@@ -1007,7 +1096,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button CC MIGS fullpayment Display Text',
 						'name' => 'MT_TITLE_MIGS_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS fullpayment. e.g: BCA Credit Card, Maybank Credit Card, etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS fullpayment. e.g: BCA Credit Card, Maybank Credit Card, etc.',
 						'class' => 'advanced-migs'
 						),
 					array(
@@ -1075,7 +1164,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Payment Button CC Online Installment MIGS fullpayment Display Text',
 						'name' => 'MT_TITLE_INSTALLMENTMIGS_BTN',
 						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS online installment. e.g: Installment BCA Credit Card, Maybank Installment, etc. Leave blank for default title.',
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout for CC MIGS online installment. e.g: Installment BCA Credit Card, Maybank Installment, etc.',
 						'class' => 'advanced-insmigs'
 						),
 					array(
@@ -1092,7 +1181,147 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Specify your acquiring bank for MIGS Online Installment. Leave blank if you are not sure.',
 						'class' => 'advanced-insmigs'
 						),
-					
+					// Custom Expiry
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Custom Expiry Feature?</strong>',
+						'name' => 'MT_ENABLED_EXPIRY',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'expiry_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'expiry_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-expiry'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Duration',
+						'name' => 'MT_EXPIRY_DURATION',
+						'required' => false,
+						'desc' => 'Duration in number. e.g: 30.',
+						'class' => 'advanced-expiry'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Time Unit',
+						'name' => 'MT_EXPIRY_UNIT',
+						'desc' => 'Time unit of the duration. e.g: minutes',
+						'class' => 'advanced-expiry'
+						),
+					// SaveCard
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Save Card?</strong>',
+						'name' => 'MT_ENABLED_SAVECARD',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'savecard_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'savecard_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-savecard'
+						//'class' => ''
+						),
+					// Custom Fields
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Custom Fields Feature?</strong>',
+						'name' => 'MT_ENABLED_FIELDS',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-fields'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Custom Fields',
+						'name' => 'MT_FILEDS',
+						'required' => false,
+						'desc' => 'Up to 3 custom fields separated by coma (,). e.g: Order from web, Prestashop, Processing',
+						'class' => 'advanced-fields'
+						),
+					// Custom VA button
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Separated Bank Transfer Button?</strong>',
+						'name' => 'MT_ENABLED_CUSTOMVA_BTN',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-fields'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Displayed Banks',
+						'name' => 'MT_LIST_CUSTOMVA',
+						'required' => true,
+						'desc' => 'bank names separated by coma (,). e.g: permata,mandiri,bca,other_va',
+						'class' => 'advanced-customva'
+						),
+					// Ignore Deny Notification
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => 'Don\'t change order status when credit card transaction failed?',
+						'name' => 'MT_ENABLED_IGNORE_DENY',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'fields_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'fields_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-ignore'
+						//'class' => ''
+						)
 					),
 				'submit' => array(
 					'title' => $this->l('Save'),
@@ -1207,6 +1436,107 @@ class MidtransPay extends PaymentModule
 		return $this->hookDisplayPayment($params);				
 	}
 
+    public function hookPaymentOptions($params)
+    {
+        if (!$this->active || !$this->checkCurrency($params['cart'])) {
+            return; }
+    	$orderTotal = $this->context->cart->getOrderTotal();
+
+        $payment_options = array();
+
+        if (Configuration::get('MT_DISABLE_NON_MIGS_BTN') != 1) {
+            $payment_options[] = $this->getSnapFullpaymentOption(); }
+    	if (Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
+    		$payment_options[] = $this->getSnapMigsOption(); }
+    	if (Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+    		$payment_options[] = $this->getSnapPromoOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentMigsOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTON_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentOnlineOption(); }
+    	if (Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+    		$payment_options[] = $this->getSnapInstallmentOfflineOption(); }
+
+        return $payment_options;
+    }
+
+    public function getSnapFullpaymentOption()
+    {
+		$this->context->smarty->assign(array(
+				'MT_DISPLAY_DESCRIPTION' =>  $this->l(Configuration::get('MT_DISPLAY_DESCRIPTION')) 
+    		)
+    	);
+    	$snapFullpayment = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$snapFullpayment->setCallToActionText($this->l(Configuration::get('MT_DISPLAY_TITLE')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17', array(), true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl')); // TODO implement payment_infos.tpl
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $snapFullpayment;
+    }
+
+    public function getSnapMigsOption()
+    {
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_MIGS_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_MIGS_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapPromoOption()
+    {
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_PROMO_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_PROMO_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentMigsOption()
+    {
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTMIGS_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTMIGS_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentOnlineOption()
+    {
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTON_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTON_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function getSnapInstallmentOfflineOption()
+    {
+    	$paymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
+    	$paymentOption->setCallToActionText($this->l(Configuration::get('MT_TITLE_INSTALLMENTOFF_BTN')))
+    					->setAction($this->context->link->getModuleLink($this->name, 'validation17',['feature' => 'MT_ENABLED_INSTALLMENTOFF_BTN'] , true))
+    					->setAdditionalInformation($this->context->smarty->fetch('module:'.$this->name.'/views/templates/front/payment_infos.tpl'));
+    					// ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/logo.png'));
+    	return $paymentOption;
+    }
+
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+
+        $this->smarty->assign(array(
+            'shop_name' => $this->context->shop->name,
+        ));
+
+        return $this->fetch('module:'.$this->name.'/views/templates/hook/payment_return.tpl');
+    }
+
 	public function hookDisplayPayment($params)
 	{
 		if (!$this->active)
@@ -1241,6 +1571,9 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTON_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTON_BTN'),
 			'MT_TITLE_INSTALLMENTON_BTN' => Configuration::get('MT_TITLE_INSTALLMENTON_BTN'),
 			'MT_ENABLED_PROMO_BTN' => Configuration::get('MT_ENABLED_PROMO_BTN'),
+			'MT_ENABLED_CUSTOMVA_BTN' => 1,
+			'MT_LIST_CUSTOMVA' => explode(',', Configuration::get('MT_LIST_CUSTOMVA')),
+			// 'MT_LIST_CUSTOMVA' => ['permata','bca','other_va'],
 			'MT_TITLE_PROMO_BTN' => Configuration::get('MT_TITLE_PROMO_BTN'),
 			'MT_MINAMOUNT' => Configuration::get('MT_MINAMOUNT'),
 			'this_path' => $this->_path,
@@ -1367,39 +1700,12 @@ class MidtransPay extends PaymentModule
 		return $term2;
 	}
 
-	public function isInstallmentCart($products){		
-		foreach($products as $prod){
-			$str_attr = $prod['attributes_small'];
-			if (strpos(strtolower($str_attr), 'installment') !== FALSE){				
-				return true;
-			}    
-		}		
-		return false;
-	}
-
 	// Retrocompatibility 1.4
 	public function execValidation($cart)
 	{
-		error_log( 'execValidation $_GET[] = ' . print_r($_GET,true) ); // debugan
+		// error_log( 'execValidation $_GET[] = ' . print_r($_GET,true) ); // debugan
 		global $cookie;
-
-		if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->active)
-			Tools::redirect('index.php?controller=order&step=1');
-
-		// Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
-		$authorized = false;
-		foreach (Module::getPaymentModules() as $module)
-			if ($module['name'] == 'midtranspay')
-			{
-				$authorized = true;
-				break;
-			}
-		if (!$authorized)
-			die($this->module->l('This payment method is not available.', 'validation'));
-
 		$customer = new Customer($cart->id_customer);
-		if (!Validate::isLoadedObject($customer))
-			Tools::redirect('index.php?controller=order&step=1');
 
 		$veritrans = new Veritrans_Config();
 		// Config setup
@@ -1463,7 +1769,7 @@ class MidtransPay extends PaymentModule
 			'shipping_address' => $params_shipping_address
 			);
 
-		$items = $this->addCommodities($cart, $shipping_cost, $usd);				
+		$items = $this->addCommodities($cart, $shipping_cost, $usd);
 		
 		// convert the currency
 		$cart_currency = new Currency($cart->id_currency);
@@ -1485,9 +1791,6 @@ class MidtransPay extends PaymentModule
 				$item['price'] = intval(ceil($item['price']));				
 			}
 		}
-				
-
-		$this->validateOrder($cart->id, Configuration::get('MT_ORDER_STATE_ID'), $cart->getOrderTotal(true, Cart::BOTH), $this->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);				
 		
 		$gross_amount = 0;
 		unset($item);
@@ -1500,93 +1803,14 @@ class MidtransPay extends PaymentModule
 		$warning_redirect = false;
 		$fullPayment = true;
 
-		// $installment_type_val = Configuration::get('MT_ENABLE_INSTALLMENT');
-		$installment_type_val = "off";
-		$param_required;
-		switch ($installment_type_val) {
-			case 'all_product':
-								
-				if ($isBniInstallment){					
-					//$bni_term2 = $this->getTermInstallment('BNI');
-					$a = Configuration::get('MT_INSTALLMENTS_BNI');
-					$term = explode(',',$a);
-					$bni_term = $term;
-					//error_log(print_r($bni_term,true));
-					//error_log($bni_term,true);
-				}					
-							
-				if ($isMandiriInstallment){
-
-					$mandiri_term =	$this->getTermInstallment('MANDIRI');
-					
-					$a = Configuration::get('MT_INSTALLMENTS_MANDIRI');
-					$term = explode(',',$a);
-					$mandiri_term = $term;
-
-					//error_log($mandiri_term,true);
-					//error_log(print_r($mandiri_term,true));
-				}				
-				
-				$param_installment = array();
-				if ($isBniInstallment){
-					$param_installment['bni'] = $bni_term;
-				}
-
-				if ($isMandiriInstallment){
-					$param_installment['mandiri'] = $mandiri_term;
-				}
-				$param_required = "false";
-				$fullPayment = false;
-				break;
-			case 'certain_product':
-				$param_installment = null;
-				$products_cart = $cart->getProducts();
-				$num_product = count($products_cart);
-				if($num_product == 1){
-					$attr_product = explode(',',$products_cart[0]['attributes_small']);
-					foreach($attr_product as $att){
-						$att_trim = ltrim($att);						
-						$att_arr = explode(' ',$att_trim);
-						//error_log(print_r($att_arr,true));
-						if(strtolower($att_arr[0]) == 'installment'){
-							$fullPayment = false;
-							$param_installment = array();
-							$param_installment[strtolower($att_arr[1])] = array($att_arr[2]);
-						} 						
-					}
-				} else {
-					$warning_redirect = true;
-					$keys['message'] = 1;
-				}
-				$param_required = "true";				
-				break;						
-			case 'off':
-				$param_installment = null;
-				break;
-		}		
-	
-
-		//error_log($param_installment,true);
-		// $param_payment_option = array(
-		// 	'installment' => array(
-		// 						'required' => $param_required,
-		// 						'installment_terms' => $param_installment 
-		// 					)
-		// 	);
-
 		$params_all = array(
 			'transaction_details' => array(
-				'order_id' => $this->currentOrder, 
+				'order_id' => $cart->id, 
 				'gross_amount' => $gross_amount
 				),
 			'item_details' => $items,
 			'customer_details' => $params_customer_details
 			);
-		
-		// if ($gross_amount < 500000){
-		// 	$warning_redirect = true;
-		// 	$keys['message'] = 2;
-		// }
 
 		if( !$warning_redirect && 
 			($isBniInstallment || $isMandiriInstallment) && 
@@ -1595,24 +1819,14 @@ class MidtransPay extends PaymentModule
 			$params_all['vtweb']['payment_options'] = $param_payment_option;		
 		}
 
-	    if ($this->isInstallmentCart($cart->getProducts()) || ($installment_type_val == 'all_product')){
-	    	$keys['isWarning'] = $warning_redirect;
-	    } else {
-	    	$keys['isWarning'] = false;
-	    }
-
 	   	/** 
 	    * Add additional features param
 	    */
-
-	    // Promo payment
-	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
-	    	$params_all = $this->addPromoParam($params_all);
-			// add discount
-			$cartRule = new CartRule();
-			$code = $cartRule->getIdByCode('onlinepromo');
-			$cart->addCartRule($code);
-	    }
+		
+		// Promo payment, coupled with validation17.php->addPromoFeature()
+		if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+			$params_all = $this->addPromoParam($params_all);
+		}
 
 	    // MIGS CC fullpayment
 	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_MIGS_BTN' && Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
@@ -1620,13 +1834,48 @@ class MidtransPay extends PaymentModule
 	    }
 
 	    // Check for eligible installment, then add isntallment param
-	    if ($gross_amount >= Configuration::get('MT_MINAMOUNT')){
+	    if (isset($_GET['feature']) && $gross_amount >= Configuration::get('MT_MINAMOUNT')){
 	    	$params_all = $this->addInstallmentParam($params_all);
 	    }
+
+	    // Custom VA Button
+	   	if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_CUSTOMVA_BTN' && Configuration::get('MT_ENABLED_CUSTOMVA_BTN') == 1) {
+			$params_all = $this->addCustomVAparam($params_all,$_GET['bank']);
+		}
+		
+	    // Add custom expiry params
+	    if (Configuration::get('MT_ENABLED_EXPIRY') == 1){
+	    	$time = time();
+	    	$time += 30; // add 30 seconds to allow margin of error
+	    	// error_log(date("Y-m-d h:i:s O",$time)); // debugan
+	    	$params_all['expiry'] = array(
+	    			'start_time' => date("Y-m-d H:i:s O",$time), 
+	    			'unit' => Configuration::get('MT_EXPIRY_UNIT'), 
+	    			'duration'  => Configuration::get('MT_EXPIRY_DURATION'),
+	    		);
+	    }
+
+	    // Add custom fields params
+	    if (Configuration::get('MT_ENABLED_FIELDS') == 1){
+	    	$custom_fields_params = explode(",",Configuration::get('MT_FILEDS'));
+			$params_all['custom_field1'] = !empty($custom_fields_params[0]) ? $custom_fields_params[0] : null;
+			$params_all['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
+			$params_all['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;	
+	    }
+
+	    // Add savecard params
+	    if (Configuration::get('MT_ENABLED_SAVECARD') == 1 && $this->context->customer->isLogged()){
+	    	$params_all['user_id'] = crypt($params_customer_details['email'].$params_customer_details['phone'],Configuration::get('MT_SERVER_KEY'));
+	    	$params_all['credit_card']['save_card'] = true;
+	    }
+
+	    // error_log(print_r($params_all,true)); // debugan
 
 		// Get SNAP token, then create redirect url
 		try {
 		    // error_log(print_r($params_all,true)); // debug
+		    $this->validateOrder($cart->id, Configuration::get('MT_ORDER_STATE_ID'), $cart->getOrderTotal(true, Cart::BOTH), $this->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+		    $params_all['transaction_details']['order_id'] = $this->currentOrder; // OrderID is only available after validateOrder
 		  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
 		  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
 		  	// error_log("redirect_url :".$redirect_url); // debug
@@ -1641,12 +1890,15 @@ class MidtransPay extends PaymentModule
 
 	public function addInstallmentParam($params_all)
 	{
-		if (!isset($_GET['feature']))
+		if (!isset($_GET['feature'])
+			|| !($_GET['feature'] == 'MT_ENABLED_INSTALLMENTMIGS_BTN' || 
+				$_GET['feature'] == 'MT_ENABLED_INSTALLMENTOFF_BTN'  ||
+				$_GET['feature'] == 'MT_ENABLED_INSTALLMENTON_BTN' )
+			)
 			return $params_all;
 
     	$params_all['enabled_payments'][] = 'credit_card';
 		$params_all['credit_card']['installment']['required'] = true;
-
 		// Build terms array
 		$terms = array(3,6,9,12,15,18,21,24,27,30,33,36);
 		
@@ -1712,7 +1964,7 @@ class MidtransPay extends PaymentModule
 	public function addMIGSFullpaymentParam($params_all)
 	{
 	    if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_MIGS_BTN' && Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
-	        $params_all['enabled_payments'][] = 'credit_card';
+	        // $params_all['enabled_payments'][] = 'credit_card';
 	    	
 	    	// add bank & channel migs params
 	        if (strlen(Configuration::get('MT_ACQ_MIGS_BTN')) > 0) {
@@ -1736,7 +1988,6 @@ class MidtransPay extends PaymentModule
 			return $params_all;
 
     	$params_all['enabled_payments'][] = 'credit_card';
-		$params_all['credit_card']['installment']['required'] = true;
 
 		// Promo Payment
 	    if ($_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
@@ -1749,6 +2000,18 @@ class MidtransPay extends PaymentModule
 				$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
 	    }
 
+		return $params_all;
+	}
+
+	public function addCustomVAparam($params_all,$bank)
+	{
+		$bank_mapping = array(
+			'permata' => 'permata_va', 
+			'bca' => 'bca_va', 
+			'mandiri' => 'echannel',
+			'other_va' => 'other_va,permata_va'
+		);
+    	$params_all['enabled_payments'] = explode(',', $bank_mapping[$bank]);
 		return $params_all;
 	}
 
@@ -1795,7 +2058,7 @@ class MidtransPay extends PaymentModule
 				"id" => 'DISCOUNT_VOUCHER',
 				"price" => $discount, // defer currency conversion until the very last time
 				"quantity" => '1',
-				"name" => 'discount from voucher',				
+				"name" => 'Discount from promo',				
 			);	
 		}
 		//error_log(print_r($commodities,true)); // debug
@@ -1852,8 +2115,10 @@ class MidtransPay extends PaymentModule
 
 		$input_source = "php://input";
 		$raw_notification = json_decode(file_get_contents($input_source), true);
+		echo "<pre> \n";
 		echo "Notification Received: \n";
 		print_r($raw_notification);
+		echo "</pre> \n";
 		
 		header('Connection: close');
 		header('Content-Length: '.ob_get_length());
@@ -1897,29 +2162,22 @@ class MidtransPay extends PaymentModule
 		  	//$history->id_order = (int)$midtrans_notification->order_id;		  	
 			//error_log('notif verified'); // debug
 			//error_log('message notif: '.(int)$midtrans_notification->order_id); // debug
-			if ($midtrans_notification->transaction_status == 'capture')				
-		    {
-		     	if ($midtrans_notification->fraud_status== 'accept')
-		     	{
+			if ($midtrans_notification->transaction_status == 'capture'){
+		     	if ($midtrans_notification->fraud_status== 'accept'){
 		     		// if order history !contains payment accepted, then update DB. Else, don't update DB
-		     		if (empty($order_histories))
-		     		{
+		     		if (empty($order_histories)){
 			       		$history->changeIdOrderState(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), $order_id_notif);
 			       		echo 'Valid success notification accepted.';
-		       		}
-		       		else{
+		       		} else{
 		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
-		       	}
-		       	else if ($midtrans_notification->fraud_status== 'challenge')
-		     	{
+		       	} else if ($midtrans_notification->fraud_status== 'challenge'){
 		       		$history->changeIdOrderState(Configuration::get('MT_PAYMENT_CHALLENGE_STATUS_MAP'), $order_id_notif);
 		       		echo 'Valid challenge notification accepted.';
 		     	} 		       	
 		     } else if ($midtrans_notification->transaction_status == 'settlement'){
 
-		     	if($midtrans_notification->payment_type != 'credit_card')
-		     	{
+		     	if($midtrans_notification->payment_type != 'credit_card'){
 		     		// if order history !contains payment accepted, then update DB. Else, don't update DB
 		     		if (empty($order_histories)){
 				     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), $order_id_notif);
@@ -1928,8 +2186,7 @@ class MidtransPay extends PaymentModule
 		       			error_log("########## Transaction has already been updated to success status once, no need to update again"); // debug
 		       		}
 		     	}
-		     	else
-		     	{
+		     	else{
 		     		echo 'Credit card settlement notification accepted.';	
 		     	}
 
@@ -1939,12 +2196,14 @@ class MidtransPay extends PaymentModule
 		     }else if ($midtrans_notification->transaction_status == 'cancel'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Cancel notification accepted.';
+		     }else if ($midtrans_notification->transaction_status == 'deny'){
+		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
+		       	echo 'Valid Deny notification accepted.';
 		     }else if ($midtrans_notification->transaction_status == 'expire'){
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Expire notification accepted.';
-		     }
-			 else
-		     {
+		     }else{
+		       if(Configuration::get('MT_ENABLED_IGNORE_DENY' == 1)){exit;return;}
 		       $history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       echo 'Valid failure notification accepted';
 		     }

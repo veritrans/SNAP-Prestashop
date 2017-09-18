@@ -88,6 +88,26 @@
       hideOptions('advanced-insmigs', "class");
   }
 
+  function toggleMT_ENABLED_EXPIRY(){
+    if ($("#MT_ENABLED_EXPIRY_on").prop('checked'))
+      showOptions('advanced-expiry', "class");
+    else if ($("#MT_ENABLED_EXPIRY_off").prop('checked'))
+      hideOptions('advanced-expiry', "class");
+  }
+
+  function toggleMT_ENABLED_FIELDS(){
+    if ($("#MT_ENABLED_FIELDS_on").prop('checked'))
+      showOptions('advanced-fields', "class");
+    else if ($("#MT_ENABLED_FIELDS_off").prop('checked'))
+      hideOptions('advanced-fields', "class");
+  }
+  function toggleMT_ENABLED_CUSTOMVA_BTN(){
+    if ($("#MT_ENABLED_CUSTOMVA_BTN_on").prop('checked'))
+      showOptions('advanced-customva', "class");
+    else if ($("#MT_ENABLED_CUSTOMVA_BTN_off").prop('checked'))
+      hideOptions('advanced-customva', "class");
+  }
+
 
   // toggleAdvanced();
 
@@ -115,6 +135,15 @@
     $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").change(function(e, data) {
       toggleENABLED_INSTALLMENTMIGS_BTN();
     });
+    $("#MT_ENABLED_EXPIRY_on").change(function(e, data) {
+      toggleMT_ENABLED_EXPIRY();
+    });
+    $("#MT_ENABLED_FIELDS_on").change(function(e, data) {
+      toggleMT_ENABLED_FIELDS();
+    });
+    $("#MT_ENABLED_CUSTOMVA_BTN_on").change(function(e, data) {
+      toggleMT_ENABLED_CUSTOMVA_BTN();
+    });
 
     $("#MT_ENABLED_INSTALLMENTON_BTN_off").change(function(e, data) {
       toggleENABLED_INSTALLMENTON_BTN();
@@ -131,6 +160,15 @@
     $("#MT_ENABLED_INSTALLMENTMIGS_BTN_off").change(function(e, data) {
       toggleENABLED_INSTALLMENTMIGS_BTN();
     });
+    $("#MT_ENABLED_EXPIRY_off").change(function(e, data) {
+      toggleMT_ENABLED_EXPIRY();
+    });
+    $("#MT_ENABLED_FIELDS_off").change(function(e, data) {
+      toggleMT_ENABLED_FIELDS();
+    });
+    $("#MT_ENABLED_CUSTOMVA_BTN_off").change(function(e, data) {
+      toggleMT_ENABLED_CUSTOMVA_BTN();
+    });
   }
 
   function initializeVisibility(){
@@ -139,9 +177,17 @@
     toggleENABLED_MIGS_BTN();
     toggleENABLED_PROMO_BTN();
     toggleENABLED_INSTALLMENTMIGS_BTN();
+    toggleMT_ENABLED_EXPIRY();
+    toggleMT_ENABLED_FIELDS();
+    toggleMT_ENABLED_CUSTOMVA_BTN();
   }
 
   addListenerToSwitch();
   initializeVisibility();
+
+  function hideSavecard(hideSavecard = true){
+    if (hideSavecard)
+      $('#MT_ENABLED_SAVECARD_on').parent().parent().parent().hide();
+  } hideSavecard(false);
 
 });

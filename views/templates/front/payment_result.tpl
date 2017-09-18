@@ -24,7 +24,7 @@
 	<p class="warning">
 		{l s='If you want to go to your cart, please do re-checkout.'}
 	</p>
-	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
+	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval|default:0}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
 	<i class="icon-refresh"></i>&nbsp;{l s='Re-Checkout'}</a>
 {elseif $status == 'pending'}
 	<p>
@@ -41,7 +41,7 @@
 		{l s='We noticed a problem with your order. Please do re-checkout.
 		If you think this is an error, feel free to contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team. ' mod='midtranspay'}</a> <br/><br/>
 	</p>
-	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
+	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval|default:0}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
 	<i class="icon-refresh"></i>&nbsp;{l s='Re-Checkout'}</a>
 {/if}
 </div>

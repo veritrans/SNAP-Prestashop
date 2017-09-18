@@ -28,7 +28,7 @@ class MidtransPayValidationModuleFrontController extends ModuleFrontController
     }
     if ($midtrans_api_version == 2 && $midtrans_payment_method == 'vtweb')
     {
-        if ($keys['isWarning']){          
+        if (isset($keys['isWarning']) && $keys['isWarning']){          
 
             Tools::redirectLink('index.php?fc=module&module=midtranspay&controller=warning&redirlink='.$keys['redirect_url'].'&message='.$keys['message']);
         }      

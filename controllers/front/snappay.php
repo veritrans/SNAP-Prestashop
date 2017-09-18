@@ -30,6 +30,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		// error_log($moduleUrl); // debugan
 
 		$this->context->smarty->assign(array(
+			'order_id' => $cart->id,
 			'status' => $status,
 			'snap_script_url' => Configuration::get('MT_ENVIRONMENT') == 'production' ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
 			'client_key' => Configuration::get('MT_CLIENT_KEY'),
@@ -41,7 +42,10 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'moduleSuccessUrl' => $moduleSuccessUrl,
 			'moduleFailureUrl' => $moduleFailureUrl,
 		));
-		$this->setTemplate('snappay.tpl');
+		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
+			$this->setTemplate('snappay.tpl');
+		else
+			$this->setTemplate('module:midtranspay/views/templates/front/snappay17.tpl');
 	}
 
 }
