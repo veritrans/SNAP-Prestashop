@@ -1571,7 +1571,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTON_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTON_BTN'),
 			'MT_TITLE_INSTALLMENTON_BTN' => Configuration::get('MT_TITLE_INSTALLMENTON_BTN'),
 			'MT_ENABLED_PROMO_BTN' => Configuration::get('MT_ENABLED_PROMO_BTN'),
-			'MT_ENABLED_CUSTOMVA_BTN' => 1,
+			'MT_ENABLED_CUSTOMVA_BTN' => Configuration::get('MT_ENABLED_CUSTOMVA_BTN'),
 			'MT_LIST_CUSTOMVA' => explode(',', Configuration::get('MT_LIST_CUSTOMVA')),
 			// 'MT_LIST_CUSTOMVA' => ['permata','bca','other_va'],
 			'MT_TITLE_PROMO_BTN' => Configuration::get('MT_TITLE_PROMO_BTN'),
