@@ -128,6 +128,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTOFF_BTN',
 			'MT_TITLE_INSTALLMENTOFF_BTN',
 			'MT_BINS_INSTALLMENTOFF_BTN',
+			'MT_TERM_INSTALLMENTOFF_BTN',
 			'MT_ENABLED_INSTALLMENTON_BTN',
 			'MT_TITLE_INSTALLMENTON_BTN',
 			'MT_BINS_INSTALLMENTON_BTN',
@@ -235,6 +236,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
 		if (!isset($config['MT_BINS_INSTALLMENTOFF_BTN']))
 			Configuration::set('MT_BINS_INSTALLMENTOFF_BTN', "");
+		if (!isset($config['MT_TERM_INSTALLMENTOFF_BTN']))
+			Configuration::set('MT_TERM_INSTALLMENTOFF_BTN', "");
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTON_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTON_BTN', 0);
@@ -341,6 +344,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTOFF_BTN', 0);
 		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
 		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTOFF_BTN', "");
+		Configuration::updateGlobalValue('MT_TERM_INSTALLMENTOFF_BTN', "6,12");
 		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTON_BTN', 0);
 		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTON_BTN', "Credit Card Installment via Midtrans");
 		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTON_BTN', "");
@@ -988,7 +992,7 @@ class MidtransPay extends PaymentModule
 					// Installment Offline
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => '<strong>Enable Offline Installment Channel?</strong>',
+						'label' => '<strong>Enable Offline Installment?</strong>',
 						'name' => 'MT_ENABLED_INSTALLMENTOFF_BTN',
 						'required' => false,
 						'is_bool' => true,
@@ -1021,6 +1025,13 @@ class MidtransPay extends PaymentModule
 						'label' => 'Allowed CC BINs for Offline Installment',
 						'name' => 'MT_BINS_INSTALLMENTOFF_BTN',
 						'desc' => 'Allowed Credit Card BINs for Offline Installment payment. Leave blank if you are not sure.',
+						'class' => 'advanced-off'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Offline Installment Terms',
+						'name' => 'MT_TERM_INSTALLMENTOFF_BTN',
+						'desc' => 'Allowed Offline Installment terms. Separate terms with coma. e.g: 6,12.',
 						'class' => 'advanced-off'
 						),
 					// Promo payment
@@ -1931,12 +1942,16 @@ class MidtransPay extends PaymentModule
 			// add bin params
 			if (strlen(Configuration::get('MT_BINS_INSTALLMENTOFF_BTN')) > 0) {
 				$params_all['credit_card']['whitelist_bins'] = explode(',', Configuration::get('MT_BINS_INSTALLMENTOFF_BTN')); }
+			$termsOffline = array(6,12);
+			if (strlen(Configuration::get('MT_TERM_INSTALLMENTOFF_BTN')) > 0) {
+				$termsOffline = array_map('intval', explode(',', Configuration::get('MT_TERM_INSTALLMENTOFF_BTN')) ); }
 
 			// Build installment param
 			$params_all['credit_card']['installment']['terms'] = 
 			array(
-			  'offline' => $terms
+			  'offline' => $termsOffline
 			);
+			error_log( print_r($params_all,true) );
 		}
 		
     	// Online Installment
