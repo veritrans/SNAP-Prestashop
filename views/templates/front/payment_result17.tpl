@@ -13,7 +13,7 @@
 		<div class="text-xs-center">
 		{if ($status == 'success' || $smarty.get.status_code|default:0 == '200' || $smarty.get.status_code|default:0 == '201')}
 			<p>
-				<b><h3 class="alert alert-success"> <i class="material-icons">done</i> {l s='Your payment on '} {$shop_name} {' is complete!'}</h3></b>
+				<b><h3 class="alert alert-success"> <i class="material-icons">done</i> {l s='Your payment on '} {$shop_name} {' is succeed'}</h3></b>
 			</p>
 			<p class="warning">
 				{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team. ' mod='midtranspay'}</a><br/><br/>
@@ -37,7 +37,7 @@
 			</p>
 		{else}
 			<p>
-				<b><h3 class="alert alert-danger">  <i class="material-icons">warning</i> {l s='Payment Error!' mod='midtranspay'}</h3></b>
+				<b><h3 class="alert alert-danger">  <i class="material-icons">warning</i> {l s='Payment Failed!' mod='midtranspay'}</h3></b>
 			</p>
 			<p class="warning">
 				{l s='We noticed a problem with your order. Please do re-checkout.

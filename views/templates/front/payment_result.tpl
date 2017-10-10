@@ -10,7 +10,7 @@
 <div class="text-center">
 {if ($smarty.get.status_code == '200' || $smarty.get.status_code == '201' || $status == 'success')}
 	<p>
-		<b><h3 class="alert alert-success">{l s='Your payment on %s is complete!' sprintf= $shop_name mod='midtranspay'}</h3></b>
+		<b><h3 class="alert alert-success">{l s='Your payment on %s is succeed!' sprintf= $shop_name mod='midtranspay'}</h3></b>
 		<!-- {$smarty.get.order_id} -->
 	</p>
 	<p class="warning">
@@ -35,7 +35,7 @@
 	</p>
 {else}
 	<p>
-		<b><h3 class="alert alert-danger">{l s='Payment Error!' mod='midtranspay'}</h3></b>
+		<b><h3 class="alert alert-danger">{l s='Payment Failed!' mod='midtranspay'}</h3></b>
 	</p>
 	<p class="warning">
 		{l s='We noticed a problem with your order. Please do re-checkout.

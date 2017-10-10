@@ -57,10 +57,10 @@ class MidtransPaySuccessModuleFrontController extends ModuleFrontController
 			Veritrans_Config::$serverKey = Configuration::get('MT_SERVER_KEY');
 			Veritrans_Config::$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production' ? true : false;
 			$status = Veritrans_Transaction::status($_GET['id']);
-			if($status->transaction_status == 'deny'){
-				Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure').'?&status_code=202' ); exit();
-			} else {
+			if($status->transaction_status == 'settlement'){
 				Tools::redirect( $this->context->link->getModuleLink('midtranspay','success').'?&status_code=200' ); exit();
+			} else {
+				Tools::redirect( $this->context->link->getModuleLink('midtranspay','failure').'?&status_code=202' ); exit();
 			}
 		}
 		$this->context->smarty->assign(array(
