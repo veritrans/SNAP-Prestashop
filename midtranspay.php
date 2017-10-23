@@ -2152,7 +2152,11 @@ class MidtransPay extends PaymentModule
 
 		// Response first, then try to create notification object from post notif
 		$this->earlyResponse();
-		$midtrans_notification = new Veritrans_Notification();
+		try {
+			$midtrans_notification = new Veritrans_Notification();
+		} catch (Exception $e) {
+			$midtrans_notification = new Veritrans_Notification();
+		}
 
 		// $midtrans_notification = new Veritrans_Notification();
 		$history = new OrderHistory();
