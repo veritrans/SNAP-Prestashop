@@ -84,6 +84,7 @@ class MidtransPay extends PaymentModule
 		$this->config_keys = array(			
 			'MT_DISPLAY_TITLE',
 			'MT_DISPLAY_DESCRIPTION',
+			'MT_MERCHANT_ID',
 			'MT_CLIENT_KEY',
 			'MT_SERVER_KEY',
 			'MT_API_VERSION',
@@ -544,10 +545,18 @@ class MidtransPay extends PaymentModule
 						),
 					array(
 						'type' => 'text',
+						'label' => 'Merchant ID',
+						'name' => 'MT_MERCHANT_ID',
+						'required' => true,
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Merchant ID (e.g M012345).',
+						'class' => 'v1_vtdirect_settings v2_settings sensitive'
+						),
+					array(
+						'type' => 'text',
 						'label' => 'Client Key',
 						'name' => 'MT_CLIENT_KEY',
 						'required' => true,
-						'desc' => 'Consult to your Merchant Administration Portal for the value of this field.',
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Client Key.',
 						'class' => 'v1_vtdirect_settings v2_settings sensitive'
 						),
 					array(
@@ -555,7 +564,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Server Key',
 						'name' => 'MT_SERVER_KEY',
 						'required' => true,
-						'desc' => 'Consult to your Merchant Administration Portal for the value of this field.',
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Server Key.',
 						'class' => 'v1_vtdirect_settings v2_settings sensitive'
 						),
 					array(						
@@ -1382,6 +1391,7 @@ class MidtransPay extends PaymentModule
 			'api_versions' => array(1 => 'v1', 2 => 'v2'),
 			//'payment_type' => htmlentities(Configuration::get('MT_PAYMENT_TYPE'), ENT_COMPAT, 'UTF-8'),
 			//'payment_types' => array('vtweb' => 'VT-Web', 'vtdirect' => 'VT-Direct'),
+			'merchant_id' => htmlentities(Configuration::get('MT_MERCHANT_ID'), ENT_COMPAT, 'UTF-8'),
 			'client_key' => htmlentities(Configuration::get('MT_CLIENT_KEY'), ENT_COMPAT, 'UTF-8'),
 			'server_key' => htmlentities(Configuration::get('MT_SERVER_KEY'), ENT_COMPAT, 'UTF-8'),
 			'environments' => array(false => 'Development', true => 'Production'),
