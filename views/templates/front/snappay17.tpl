@@ -65,6 +65,7 @@
 
 <script data-cfasync="false" type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) { 
+	var payButton = document.getElementById('pay-button');
 	function MixpanelTrackResult(token, merchant_id, cms_name, cms_version, plugin_name, status, result) {
 		var eventNames = {
 			success: 'pg-success',
@@ -117,12 +118,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					onSuccess: function(result){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'success', result);
 						console.log(result?result:'no result');
+						payButton.innerHTML = 'Loading...';
 						window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
 			        	MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'pending', result);
 						console.log(result?result:'no result');
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
+			        		payButton.innerHTML = 'Loading...';
 							window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 						if (typeof result.pdf_url == 'undefined'){ // if no link, hide btn
@@ -136,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					onError: function(result){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'error', result);
 						console.log(result?result:'no result');
+						payButton.innerHTML = 'Loading...';
 						window.location = "{$moduleFailureUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 					onClose: function(){
@@ -154,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}, 1000);
 	};
 	var clickCount = 0;
-	var payButton = document.getElementById('pay-button');
 	payButton.innerHTML = '<i class="material-icons">payment</i> &nbsp; {l s="Proceed to Payment"} <i class="material-icons">chevron_right</i>';
 	payButton.onclick = function(){
 		if(clickCount >= 2){
