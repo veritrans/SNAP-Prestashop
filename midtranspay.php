@@ -84,6 +84,7 @@ class MidtransPay extends PaymentModule
 		$this->config_keys = array(			
 			'MT_DISPLAY_TITLE',
 			'MT_DISPLAY_DESCRIPTION',
+			'MT_MERCHANT_ID',
 			'MT_CLIENT_KEY',
 			'MT_SERVER_KEY',
 			'MT_API_VERSION',
@@ -128,6 +129,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTOFF_BTN',
 			'MT_TITLE_INSTALLMENTOFF_BTN',
 			'MT_BINS_INSTALLMENTOFF_BTN',
+			'MT_TERM_INSTALLMENTOFF_BTN',
 			'MT_ENABLED_INSTALLMENTON_BTN',
 			'MT_TITLE_INSTALLMENTON_BTN',
 			'MT_BINS_INSTALLMENTON_BTN',
@@ -235,6 +237,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
 		if (!isset($config['MT_BINS_INSTALLMENTOFF_BTN']))
 			Configuration::set('MT_BINS_INSTALLMENTOFF_BTN', "");
+		if (!isset($config['MT_TERM_INSTALLMENTOFF_BTN']))
+			Configuration::set('MT_TERM_INSTALLMENTOFF_BTN', "");
 
 		if (!isset($config['MT_ENABLED_INSTALLMENTON_BTN']))
 			Configuration::set('MT_ENABLED_INSTALLMENTON_BTN', 0);
@@ -341,6 +345,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTOFF_BTN', 0);
 		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTOFF_BTN', "Credit Card Installment for other bank via Midtrans");
 		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTOFF_BTN', "");
+		Configuration::updateGlobalValue('MT_TERM_INSTALLMENTOFF_BTN', "6,12");
 		Configuration::updateGlobalValue('MT_ENABLED_INSTALLMENTON_BTN', 0);
 		Configuration::updateGlobalValue('MT_TITLE_INSTALLMENTON_BTN', "Credit Card Installment via Midtrans");
 		Configuration::updateGlobalValue('MT_BINS_INSTALLMENTON_BTN', "");
@@ -540,10 +545,18 @@ class MidtransPay extends PaymentModule
 						),
 					array(
 						'type' => 'text',
+						'label' => 'Merchant ID',
+						'name' => 'MT_MERCHANT_ID',
+						'required' => true,
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Merchant ID (e.g M012345).',
+						'class' => 'v1_vtdirect_settings v2_settings sensitive'
+						),
+					array(
+						'type' => 'text',
 						'label' => 'Client Key',
 						'name' => 'MT_CLIENT_KEY',
 						'required' => true,
-						'desc' => 'Consult to your Merchant Administration Portal for the value of this field.',
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Client Key.',
 						'class' => 'v1_vtdirect_settings v2_settings sensitive'
 						),
 					array(
@@ -551,7 +564,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Server Key',
 						'name' => 'MT_SERVER_KEY',
 						'required' => true,
-						'desc' => 'Consult to your Merchant Administration Portal for the value of this field.',
+						'desc' => 'Refer to Merchant Administration Portal (Menu: Settings > Access Key) to get your Server Key.',
 						'class' => 'v1_vtdirect_settings v2_settings sensitive'
 						),
 					array(						
@@ -988,7 +1001,7 @@ class MidtransPay extends PaymentModule
 					// Installment Offline
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => '<strong>Enable Offline Installment Channel?</strong>',
+						'label' => '<strong>Enable Offline Installment?</strong>',
 						'name' => 'MT_ENABLED_INSTALLMENTOFF_BTN',
 						'required' => false,
 						'is_bool' => true,
@@ -1021,6 +1034,13 @@ class MidtransPay extends PaymentModule
 						'label' => 'Allowed CC BINs for Offline Installment',
 						'name' => 'MT_BINS_INSTALLMENTOFF_BTN',
 						'desc' => 'Allowed Credit Card BINs for Offline Installment payment. Leave blank if you are not sure.',
+						'class' => 'advanced-off'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Offline Installment Terms',
+						'name' => 'MT_TERM_INSTALLMENTOFF_BTN',
+						'desc' => 'Allowed Offline Installment terms. Separate terms with coma. e.g: 6,12.',
 						'class' => 'advanced-off'
 						),
 					// Promo payment
@@ -1371,6 +1391,7 @@ class MidtransPay extends PaymentModule
 			'api_versions' => array(1 => 'v1', 2 => 'v2'),
 			//'payment_type' => htmlentities(Configuration::get('MT_PAYMENT_TYPE'), ENT_COMPAT, 'UTF-8'),
 			//'payment_types' => array('vtweb' => 'VT-Web', 'vtdirect' => 'VT-Direct'),
+			'merchant_id' => htmlentities(Configuration::get('MT_MERCHANT_ID'), ENT_COMPAT, 'UTF-8'),
 			'client_key' => htmlentities(Configuration::get('MT_CLIENT_KEY'), ENT_COMPAT, 'UTF-8'),
 			'server_key' => htmlentities(Configuration::get('MT_SERVER_KEY'), ENT_COMPAT, 'UTF-8'),
 			'environments' => array(false => 'Development', true => 'Production'),
@@ -1571,7 +1592,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_INSTALLMENTON_BTN' => Configuration::get('MT_ENABLED_INSTALLMENTON_BTN'),
 			'MT_TITLE_INSTALLMENTON_BTN' => Configuration::get('MT_TITLE_INSTALLMENTON_BTN'),
 			'MT_ENABLED_PROMO_BTN' => Configuration::get('MT_ENABLED_PROMO_BTN'),
-			'MT_ENABLED_CUSTOMVA_BTN' => 1,
+			'MT_ENABLED_CUSTOMVA_BTN' => Configuration::get('MT_ENABLED_CUSTOMVA_BTN'),
 			'MT_LIST_CUSTOMVA' => explode(',', Configuration::get('MT_LIST_CUSTOMVA')),
 			// 'MT_LIST_CUSTOMVA' => ['permata','bca','other_va'],
 			'MT_TITLE_PROMO_BTN' => Configuration::get('MT_TITLE_PROMO_BTN'),
@@ -1931,12 +1952,16 @@ class MidtransPay extends PaymentModule
 			// add bin params
 			if (strlen(Configuration::get('MT_BINS_INSTALLMENTOFF_BTN')) > 0) {
 				$params_all['credit_card']['whitelist_bins'] = explode(',', Configuration::get('MT_BINS_INSTALLMENTOFF_BTN')); }
+			$termsOffline = array(6,12);
+			if (strlen(Configuration::get('MT_TERM_INSTALLMENTOFF_BTN')) > 0) {
+				$termsOffline = array_map('intval', explode(',', Configuration::get('MT_TERM_INSTALLMENTOFF_BTN')) ); }
 
 			// Build installment param
 			$params_all['credit_card']['installment']['terms'] = 
 			array(
-			  'offline' => $terms
+			  'offline' => $termsOffline
 			);
+			error_log( print_r($params_all,true) );
 		}
 		
     	// Online Installment
@@ -2137,7 +2162,11 @@ class MidtransPay extends PaymentModule
 
 		// Response first, then try to create notification object from post notif
 		$this->earlyResponse();
-		$midtrans_notification = new Veritrans_Notification();
+		try {
+			$midtrans_notification = new Veritrans_Notification();
+		} catch (Exception $e) {
+			$midtrans_notification = new Veritrans_Notification();
+		}
 
 		// $midtrans_notification = new Veritrans_Notification();
 		$history = new OrderHistory();

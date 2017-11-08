@@ -27,12 +27,15 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		$moduleUrl = substr($this->context->link->getModuleLink('midtranspay','?'), 0, -1);
 		$moduleSuccessUrl = $this->context->link->getModuleLink('midtranspay','success');
 		$moduleFailureUrl = $this->context->link->getModuleLink('midtranspay','failure');
+		$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production';
 		// error_log($moduleUrl); // debugan
 
 		$this->context->smarty->assign(array(
 			'order_id' => $cart->id,
 			'status' => $status,
-			'snap_script_url' => Configuration::get('MT_ENVIRONMENT') == 'production' ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
+			'snap_script_url' =>  $isProduction ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
+			'mixpanel_key' =>  $isProduction ? "17253088ed3a39b1e2bd2cbcfeca939a" : "9dcba9b440c831d517e8ff1beff40bd9",
+			'merchant_id' => Configuration::get('MT_MERCHANT_ID'),
 			'client_key' => Configuration::get('MT_CLIENT_KEY'),
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),
