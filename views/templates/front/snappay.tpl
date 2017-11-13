@@ -11,7 +11,6 @@
 
 <div class="text-center" id="payment-notice">
 {if $status == 'token_exist'}
-	<!-- <script src="https://app.sandbox.veritrans.co.id/snap/snap.js"></script> -->
 	<p>
 		<b><h3 class="alert alert-info">{l s='Please complete your payment...' mod='midtranspay'}</h3></b>
 	</p>
@@ -25,7 +24,7 @@
 		{l s='Or click button below:' mod='midtranspay'} <br/><br/>
 		<a href="#" id='pay-button' title="{l s='Do Payment!'}" class="btn btn-success"> &nbsp; {l s='Loading Payment..'} </a>
 		<br/><br/>
-		{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='customer support team. ' mod='midtranspay'}</a>.<br/><br/>
+		{l s='If you have questions, comments or concerns, please contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='customer support team' mod='midtranspay'}</a>.<br/><br/>
 	</h4>
 
 
@@ -35,7 +34,7 @@
 	</p>
 	<p class="warning">
 		{l s='We noticed a problem with your order. Please do re-checkout.
-		If you think this is an error, feel free to contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team. ' mod='midtranspay'}</a> <br/><br/>
+		If you think this is an error, feel free to contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team' mod='midtranspay'}</a> <br/><br/>
 	</p>
 	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
 	<i class="icon-refresh"></i>&nbsp;{l s='Re-Checkout'}</a>
@@ -65,8 +64,10 @@
 {/literal}
 
 <script data-cfasync="false" type="text/javascript">
-
-document.addEventListener("DOMContentLoaded", function(event) {
+var mainMidtransScriptRan = false ;
+var mainMidtransScript = function(event) {
+	if(mainMidtransScriptRan){ return false};
+	mainMidtransScriptRan = true;
 	function MixpanelTrackResult(token, merchant_id, cms_name, cms_version, plugin_name, status, result) {
 		var eventNames = {
 			success: 'pg-success',
@@ -170,5 +171,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	};
 	// Call execSnapCont() 
 	execSnapCont();
-});
+};
+
+document.addEventListener("DOMContentLoaded", mainMidtransScript(event));
+setTimeout(function(){ console.log('calling'); mainMidtransScript(null); }, 30000);  // failover, run main script if it never ran
 </script>

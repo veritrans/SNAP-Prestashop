@@ -67,7 +67,7 @@
 			<p class="cart_navigation" id="cart_navigation">
 				<a href="{$link->getPageLink('order', true, NULL, "step=3")}" class="button-exclusive btn btn-default"><i class="icon-chevron-left"></i>{l s='Other payment methods' mod='midtranspay'}
 				</a>
-				<button type="submit" id="place-order" class="button btn btn-default button-medium" /><span>{l s='Place my order' mod='midtranspay'}</span></button>
+				<button type="submit" id="place-order" class="button btn btn-default button-medium" /><span>{l s='Place my order' mod='midtranspay'}<i class="icon-chevron-right right"></i></span></button>
 			</p>
 		</form>
 	{/if}
