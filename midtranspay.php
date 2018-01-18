@@ -96,24 +96,6 @@ class MidtransPay extends PaymentModule
 			'MT_PAYMENT_FAILURE_STATUS_MAP',
 			'MT_PAYMENT_CHALLENGE_STATUS_MAP',
 			'MT_ENVIRONMENT',
-			'MT_ENABLED_CREDIT_CARD',
-			'MT_ENABLED_CIMB',
-			'MT_ENABLED_MANDIRI',
-			'MT_ENABLED_PERMATAVA',
-			'MT_ENABLED_BRIEPAY',
-			'MT_ENABLED_TELKOMSEL_CASH',
-			'MT_ENABLED_XL_TUNAI',
-			'MT_ENABLED_MANDIRI_BILL',
-			'MT_ENABLED_BBM_MONEY',
-			'MT_ENABLED_INDOMARET',
-			'MT_ENABLED_INDOSAT_DOMPETKU',
-			'MT_ENABLED_MANDIRI_ECASH',
-			'MT_SANITIZED',
-			'MT_ENABLE_INSTALLMENT',
-			'MT_ENABLED_BNI_INSTALLMENT',
-			'MT_ENABLED_MANDIRI_INSTALLMENT',
-			'MT_INSTALLMENTS_BNI',
-			'MT_INSTALLMENTS_MANDIRI',
 			'MT_MINAMOUNT',
 			// Additional feature vars
 			'MT_ENABLED_ADV',
@@ -149,12 +131,6 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_REDIRECT',
 		);
 
-		foreach (array('BNI', 'MANDIRI') as $bank) {
-			foreach (array(3, 6, 12) as $months) {
-				array_push($this->config_keys, 'MT_INSTALLMENTS_' . $bank . '_' . $months);
-			}
-		}
-
 		$config = Configuration::getMultiple($this->config_keys);
 
 		foreach ($this->config_keys as $key) {
@@ -175,34 +151,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
 		if (!isset($config['MT_DISPLAY_DESCRIPTION']))
 			Configuration::set('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
-		if (!isset($config['MT_SANITIZED']))
-			Configuration::set('MT_SANITIZED', 1);	
 		if (!isset($config['MT_3D_SECURE']))
 			Configuration::set('MT_3D_SECURE', 1);
-		if (!isset($config['MT_ENABLED_CREDIT_CARD']))
-			Configuration::set('MT_ENABLED_CREDIT_CARD', 0);
-		if (!isset($config['MT_ENABLED_CIMB']))
-			Configuration::set('MT_ENABLED_CIMB', 0);		
-		if (!isset($config['MT_ENABLED_MANDIRI']))
-			Configuration::set('MT_ENABLED_MANDIRI', 0);		
-		if (!isset($config['MT_ENABLED_PERMATAVA']))
-			Configuration::set('MT_ENABLED_PERMATAVA', 0);
-		if (!isset($config['MT_ENABLED_BRIEPAY']))
-			Configuration::set('MT_ENABLED_BRIEPAY', 0);
-		if (!isset($config['MT_ENABLED_TELKOMSEL_CASH']))
-			Configuration::set('MT_ENABLED_TELKOMSEL_CASH', 0);
-		if (!isset($config['MT_ENABLED_XL_TUNAI']))
-			Configuration::set('MT_ENABLED_XL_TUNAI', 0);
-		if (!isset($config['MT_ENABLED_MANDIRI_BILL']))
-			Configuration::set('MT_ENABLED_MANDIRI_BILL', 0);
-		if (!isset($config['MT_ENABLED_BBM_MONEY']))
-			Configuration::set('MT_ENABLED_BBM_MONEY', 0);
-		if (!isset($config['MT_ENABLED_INDOMARET']))
-			Configuration::set('MT_ENABLED_INDOMARET', 0);
-		if (!isset($config['MT_ENABLED_INDOSAT_DOMPETKU']))
-			Configuration::set('MT_ENABLED_INDOSAT_DOMPETKU', 0);
-		if (!isset($config['MT_ENABLED_MANDIRI_ECASH']))
-			Configuration::set('MT_ENABLED_MANDIRI_ECASH', 0);
 		if (!isset($config['MT_MINAMOUNT']))
 			Configuration::set('MT_MINAMOUNT', 500000);
 
@@ -331,7 +281,6 @@ class MidtransPay extends PaymentModule
 		// Set default config values
 		Configuration::updateGlobalValue('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
 		Configuration::updateGlobalValue('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
-		Configuration::updateGlobalValue('MT_SANITIZED', 1);	
 		Configuration::updateGlobalValue('MT_3D_SECURE', 1);
 		Configuration::updateGlobalValue('MT_MINAMOUNT', 500000);
 		Configuration::updateGlobalValue('MT_ENABLED_ADV', 0);
@@ -592,309 +541,6 @@ class MidtransPay extends PaymentModule
 						'desc' => 'You must enable 3D Secure. Please contact us if you wish to disable this feature in the Production environment.'
 						//'class' => ''
 						),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Enable sanitization',
-					// 	'name' => 'MT_SANITIZED',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'sanitized_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'sanitized_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Credit Card',
-					// 	'name' => 'MT_ENABLED_CREDIT_CARD',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'credit_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'credit_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Bank Transfer',
-					// 	'name' => 'MT_ENABLED_PERMATAVA',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'permatava_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'permatava_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Mandiri Billpayment',
-					// 	'name' => 'MT_ENABLED_MANDIRI_BILL',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'mandiri_bill_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'mandiri_bill_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'CIMB Clicks',
-					// 	'name' => 'MT_ENABLED_CIMB',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'cimb_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'cimb_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Mandiri ClickPay',
-					// 	'name' => 'MT_ENABLED_MANDIRI',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'mandiri_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'mandiri_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'BRI E-Pay',
-					// 	'name' => 'MT_ENABLED_BRIEPAY',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'briepay_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'briepay_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Telkomsel T-Cash',
-					// 	'name' => 'MT_ENABLED_TELKOMSEL_CASH',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'telkomsel_cash_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'telkomsel_cash_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'XL Tunai',
-					// 	'name' => 'MT_ENABLED_XL_TUNAI',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'xl_tunai_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'xl_tunai_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Indomaret',
-					// 	'name' => 'MT_ENABLED_INDOMARET',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'indomaret_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'indomaret_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Indosat Dompetku',
-					// 	'name' => 'MT_ENABLED_INDOSAT_DOMPETKU',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'indosat_dompetku_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'indosat_dompetku_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					// array(
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => 'Mandiri Ecash',
-					// 	'name' => 'MT_ENABLED_MANDIRI_ECASH',						
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'mandiri_ecash_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'mandiri_ecash_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),
-					// 	//'class' => ''
-					// 	),
-					/*array(
-						'type' => 'select',
-						'label' => 'Enable Installments',
-						'name' => 'MT_ENABLE_INSTALLMENT',						
-						'options' => array(
-							'query' => $installment_type,
-							'id' => 'id_option',
-							'name' => 'name'
-							),
-						//'class' => ''
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'BNI Installment',
-						'name' => 'MT_ENABLED_BNI_INSTALLMENT',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'MT_ENABLED_BNI_INSTALLMENT_on',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'MT_ENABLED_BNI_INSTALLMENT_off',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => 'MT_ENABLED_BNI_INSTALLMENT'
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Enable BNI Installments?',
-						'name' => 'MT_INSTALLMENTS_BNI',
-						//'class' => 'v1_vtweb_settings sensitive'\
-						'class' => 'MT_INSTALLMENTS_BNI'	
-						),
-					array(
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'MANDIRI Installment',
-						'name' => 'MT_ENABLED_MANDIRI_INSTALLMENT',						
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'MT_ENABLED_MANDIRI_INSTALLMENT_on',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'MT_ENABLED_MANDIRI_INSTALLMENT_off',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						//'class' => 'MT_ENABLED_MANDIRI_INSTALLMENT'
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Enable Mandiri Installments?',
-						'name' => 'MT_INSTALLMENTS_MANDIRI',
-						//'class' => 'v1_vtweb_settings sensitive'\
-						'class' => 'MT_INSTALLMENTS_MANDIRI'	
-						),*/							
-				/*	array(
-						'type' => 'checkbox',
-						'label' => 'Enable Mandiri Installments?',
-						'name' => 'MT_INSTALLMENTS',
-						'values' => array(
-							'query' => $installments_options['MANDIRI'],
-							'id' => 'id_option',
-							'name' => 'name'
-							),
-						//'class' => 'v1_vtweb_settings sensitive'
-						'class' => 'MT_INSTALLMENTS_MANDIRI'
-						),*/
 					array(
 						'type' => 'select',
 						'label' => 'Map payment SUCCESS status to:',
@@ -1421,14 +1067,6 @@ class MidtransPay extends PaymentModule
 			'server_key' => htmlentities(Configuration::get('MT_SERVER_KEY'), ENT_COMPAT, 'UTF-8'),
 			'environments' => array(false => 'Development', true => 'Production'),
 			'environment' => htmlentities(Configuration::get('MT_ENVIRONMENT'), ENT_COMPAT, 'UTF-8'),
-			'enable_3d_secure' => htmlentities(Configuration::get('MT_3D_SECURE'), ENT_COMPAT, 'UTF-8'),
-			'enable_sanitized' => htmlentities(Configuration::get('MT_SANITIZED'), ENT_COMPAT, 'UTF-8'),
-			'enabled_cimb' => htmlentities(Configuration::get('MT_ENABLED_CIMB'), ENT_COMPAT, 'UTF-8'),
-			'enabled_mandiri' => htmlentities(Configuration::get('MT_ENABLED_MANDIRI'), ENT_COMPAT, 'UTF-8'),
-			'enabled_permatava' => htmlentities(Configuration::get('MT_ENABLED_PERMATAVA'), ENT_COMPAT, 'UTF-8'),
-			'enabled_indomaret' => htmlentities(Configuration::get('MT_ENABLED_INDOMARET'), ENT_COMPAT, 'UTF-8'),
-			'enabled_indosat_dompetku' => htmlentities(Configuration::get('MT_ENABLED_INDOSAT_DOMPETKU'), ENT_COMPAT, 'UTF-8'),
-			'enabled_mandiri_ecash' => htmlentities(Configuration::get('MT_ENABLED_MANDIRI_ECASH'), ENT_COMPAT, 'UTF-8'),
 			'statuses' => $order_states,
 			'payment_success_status_map' => htmlentities(Configuration::get('MT_PAYMENT_SUCCESS_STATUS_MAP'), ENT_COMPAT, 'UTF-8'),
 			'payment_challenge_status_map' => htmlentities(Configuration::get('MT_PAYMENT_CHALLENGE_STATUS_MAP'), ENT_COMPAT, 'UTF-8'),
@@ -1727,24 +1365,6 @@ class MidtransPay extends PaymentModule
 		return $this->display(__FILE__, 'views/templates/front/payment_execution.tpl');
 	}
 //
-	public function getTermInstallment($name_bank){
-		$ans = array();
-		foreach ($this->config_keys as $key) {
-			if ( (strpos($key, 'MT_INSTALLMENTS_' . $name_bank ) !== FALSE) && (Configuration::get($key) == 'on') ){
-				
-				$term = Configuration::get('MT_INSTALLMENTS_'.$name_bank);
-				
-				$key_array = explode('_', $key);
-				//error_log($key); // debug
-				//error_log(print_r($key_array,true)); // debug
-				$ans[] = $key_array[3];
-				//error_log($key_array[3]); // debug
-			}
-    		
-		}
-		//return $ans;
-		return $term2;
-	}
 
 	// Retrocompatibility 1.4
 	public function execValidation($cart)
@@ -1844,8 +1464,7 @@ class MidtransPay extends PaymentModule
 			$gross_amount += $item['price'] * $item['quantity'];
 		}	
 		
-		$isBniInstallment = Configuration::get('MT_ENABLED_BNI_INSTALLMENT') == 1;
-		$isMandiriInstallment = Configuration::get('MT_ENABLED_MANDIRI_INSTALLMENT') == 1;
+
 		$warning_redirect = false;
 		$fullPayment = true;
 
@@ -1857,13 +1476,6 @@ class MidtransPay extends PaymentModule
 			'item_details' => $items,
 			'customer_details' => $params_customer_details
 			);
-
-		if( !$warning_redirect && 
-			($isBniInstallment || $isMandiriInstallment) && 
-			(!$fullPayment)  ){
-
-			$params_all['vtweb']['payment_options'] = $param_payment_option;		
-		}
 
 	   	/** 
 	    * Add additional features param
@@ -1967,11 +1579,7 @@ class MidtransPay extends PaymentModule
 			$params_all['credit_card']['installment']['terms'] = 
 			array(
 			  'bri' => $terms, 
-			  // 'danamon' => $terms, 
 			  'maybank' => $terms, 
-			  // 'bni' => $terms, 
-			  // 'mandiri' => $terms, 
-			  // 'cimb' => $terms,
 			  'bca' => $terms
 			);
 	    }
@@ -2002,13 +1610,10 @@ class MidtransPay extends PaymentModule
 			// Build installment param
 			$params_all['credit_card']['installment']['terms'] = 
 			array(
-			  // 'bri' => $terms, 
 			  'danamon' => $terms, 
-			  // 'maybank' => $terms, 
 			  'bni' => $terms, 
 			  'mandiri' => $terms, 
 			  'cimb' => $terms
-			  // 'bca' => $terms
 			);
 	    }
 
