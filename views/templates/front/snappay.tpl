@@ -112,16 +112,6 @@ var mainMidtransScript = function(event) {
 			var snapExecuted = false;
 			try{
 				console.log('Popup attempt:',++execCount);
-				// record 'pay' event to Mixpanel
-				mixpanel.track(
-					'pg-pay', {
-						merchant_id: MERCHANT_ID,
-						cms_name: CMS_NAME,
-						cms_version: CMS_VERSION,
-						plugin_name: PLUGIN_NAME,
-						snap_token: SNAP_TOKEN
-					}
-				);
 				snap.pay(SNAP_TOKEN , 
 				{
 					skipOrderSummary: true,
@@ -158,9 +148,22 @@ var mainMidtransScript = function(event) {
 				snapExecuted = true; // if SNAP popup executed, change flag to stop the retry.
 			} catch (e){ 
 				console.log(e);
+				if(execCount >= 20){
+					location.reload(); payButton.innerHTML = "Loading..."; return;
+				}
 				console.log('Exception when calling snap.pay()... Retrying in 1000ms!');
 			}
 			if (snapExecuted) {
+				// record 'pay' event to Mixpanel
+				mixpanel.track(
+					'pg-pay', {
+						merchant_id: MERCHANT_ID,
+						cms_name: CMS_NAME,
+						cms_version: CMS_VERSION,
+						plugin_name: PLUGIN_NAME,
+						snap_token: SNAP_TOKEN
+					}
+				);
 				clearInterval(callbackTimer);
 			}
 		}, 1000);
