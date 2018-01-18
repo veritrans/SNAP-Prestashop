@@ -100,6 +100,15 @@ var mainMidtransScript = function(event) {
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
 	var execCount = 0;
 	function execSnapCont(){
+		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall'}";
+		try{
+			var lastUrlFragment = baseRedirectUrl.split('/').pop();
+			var isContainsGetParam = lastUrlFragment.indexOf('?') > 0;
+			if(!isContainsGetParam){
+				baseRedirectUrl = baseRedirectUrl+'?';
+			}
+		} catch(e){}
+
 		var callbackTimer = setInterval(function() {
 			var snapExecuted = false;
 			try{
@@ -111,14 +120,14 @@ var mainMidtransScript = function(event) {
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'success', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
-						window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
 			        	MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'pending', result);
 						console.log(result?result:'no result');
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
 			        		payButton.innerHTML = 'Loading...';
-							window.location = "{$moduleSuccessUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+							window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 						}
 						if (typeof result.pdf_url == 'undefined'){ // if no link, hide btn
 							document.getElementById('instruction-button').style.display = "none";
@@ -132,7 +141,7 @@ var mainMidtransScript = function(event) {
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'error', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
-						window.location = "{$moduleFailureUrl|unescape:'htmlall'}?&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 					onClose: function(){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'close', null);
