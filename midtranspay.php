@@ -146,6 +146,7 @@ class MidtransPay extends PaymentModule
 			'MT_ENABLED_CUSTOMVA_BTN',
 			'MT_LIST_CUSTOMVA',
 			'MT_ENABLED_IGNORE_DENY',
+			'MT_ENABLED_REDIRECT',
 		);
 
 		foreach (array('BNI', 'MANDIRI') as $bank) {
@@ -274,6 +275,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_LIST_CUSTOMVA', "bca,mandiri,permata,other_va");
 		if (!isset($config['MT_ENABLED_IGNORE_DENY']))
 			Configuration::set('MT_ENABLED_IGNORE_DENY', 0);
+		if (!isset($config['MT_ENABLED_REDIRECT']))
+			Configuration::set('MT_ENABLED_REDIRECT', 0);
 
 		parent::__construct();
 
@@ -362,6 +365,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_ENABLED_CUSTOMVA_BTN', 0);
 		Configuration::updateGlobalValue('MT_LIST_CUSTOMVA', "");
 		Configuration::updateGlobalValue('MT_ENABLED_IGNORE_DENY', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_REDIRECT', 0);
 
 		return true;
 	}
@@ -1341,6 +1345,28 @@ class MidtransPay extends PaymentModule
 							),
 						'class' => 'advanced-ignore'
 						//'class' => ''
+						),
+					// Enable Snap Redirection instead of popup
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => 'Payment page redirect to Midtrans instead of popup?',
+						'name' => 'MT_ENABLED_REDIRECT',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'redirect_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'redirect_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-redirect'
+						//'class' => ''
 						)
 					),
 				'submit' => array(
@@ -1897,8 +1923,12 @@ class MidtransPay extends PaymentModule
 		    // error_log(print_r($params_all,true)); // debug
 		    $this->validateOrder($cart->id, Configuration::get('MT_ORDER_STATE_ID'), $cart->getOrderTotal(true, Cart::BOTH), $this->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
 		    $params_all['transaction_details']['order_id'] = $this->currentOrder; // OrderID is only available after validateOrder
-		  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
-		  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
+		    if(Configuration::get('MT_ENABLED_REDIRECT')){
+				$redirect_url = Veritrans_Snap::getRedirectUrl($params_all);	 
+		    }else{
+			  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
+			  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
+		    }
 		  	// error_log("redirect_url :".$redirect_url); // debug
 		  	$keys['redirect_url'] = $redirect_url;
 		} catch (Exception $e) {
