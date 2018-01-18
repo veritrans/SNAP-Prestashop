@@ -100,11 +100,13 @@ var mainMidtransScript = function(event) {
 	var execCount = 0;
 	function execSnapCont(){
 		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall'}";
+		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall'}"
 		try{
 			var lastUrlFragment = baseRedirectUrl.split('/').pop();
 			var isContainsGetParam = lastUrlFragment.indexOf('?') > 0;
 			if(!isContainsGetParam){
 				baseRedirectUrl = baseRedirectUrl+'?';
+				baseFailureRedirectUrl = baseFailureRedirectUrl+'?';
 			}
 		} catch(e){}
 
@@ -138,7 +140,7 @@ var mainMidtransScript = function(event) {
 					onError: function(result){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'error', result);
 						console.log(result?result:'no result');
-						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						window.location = baseFailureRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 					onClose: function(){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'close', null);

@@ -53,7 +53,7 @@ Payment Method Feature:
    * Unfinish Redirect URL: 
     >`http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=success`
    * Error Redirect URL: 
-    >`http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=success`
+    >`http://[your-site-url]/index.php?fc=module&module=midtranspay&controller=failure`
 
 ### Customization (Optional, For Developer)
 Feel free to change code if needed to customize the module.
