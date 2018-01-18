@@ -22,36 +22,50 @@
       $("#"+nameClass).closest('.margin-form').show();
       $("#"+nameClass).closest('.margin-form').prev().show();
     }  
-  } 
+  }
 
-  // function hideAdvanced(){
-  //   // hideOptions('advanced', "class");
-  //   $("#MT_ENABLED_INSTALLMENTON_BTN_on").parent().parent().parent().hide();
-  //   $("#MT_ENABLED_INSTALLMENTOFF_BTN_on").parent().parent().parent().hide();
-  //   $("#MT_ENABLED_PROMO_BTN_on").parent().parent().parent().hide();
-  //   $("#MT_ENABLED_MIGS_BTN_on").parent().parent().parent().hide();
-  //   $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").parent().parent().parent().hide();
-  //   console.log("hide advanced executed");
-  // }
+  //  HANDLE SHOW ADVANCED
 
-  // function showAdvanced(){
-  //   // showOptions('advanced', "class");
-  //   $("#MT_ENABLED_INSTALLMENTON_BTN_on").parent().parent().parent().show();
-  //   $("#MT_ENABLED_INSTALLMENTOFF_BTN_on").parent().parent().parent().show();
-  //   $("#MT_ENABLED_PROMO_BTN_on").parent().parent().parent().show();
-  //   $("#MT_ENABLED_MIGS_BTN_on").parent().parent().parent().show();
-  //   $("#MT_ENABLED_INSTALLMENTMIGS_BTN_on").parent().parent().parent().show();
-  //   console.log("show advanced executed");
-  // }
+  function changeViewAdvancedParents(arr,type){
+    console.log('changeViewAdvancedParents',type);
+    for (var i = 0; i < arr.length; i++) {
+      $(arr[i]).parent().parent().parent()[type]();
+    }
+  }
 
-  // function toggleAdvanced(){
-  //   if ($("#MT_ENABLED_ADV_on").prop('checked')){
-  //     showAdvanced(); 
-  //   } 
-  //   else if ($("#MT_ENABLED_ADV_off").prop('checked')) {
-  //     hideAdvanced();
-  //   }
-  // }
+  function toggleAdvanced(){
+    var advanceds = [
+      '#MT_ENABLED_INSTALLMENTON_BTN_on',
+      '#MT_ENABLED_INSTALLMENTOFF_BTN_on',
+      '#MT_ENABLED_PROMO_BTN_on',
+      '#MT_ENABLED_MIGS_BTN_on',
+      '#MT_ENABLED_INSTALLMENTMIGS_BTN_on',
+      '#MT_DISABLE_NON_MIGS_BTN_on',
+      '#MT_ENABLED_SAVECARD_on',
+      '#MT_ENABLED_FIELDS_on',
+      '#MT_ENABLED_CUSTOMVA_BTN_on',
+      '#MT_ENABLED_EXPIRY_on',
+      '#MT_ENABLED_IGNORE_DENY_on',
+      '#MT_ENABLED_REDIRECT_on',
+    ];
+    if ($("#MT_ENABLED_ADV_on").prop('checked')){
+      changeViewAdvancedParents(advanceds,'show'); 
+    } 
+    else if ($("#MT_ENABLED_ADV_off").prop('checked')) {
+      changeViewAdvancedParents(advanceds,'hide'); 
+    }
+  }
+
+  toggleAdvanced();
+  $("#MT_ENABLED_ADV_on").change(function(e, data) {
+    toggleAdvanced();
+  });
+  $("#MT_ENABLED_ADV_off").change(function(e, data) {
+    toggleAdvanced();
+  });
+
+  // END OF HANDLE SHOW ADVANCED
+
 
   function toggleENABLED_INSTALLMENTON_BTN(){
     if ($("#MT_ENABLED_INSTALLMENTON_BTN_on").prop('checked'))
@@ -108,15 +122,6 @@
       hideOptions('advanced-customva', "class");
   }
 
-
-  // toggleAdvanced();
-
-  // $("#MT_ENABLED_ADV_on").change(function(e, data) {
-  //   toggleAdvanced();
-  // });
-  // $("#MT_ENABLED_ADV_off").change(function(e, data) {
-  //   toggleAdvanced();
-  // });
   
   // Add listener to switch elements
   function addListenerToSwitch(){

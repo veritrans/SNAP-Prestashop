@@ -937,33 +937,32 @@ class MidtransPay extends PaymentModule
 						'name' => 'MT_KURS',
 						'desc' => 'Midtrans will use this rate to convert prices to IDR when there are no default conversion system.'
 						),
-					// array(						
-					// 	'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-					// 	'label' => '<strong>Show Advanced Features</strong>',
-					// 	'name' => 'MT_ENABLED_ADV',
-					// 	'required' => false,
-					// 	'is_bool' => true,
-					// 	'values' => array(
-					// 		array(
-					// 			'id' => 'advanced_feature_yes',
-					// 			'value' => 1,
-					// 			'label' => 'Yes'
-					// 			),
-					// 		array(
-					// 			'id' => 'advanced_feature_no',
-					// 			'value' => 0,
-					// 			'label' => 'No'
-					// 			)
-					// 		),						
-					// 	'desc' => ''
-					// 	//'class' => ''
-					// 	),
 					array(
 						'type' => 'text',
 						'label' => 'Installment Minimum Amount',
 						'name' => 'MT_MINAMOUNT',
 						'desc' => 'Minimum amount to allow payment using installment.',
 						'class' => 'advanced'
+						),
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Show Advanced Features</strong>',
+						'name' => 'MT_ENABLED_ADV',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'advanced_feature_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'advanced_feature_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),						
+						'desc' => ''
 						),
 					// Installment Online
 					array(						
@@ -1046,51 +1045,6 @@ class MidtransPay extends PaymentModule
 						'name' => 'MT_TERM_INSTALLMENTOFF_BTN',
 						'desc' => 'Allowed Offline Installment terms. Separate terms with coma. e.g: 6,12.',
 						'class' => 'advanced-off'
-						),
-					// Promo payment
-					array(						
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => '<strong>Enable Promo Payment?</strong>',
-						'name' => 'MT_ENABLED_PROMO_BTN',
-						'required' => false,
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'promo_btn_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'promo_btn_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),						
-						// 'desc' => 'Enable additional button for promo/discount, please makesure you have promo agreement with us.',
-						'class' => 'advanced-promo'
-						//'class' => ''
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Promo Button Display Text',
-						'name' => 'MT_TITLE_PROMO_BTN',
-						'required' => false,
-						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc.',
-						'class' => 'advanced-promo'
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Allowed CC BINs for Promo',
-						'name' => 'MT_BINS_PROMO_BTN',
-						'desc' => 'Allowed Credit Card BINs for Promo payment, separate payment method code with coma. e.g: 5,4811,bni. Leave blank if you are not sure.',
-						'class' => 'advanced-promo'
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Allowed Payment Method for Promo',
-						'name' => 'MT_METHOD_PROMO_BTN',
-						'desc' => 'Customize allowed payment method, separate payment method code with coma. e.g: bank_transfer,credit_card. Leave blank if you are not sure.',
-						'class' => 'advanced-promo'
 						),
 					// MIGS
 					array(						
@@ -1205,6 +1159,125 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Specify your acquiring bank for MIGS Online Installment. Leave blank if you are not sure.',
 						'class' => 'advanced-insmigs'
 						),
+					// Promo payment
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Bank Promotion Payment?</strong>',
+						'name' => 'MT_ENABLED_PROMO_BTN',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'promo_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'promo_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),						
+						// 'desc' => 'Enable additional button for promo/discount, please makesure you have promo agreement with us.',
+						'class' => 'advanced-promo'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Promo Button Display Text',
+						'name' => 'MT_TITLE_PROMO_BTN',
+						'required' => false,
+						'desc' => 'Customize payment button title that will be displayed to your customer when they checkout using Promo Button. e.g: Credit Card Promo etc.',
+						'class' => 'advanced-promo'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Allowed CC BINs for Promo',
+						'name' => 'MT_BINS_PROMO_BTN',
+						'desc' => 'Allowed Credit Card BINs for Promo payment, separate payment method code with coma. e.g: 5,4811,bni. Leave blank if you are not sure.',
+						'class' => 'advanced-promo'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Allowed Payment Method for Promo',
+						'name' => 'MT_METHOD_PROMO_BTN',
+						'desc' => 'Customize allowed payment method, separate payment method code with coma. e.g: bank_transfer,credit_card. Leave blank if you are not sure.',
+						'class' => 'advanced-promo'
+						),
+					// SaveCard
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Save Card?</strong>',
+						'name' => 'MT_ENABLED_SAVECARD',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'savecard_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'savecard_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-savecard'
+						//'class' => ''
+						),
+					// Enable Snap Redirection instead of popup
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => 'Payment page redirect to Midtrans instead of popup?',
+						'name' => 'MT_ENABLED_REDIRECT',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'redirect_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'redirect_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-redirect'
+						//'class' => ''
+						),
+					// Custom VA button
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => '<strong>Enable Separated Bank Transfer Button?</strong>',
+						'name' => 'MT_ENABLED_CUSTOMVA_BTN',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'customva_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'customva_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-fields'
+						//'class' => ''
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Displayed Banks',
+						'name' => 'MT_LIST_CUSTOMVA',
+						'required' => true,
+						'desc' => 'bank names separated by coma (,). e.g: permata,mandiri,bca,other_va',
+						'class' => 'advanced-customva'
+						),
 					// Custom Expiry
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1242,28 +1315,6 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Time unit of the duration. e.g: minutes',
 						'class' => 'advanced-expiry'
 						),
-					// SaveCard
-					array(						
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => '<strong>Enable Save Card?</strong>',
-						'name' => 'MT_ENABLED_SAVECARD',
-						'required' => false,
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'savecard_btn_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'savecard_btn_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						'class' => 'advanced-savecard'
-						//'class' => ''
-						),
 					// Custom Fields
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1294,78 +1345,26 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Up to 3 custom fields separated by coma (,). e.g: Order from web, Prestashop, Processing',
 						'class' => 'advanced-fields'
 						),
-					// Custom VA button
-					array(						
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => '<strong>Enable Separated Bank Transfer Button?</strong>',
-						'name' => 'MT_ENABLED_CUSTOMVA_BTN',
-						'required' => false,
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'fields_btn_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'fields_btn_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						'class' => 'advanced-fields'
-						//'class' => ''
-						),
-					array(
-						'type' => 'text',
-						'label' => 'Displayed Banks',
-						'name' => 'MT_LIST_CUSTOMVA',
-						'required' => true,
-						'desc' => 'bank names separated by coma (,). e.g: permata,mandiri,bca,other_va',
-						'class' => 'advanced-customva'
-						),
 					// Ignore Deny Notification
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Don\'t change order status when credit card transaction failed?',
+						'label' => 'Ignore order status change when credit card transaction failed/denied?',
 						'name' => 'MT_ENABLED_IGNORE_DENY',
 						'required' => false,
 						'is_bool' => true,
 						'values' => array(
 							array(
-								'id' => 'fields_btn_yes',
+								'id' => 'ignoredeny_btn_yes',
 								'value' => 1,
 								'label' => 'Yes'
 								),
 							array(
-								'id' => 'fields_btn_no',
+								'id' => 'ignoredeny_btn_no',
 								'value' => 0,
 								'label' => 'No'
 								)
 							),
 						'class' => 'advanced-ignore'
-						//'class' => ''
-						),
-					// Enable Snap Redirection instead of popup
-					array(						
-						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
-						'label' => 'Payment page redirect to Midtrans instead of popup?',
-						'name' => 'MT_ENABLED_REDIRECT',
-						'required' => false,
-						'is_bool' => true,
-						'values' => array(
-							array(
-								'id' => 'redirect_btn_yes',
-								'value' => 1,
-								'label' => 'Yes'
-								),
-							array(
-								'id' => 'redirect_btn_no',
-								'value' => 0,
-								'label' => 'No'
-								)
-							),
-						'class' => 'advanced-redirect'
 						//'class' => ''
 						)
 					),
