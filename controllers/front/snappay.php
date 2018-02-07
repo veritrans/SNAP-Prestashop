@@ -36,6 +36,8 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'snap_script_url' =>  $isProduction ? "https://app.midtrans.com/snap/snap.js" : "https://app.sandbox.midtrans.com/snap/snap.js",
 			'mixpanel_key' =>  $isProduction ? "17253088ed3a39b1e2bd2cbcfeca939a" : "9dcba9b440c831d517e8ff1beff40bd9",
 			'merchant_id' => Configuration::get('MT_MERCHANT_ID'),
+			'plugin_version' => $_GET['plugin_version'],
+			'cms_version' => _PS_VERSION_,
 			'client_key' => Configuration::get('MT_CLIENT_KEY'),
 			'snap_token' => $_GET['snap_token'],
 			'this_path' => $this->module->getPathUri(),

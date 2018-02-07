@@ -68,8 +68,9 @@ var mainMidtransScript = function(event) {
 	if(mainMidtransScriptRan){ return false};
 	mainMidtransScriptRan = true;
 	var payButton = document.getElementById('pay-button');
-	function MixpanelTrackResult(token, merchant_id, cms_name, cms_version, plugin_name, status, result) {
+	function MixpanelTrackResult(token, merchant_id, cms_name, cms_version, plugin_name, plugin_version, status, result) {
 		var eventNames = {
+			pay: 'pg-pay',
 			success: 'pg-success',
 			pending: 'pg-pending',
 			error: 'pg-error',
@@ -82,6 +83,7 @@ var mainMidtransScript = function(event) {
 				cms_name: cms_name,
 				cms_version: cms_version,
 				plugin_name: plugin_name,
+				plugin_version: plugin_version,
 				snap_token: token,
 				payment_type: result ? result.payment_type: null,
 				order_id: result ? result.order_id: null,
@@ -94,8 +96,9 @@ var mainMidtransScript = function(event) {
 	var SNAP_TOKEN = "{$snap_token}";
 	var MERCHANT_ID = "{$merchant_id}";
 	var CMS_NAME = "prestashop";
-	var CMS_VERSION = "1.7";
+	var CMS_VERSION = "{$cms_version}";
 	var PLUGIN_NAME = "prestashop_main";
+	var PLUGIN_VERSION = "{$plugin_version}";
 
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
 	var execCount = 0;
@@ -119,13 +122,13 @@ var mainMidtransScript = function(event) {
 				{
 					skipOrderSummary: true,
 					onSuccess: function(result){
-						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'success', result);
+						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'success', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
 						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 			        onPending: function(result){
-			        	MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'pending', result);
+			        	MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'pending', result);
 						console.log(result?result:'no result');
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
 			        		payButton.innerHTML = 'Loading...';
@@ -140,13 +143,13 @@ var mainMidtransScript = function(event) {
 			        	document.getElementById('pending-notice').style.display = "block";
 			        },
 					onError: function(result){
-						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'error', result);
+						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'error', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
 						window.location = baseFailureRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
 					},
 					onClose: function(){
-						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, 'close', null);
+						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'close', null);
 					}
 
 				});
@@ -160,15 +163,7 @@ var mainMidtransScript = function(event) {
 			}
 			if (snapExecuted) {
 				// record 'pay' event to Mixpanel
-				mixpanel.track(
-					'pg-pay', {
-						merchant_id: MERCHANT_ID,
-						cms_name: CMS_NAME,
-						cms_version: CMS_VERSION,
-						plugin_name: PLUGIN_NAME,
-						snap_token: SNAP_TOKEN
-					}
-				);
+				MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'pay', null);
 				clearInterval(callbackTimer);
 			}
 		}, 1000);
