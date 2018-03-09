@@ -63,6 +63,8 @@
 {/literal}
 
 <script data-cfasync="false" type="text/javascript">
+var mixpanel = mixpanel ? mixpanel : { init : function(){}, track : function(){} };
+
 var mainMidtransScriptRan = false;
 var mainMidtransScript = function(event) { 
 	if(mainMidtransScriptRan){ return false};
@@ -102,6 +104,9 @@ var mainMidtransScript = function(event) {
 
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
 	var execCount = 0;
+	var snapExecuted = false;
+	var intervalFunction = 0;
+
 	function execSnapCont(){
 		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall'}";
 		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall'}"
@@ -114,8 +119,7 @@ var mainMidtransScript = function(event) {
 			}
 		} catch(e){}
 
-		var callbackTimer = setInterval(function() {
-			var snapExecuted = false;
+		intervalFunction = setInterval(function() {
 			try{
 				console.log('Popup attempt:',++execCount);
 				snap.pay(SNAP_TOKEN , 
@@ -160,11 +164,12 @@ var mainMidtransScript = function(event) {
 				}
 				console.log(e);
 				console.log('Snap s.goHome not ready yet... Retrying in 1000ms!');
-			}
-			if (snapExecuted) {
-				// record 'pay' event to Mixpanel
-				MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'pay', null);
-				clearInterval(callbackTimer);
+			} finally {
+				if (snapExecuted) {
+					// record 'pay' event to Mixpanel
+					MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'pay', null);
+					clearInterval(intervalFunction);
+				}
 			}
 		}, 1000);
 	};
