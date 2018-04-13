@@ -109,11 +109,12 @@ var mainMidtransScript = function(event) {
 
 	function execSnapCont(){
 		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall'}";
-		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall'}"
+		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall'}";
 		try{
-			var lastUrlFragment = baseRedirectUrl.split('/').pop();
-			var isContainsGetParam = lastUrlFragment.indexOf('?') > 0;
-			if(!isContainsGetParam){
+			var locationUrl = document.createElement("a");
+			locationUrl.href = baseRedirectUrl;
+			var isContainsQueryString = locationUrl.search.length > 0;
+			if(!isContainsQueryString){
 				baseRedirectUrl = baseRedirectUrl+'?';
 				baseFailureRedirectUrl = baseFailureRedirectUrl+'?';
 			}
