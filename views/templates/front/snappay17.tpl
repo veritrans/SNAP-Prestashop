@@ -95,12 +95,12 @@ var mainMidtransScript = function(event) {
 		);
 	}
 
-	var SNAP_TOKEN = "{$snap_token}";
-	var MERCHANT_ID = "{$merchant_id}";
+	var SNAP_TOKEN = "{$snap_token|escape:'htmlall'}";
+	var MERCHANT_ID = "{$merchant_id|escape:'htmlall'}";
 	var CMS_NAME = "prestashop";
-	var CMS_VERSION = "{$cms_version}";
+	var CMS_VERSION = "{$cms_version|escape:'htmlall'}";
 	var PLUGIN_NAME = "prestashop_main";
-	var PLUGIN_VERSION = "{$plugin_version}";
+	var PLUGIN_VERSION = "{$plugin_version|escape:'htmlall'}";
 
 	// Continously retry to execute SNAP popup if fail, with 1000ms delay between retry
 	var execCount = 0;
