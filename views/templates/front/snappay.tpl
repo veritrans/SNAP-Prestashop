@@ -188,6 +188,6 @@ var mainMidtransScript = function(event) {
 	execSnapCont();
 };
 
-document.addEventListener("DOMContentLoaded", mainMidtransScript(event));
+document.addEventListener("DOMContentLoaded", mainMidtransScript);
 setTimeout(function(){ console.log('calling'); mainMidtransScript(null); }, 30000);  // failover, run main script if it never ran
 </script>
