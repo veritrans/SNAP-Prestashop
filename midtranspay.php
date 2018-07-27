@@ -119,6 +119,7 @@ class MidtransPay extends PaymentModule
 			'MT_TITLE_PROMO_BTN',
 			'MT_METHOD_PROMO_BTN',
 			'MT_BINS_PROMO_BTN',
+			'MT_PROMO_CODE',
 			'MT_ENABLED_EXPIRY',
 			'MT_EXPIRY_DURATION',
 			'MT_EXPIRY_UNIT',
@@ -206,6 +207,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_METHOD_PROMO_BTN', "");
 		if (!isset($config['MT_BINS_PROMO_BTN']))
 			Configuration::set('MT_BINS_PROMO_BTN', "");
+		if (!isset($config['MT_PROMO_CODE']))
+			Configuration::set('MT_PROMO_CODE', "");
 
 		if (!isset($config['MT_ENABLED_EXPIRY']))
 			Configuration::set('MT_ENABLED_EXPIRY', 0);
@@ -305,6 +308,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_TITLE_PROMO_BTN', "Online Payment Promo via Midtrans");
 		Configuration::updateGlobalValue('MT_METHOD_PROMO_BTN', "");
 		Configuration::updateGlobalValue('MT_BINS_PROMO_BTN', "");
+		Configuration::updateGlobalValue('MT_PROMO_CODE', "");
 		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
 		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
 		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
@@ -850,6 +854,15 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Customize allowed payment method, separate payment method code with coma. e.g: bank_transfer,credit_card. Leave blank if you are not sure.',
 						'class' => 'advanced-promo'
 						),
+					array(
+						'type' => 'text',
+						'label' => 'Promo Code',
+						'name' => 'MT_PROMO_CODE',
+						'desc' => 'Promo Code that would be used for discount. Leave blank if you are not sure.',
+						'class' => 'advanced-promo'
+						),
+
+
 					// SaveCard
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1656,8 +1669,14 @@ class MidtransPay extends PaymentModule
 		if (strlen(Configuration::get('MT_METHOD_PROMO_BTN')) > 0) {
 			$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
 
+		// read promo code
+		$promoCode = 'onlinepromo'; 
+		if (strlen(Configuration::get('MT_PROMO_CODE')) >= 1) {
+			$promoCode = Configuration::get('MT_PROMO_CODE'); 
+		}
 		//add voucher / cart rule programatically
-        $cartRule = new CartRule(CartRule::getIdByCode('onlinepromo'));
+		
+        $cartRule = new CartRule(CartRule::getIdByCode($promoCode));
         $this->context->cart->addCartRule($cartRule->id);
         $this->context->cart->update();
 
