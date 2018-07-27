@@ -861,8 +861,6 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Promo Code that would be used for discount. Leave blank if you are not sure.',
 						'class' => 'advanced-promo'
 						),
-
-
 					// SaveCard
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1447,6 +1445,10 @@ class MidtransPay extends PaymentModule
 			'billing_address' => $params_billing_address, 
 			'shipping_address' => $params_shipping_address
 			);
+		
+		if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+			$this->injectPromoCode();
+		}
 
 		$items = $this->addCommodities($cart, $shipping_cost, $usd);
 		
@@ -1494,7 +1496,7 @@ class MidtransPay extends PaymentModule
 	    * Add additional features param
 	    */
 		
-		// Promo payment, coupled with validation17.php->addPromoFeature()
+		// Promo payment
 		if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
 			$params_all = $this->addPromoParam($params_all);
 		}
@@ -1669,18 +1671,20 @@ class MidtransPay extends PaymentModule
 		if (strlen(Configuration::get('MT_METHOD_PROMO_BTN')) > 0) {
 			$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
 
+		return $params_all;
+	}
+
+	public function injectPromoCode()
+	{
 		// read promo code
 		$promoCode = 'onlinepromo'; 
 		if (strlen(Configuration::get('MT_PROMO_CODE')) >= 1) {
 			$promoCode = Configuration::get('MT_PROMO_CODE'); 
 		}
 		//add voucher / cart rule programatically
-		
         $cartRule = new CartRule(CartRule::getIdByCode($promoCode));
         $this->context->cart->addCartRule($cartRule->id);
         $this->context->cart->update();
-
-		return $params_all;
 	}
 
 	public function addCustomVAparam($params_all,$bank)
