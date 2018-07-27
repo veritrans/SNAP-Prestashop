@@ -72,7 +72,7 @@ class MidtransPay extends PaymentModule
 	{
 		$this->name = 'midtranspay';
 		$this->tab = 'payments_gateways';
-		$this->version = '2.4';
+		$this->version = '2.5';
 		$this->author = 'Midtrans';
 		$this->bootstrap = true;
 		
