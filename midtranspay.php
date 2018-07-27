@@ -72,7 +72,7 @@ class MidtransPay extends PaymentModule
 	{
 		$this->name = 'midtranspay';
 		$this->tab = 'payments_gateways';
-		$this->version = '2.3';
+		$this->version = '2.4';
 		$this->author = 'Midtrans';
 		$this->bootstrap = true;
 		
@@ -1648,16 +1648,18 @@ class MidtransPay extends PaymentModule
 
     	$params_all['enabled_payments'][] = 'credit_card';
 
-		// Promo Payment
-	    if ($_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
-			// add bin params
-			if (strlen(Configuration::get('MT_BINS_PROMO_BTN')) > 0) {
-				$params_all['credit_card']['whitelist_bins'] = explode(',', Configuration::get('MT_BINS_PROMO_BTN')); }
+		// add bin params
+		if (strlen(Configuration::get('MT_BINS_PROMO_BTN')) > 0) {
+			$params_all['credit_card']['whitelist_bins'] = explode(',', Configuration::get('MT_BINS_PROMO_BTN')); }
 
-			// add payment method
-			if (strlen(Configuration::get('MT_METHOD_PROMO_BTN')) > 0) {
-				$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
-	    }
+		// add payment method
+		if (strlen(Configuration::get('MT_METHOD_PROMO_BTN')) > 0) {
+			$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
+
+		//add voucher / cart rule programatically
+        $cartRule = new CartRule(CartRule::getIdByCode('onlinepromo'));
+        $this->context->cart->addCartRule($cartRule->id);
+        $this->context->cart->update();
 
 		return $params_all;
 	}

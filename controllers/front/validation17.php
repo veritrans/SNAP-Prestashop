@@ -24,22 +24,10 @@ class MidtransPayValidation17ModuleFrontController extends ModuleFrontController
             die($this->module->l('This payment method is not available.', 'validation'));
         }
 
-        // add promo code for promo feature
-        $this->addPromoFeature();
-
         $midtranspay = new MidtransPay();
         $keys = $midtranspay->execValidation($cart);
         // if ($keys['isWarning']){          
         //     Tools::redirectLink('index.php?fc=module&module=midtranspay&controller=warning&redirlink='.$keys['redirect_url'].'&message='.$keys['message']); }
         Tools::redirectLink($keys['redirect_url']);
-    }
-
-    public function addPromoFeature(){
-        if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1){
-            // add discount to cart
-            $cartRule = new CartRule(CartRule::getIdByCode('onlinepromo'));
-            $this->context->cart->addCartRule($cartRule->id);
-            $this->context->cart->update();
-        }
     }
 }
