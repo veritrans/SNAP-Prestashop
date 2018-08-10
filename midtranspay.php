@@ -120,6 +120,7 @@ class MidtransPay extends PaymentModule
 			'MT_METHOD_PROMO_BTN',
 			'MT_BINS_PROMO_BTN',
 			'MT_PROMO_CODE',
+			'MT_PROMO_CUSTOM_FIELDS',
 			'MT_ENABLED_EXPIRY',
 			'MT_EXPIRY_DURATION',
 			'MT_EXPIRY_UNIT',
@@ -209,6 +210,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_BINS_PROMO_BTN', "");
 		if (!isset($config['MT_PROMO_CODE']))
 			Configuration::set('MT_PROMO_CODE', "");
+		if (!isset($config['MT_PROMO_CUSTOM_FIELDS']))
+			Configuration::set('MT_PROMO_CUSTOM_FIELDS', "");
 
 		if (!isset($config['MT_ENABLED_EXPIRY']))
 			Configuration::set('MT_ENABLED_EXPIRY', 0);
@@ -309,6 +312,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_METHOD_PROMO_BTN', "");
 		Configuration::updateGlobalValue('MT_BINS_PROMO_BTN', "");
 		Configuration::updateGlobalValue('MT_PROMO_CODE', "");
+		Configuration::updateGlobalValue('MT_PROMO_CUSTOM_FIELDS', "");
 		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
 		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
 		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
@@ -858,7 +862,15 @@ class MidtransPay extends PaymentModule
 						'type' => 'text',
 						'label' => 'Promo Code',
 						'name' => 'MT_PROMO_CODE',
-						'desc' => 'Promo Code that would be used for discount. Leave blank if you are not sure.',
+						'desc' => 'Promo Code that would be used for discount. Leave blank if you are not sure, default code will be used.',
+						'class' => 'advanced-promo'
+						),
+					array(
+						'type' => 'text',
+						'label' => 'Custom Fields for Promo',
+						'name' => 'MT_PROMO_CUSTOM_FIELDS',
+						'required' => false,
+						'desc' => 'Custom fields to be sent to merchant Up to 3 custom fields separated by coma (,). e.g: promogopay1',
 						'class' => 'advanced-promo'
 						),
 					// SaveCard
@@ -1532,9 +1544,12 @@ class MidtransPay extends PaymentModule
 	    // Add custom fields params
 	    if (Configuration::get('MT_ENABLED_FIELDS') == 1){
 	    	$custom_fields_params = explode(",",Configuration::get('MT_FILEDS'));
-			$params_all['custom_field1'] = !empty($custom_fields_params[0]) ? $custom_fields_params[0] : null;
-			$params_all['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
-			$params_all['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;	
+	    	if( empty($params_all['custom_field1']) )
+				$params_all['custom_field1'] = !empty($custom_fields_params[0]) ? $custom_fields_params[0] : null;
+			if( empty($params_all['custom_field2']) )
+				$params_all['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
+			if( empty($params_all['custom_field3']) )
+				$params_all['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;	
 	    }
 
 	    // Add savecard params
@@ -1671,6 +1686,14 @@ class MidtransPay extends PaymentModule
 		// add payment method
 		if (strlen(Configuration::get('MT_METHOD_PROMO_BTN')) > 0) {
 			$params_all['enabled_payments'] = explode(',', Configuration::get('MT_METHOD_PROMO_BTN')); }
+
+		// Add custom fields params
+	    if (strlen(Configuration::get('MT_PROMO_CUSTOM_FIELDS')) > 0){
+	    	$custom_fields_params = explode(",",Configuration::get('MT_PROMO_CUSTOM_FIELDS'));
+			$params_all['custom_field1'] = !empty($custom_fields_params[0]) ? $custom_fields_params[0] : null;
+			$params_all['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
+			$params_all['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;	
+	    }
 
 		return $params_all;
 	}
