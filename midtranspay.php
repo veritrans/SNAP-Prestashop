@@ -1446,8 +1446,9 @@ class MidtransPay extends PaymentModule
 			'shipping_address' => $params_shipping_address
 			);
 		
+		// Inject promo code to cart for Promo payment
 		if (isset($_GET['feature']) && $_GET['feature'] == 'MT_ENABLED_PROMO_BTN' && Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
-			$this->injectPromoCode();
+			$this->context->cart = $this->injectPromoCode($this->context->cart);
 		}
 
 		$items = $this->addCommodities($cart, $shipping_cost, $usd);
@@ -1674,7 +1675,7 @@ class MidtransPay extends PaymentModule
 		return $params_all;
 	}
 
-	public function injectPromoCode()
+	public function injectPromoCode($cart)
 	{
 		// read promo code
 		$promoCode = 'onlinepromo'; 
@@ -1682,9 +1683,10 @@ class MidtransPay extends PaymentModule
 			$promoCode = Configuration::get('MT_PROMO_CODE'); 
 		}
 		//add voucher / cart rule programatically
-        $cartRule = new CartRule(CartRule::getIdByCode($promoCode));
-        $this->context->cart->addCartRule($cartRule->id);
-        $this->context->cart->update();
+		$cartRule = new CartRule(CartRule::getIdByCode($promoCode));
+		$cart->addCartRule($cartRule->id);
+		$cart->update();
+		return $cart;
 	}
 
 	public function addCustomVAparam($params_all,$bank)
