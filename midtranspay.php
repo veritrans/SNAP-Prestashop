@@ -596,7 +596,7 @@ class MidtransPay extends PaymentModule
 						'label' => 'Installment Minimum Amount',
 						'name' => 'MT_MINAMOUNT',
 						'desc' => 'Minimum amount to allow payment using installment.',
-						'class' => 'advanced'
+						'class' => 'advanced-insamount'
 						),
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
