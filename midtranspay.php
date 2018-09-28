@@ -131,6 +131,7 @@ class MidtransPay extends PaymentModule
 			'MT_LIST_CUSTOMVA',
 			'MT_ENABLED_IGNORE_DENY',
 			'MT_ENABLED_REDIRECT',
+			'MT_ENABLED_MAP_FINISH_URL',
 		);
 
 		$config = Configuration::getMultiple($this->config_keys);
@@ -233,6 +234,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_ENABLED_IGNORE_DENY', 0);
 		if (!isset($config['MT_ENABLED_REDIRECT']))
 			Configuration::set('MT_ENABLED_REDIRECT', 0);
+		if (!isset($config['MT_ENABLED_MAP_FINISH_URL']))
+			Configuration::set('MT_ENABLED_MAP_FINISH_URL', 0);
 
 		parent::__construct();
 
@@ -323,6 +326,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_LIST_CUSTOMVA', "");
 		Configuration::updateGlobalValue('MT_ENABLED_IGNORE_DENY', 0);
 		Configuration::updateGlobalValue('MT_ENABLED_REDIRECT', 0);
+		Configuration::updateGlobalValue('MT_ENABLED_MAP_FINISH_URL', 0);
 
 		return true;
 	}
@@ -915,6 +919,28 @@ class MidtransPay extends PaymentModule
 								)
 							),
 						'class' => 'advanced-redirect'
+						//'class' => ''
+						),
+					// Enable use of Dashboard Finish URL instead of finish url hardcoded by module
+					array(						
+						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
+						'label' => 'Use Dashboard configured finish url instead of auto configured url?',
+						'name' => 'MT_ENABLED_MAP_FINISH_URL',
+						'required' => false,
+						'is_bool' => true,
+						'values' => array(
+							array(
+								'id' => 'map_finish_url_btn_yes',
+								'value' => 1,
+								'label' => 'Yes'
+								),
+							array(
+								'id' => 'map_finish_url_btn_no',
+								'value' => 0,
+								'label' => 'No'
+								)
+							),
+						'class' => 'advanced-mapfinishurl'
 						//'class' => ''
 						),
 					// Custom VA button

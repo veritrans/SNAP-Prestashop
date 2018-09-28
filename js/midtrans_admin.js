@@ -47,6 +47,7 @@
       '#MT_ENABLED_EXPIRY_on',
       '#MT_ENABLED_IGNORE_DENY_on',
       '#MT_ENABLED_REDIRECT_on',
+      '#MT_ENABLED_MAP_FINISH_URL_on',
     ];
     if ($("#MT_ENABLED_ADV_on").prop('checked')){
       changeViewAdvancedParents(advanceds,'show'); 
