@@ -28,6 +28,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 		$moduleSuccessUrl = $this->context->link->getModuleLink('midtranspay','success');
 		$moduleFailureUrl = $this->context->link->getModuleLink('midtranspay','failure');
 		$isProduction = Configuration::get('MT_ENVIRONMENT') == 'production';
+		$isUsingMAPFinishUrl = Configuration::get('MT_ENABLED_MAP_FINISH_URL');
 		// error_log($moduleUrl); // debugan
 
 		$this->context->smarty->assign(array(
@@ -46,6 +47,7 @@ class MidtransPaySnappayModuleFrontController extends ModuleFrontController
 			'moduleUrl' => $moduleUrl,
 			'moduleSuccessUrl' => $moduleSuccessUrl,
 			'moduleFailureUrl' => $moduleFailureUrl,
+			'isUsingMAPFinishUrl' => $isUsingMAPFinishUrl,
 		));
 		if (version_compare(Configuration::get('PS_VERSION_DB'), '1.7') == -1)
 			$this->setTemplate('snappay.tpl');

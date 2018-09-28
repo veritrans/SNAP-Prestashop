@@ -130,7 +130,11 @@ var mainMidtransScript = function(event) {
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'success', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
+{if $isUsingMAPFinishUrl}
+						window.location = result.finish_redirect_url;
+{else}
 						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+{/if}
 					},
 			        onPending: function(result){
 			        	MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'pending', result);
