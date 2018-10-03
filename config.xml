@@ -2,7 +2,7 @@
 <module>
 	<name>midtranspay</name>
 	<displayName><![CDATA[Midtrans Pay]]></displayName>
-	<version><![CDATA[2.6]]></version>
+	<version><![CDATA[2.7]]></version>
 	<description><![CDATA[Accept payments for your products via Midtrans payment gateway.]]></description>
 	<author><![CDATA[Midtrans]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
