@@ -72,7 +72,7 @@ class MidtransPay extends PaymentModule
 	{
 		$this->name = 'midtranspay';
 		$this->tab = 'payments_gateways';
-		$this->version = '2.6';
+		$this->version = '2.7';
 		$this->author = 'Midtrans';
 		$this->bootstrap = true;
 		
@@ -1595,7 +1595,7 @@ class MidtransPay extends PaymentModule
 				$redirect_url = Veritrans_Snap::getRedirectUrl($params_all);	 
 		    }else{
 			  	$snapToken = Veritrans_Snap::getSnapToken($params_all);
-			  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken,'plugin_version' => $this->version]);
+			  	$redirect_url= $this->context->link->getModuleLink($this->name,'snappay',['snap_token' => $snapToken]);
 		    }
 		  	// error_log("redirect_url :".$redirect_url); // debug
 		  	$keys['redirect_url'] = $redirect_url;
