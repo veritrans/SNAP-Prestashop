@@ -1289,22 +1289,28 @@ class MidtransPay extends PaymentModule
 		if (!$this->checkCurrency($params['cart']))
 			return;
 		$cart = $this->context->cart;
+		$orderTotal = $cart->getOrderTotal();
 
 		// error_log( $cart->getOrderTotal(). " ### " . Configuration::get('MT_MINAMOUNT')); // debugan
 		// check if gross amount is above installment amount threshold && installment is enabled
-		$installment_note = '';
+		$installment_available = '';
 		$installmentEnabled = false;
 		if ( Configuration::get('MT_ENABLED_INSTALLMENTON_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') ){
 			$installmentEnabled = true; }
-		if ($installmentEnabled && $cart->getOrderTotal() >= Configuration::get('MT_MINAMOUNT')) {
-			$installment_note = 'available'; }
+		if ($installmentEnabled && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+			$installment_available = 'available'; }
 		else if ($installmentEnabled){
-			$installment_note = 'unavailable'; }
+			$installment_available = 'unavailable'; }
+		
+		$promo_available = '';
+		if( Configuration::get('MT_ENABLED_PROMO_BTN') == 1 && $orderTotal >= intval(Configuration::get('MT_MINAMOUNT_PROMO')) ){
+			$promo_available = 'available'; }
 
 		$this->context->smarty->assign(array(
 			'cart' => $cart,
 			'MT_DISPLAY_TITLE' => Configuration::get('MT_DISPLAY_TITLE'),
-			'installment_note' => $installment_note,
+			'installment_available' => $installment_available,
+			'promo_available' => $promo_available,
 			'MT_ENABLED_MIGS_BTN' => Configuration::get('MT_ENABLED_MIGS_BTN'),
 			'MT_TITLE_MIGS_BTN' => Configuration::get('MT_TITLE_MIGS_BTN'),
 			'MT_DISABLE_NON_MIGS_BTN' => Configuration::get('MT_DISABLE_NON_MIGS_BTN'),
