@@ -1520,12 +1520,24 @@ class MidtransPay extends PaymentModule
 				$conversion_func = function($input) { return $input * intval(Configuration::get('MT_KURS')); };
 			}
 
-			foreach ($items as &$item) {						
-				$item['price'] = intval(ceil(call_user_func($conversion_func, $item['price'])));				
+			foreach ($items as &$item) {
+				$converted_item_price = call_user_func($conversion_func, $item['price']);
+				$item['price'] = 
+					intval(
+							Tools::ps_round(
+								$converted_item_price,
+								(Currency::getCurrencyInstance(intval($this->id_currency->decimals)) * _PS_PRICE_DISPLAY_PRECISION_)
+							)
+					);				
 			}
 		}else if($cart_currency->iso_code == 'IDR') {
 			foreach ($items as &$item) {						
-				$item['price'] = intval(ceil($item['price']));				
+				$item['price'] = intval(
+					Tools::ps_round(
+						$item['price'],
+						(Currency::getCurrencyInstance(intval($this->id_currency->decimals)) * _PS_PRICE_DISPLAY_PRECISION_)
+					)
+				);
 			}
 		}
 		
