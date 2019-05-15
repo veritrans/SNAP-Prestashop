@@ -72,7 +72,7 @@ class MidtransPay extends PaymentModule
 	{
 		$this->name = 'midtranspay';
 		$this->tab = 'payments_gateways';
-		$this->version = '2.7';
+		$this->version = '2.7.1';
 		$this->author = 'Midtrans';
 		$this->bootstrap = true;
 		
@@ -121,6 +121,7 @@ class MidtransPay extends PaymentModule
 			'MT_BINS_PROMO_BTN',
 			'MT_PROMO_CODE',
 			'MT_PROMO_CUSTOM_FIELDS',
+			'MT_MINAMOUNT_PROMO',
 			'MT_ENABLED_EXPIRY',
 			'MT_EXPIRY_DURATION',
 			'MT_EXPIRY_UNIT',
@@ -213,6 +214,8 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_PROMO_CODE', "");
 		if (!isset($config['MT_PROMO_CUSTOM_FIELDS']))
 			Configuration::set('MT_PROMO_CUSTOM_FIELDS', "");
+		if (!isset($config['MT_MINAMOUNT_PROMO']))
+			Configuration::set('MT_MINAMOUNT_PROMO', 10000);
 
 		if (!isset($config['MT_ENABLED_EXPIRY']))
 			Configuration::set('MT_ENABLED_EXPIRY', 0);
@@ -316,6 +319,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_BINS_PROMO_BTN', "");
 		Configuration::updateGlobalValue('MT_PROMO_CODE', "");
 		Configuration::updateGlobalValue('MT_PROMO_CUSTOM_FIELDS', "");
+		Configuration::updateGlobalValue('MT_MINAMOUNT_PROMO', 10000);
 		Configuration::updateGlobalValue('MT_ENABLED_EXPIRY', 0);
 		Configuration::updateGlobalValue('MT_EXPIRY_DURATION', 24);
 		Configuration::updateGlobalValue('MT_EXPIRY_UNIT', "hours");
@@ -877,6 +881,13 @@ class MidtransPay extends PaymentModule
 						'desc' => 'Custom fields to be sent to merchant Up to 3 custom fields separated by coma (,). e.g: promogopay1',
 						'class' => 'advanced-promo'
 						),
+					array(
+						'type' => 'text',
+						'label' => 'Promo Minimum Amount',
+						'name' => 'MT_MINAMOUNT_PROMO',
+						'desc' => 'Minimum amount to allow payment using promo.',
+						'class' => 'advanced-promosamount'
+						),
 					// SaveCard
 					array(						
 						'type' => (version_compare(Configuration::get('PS_VERSION_DB'), '1.6') == -1)?'radio':'switch',
@@ -1181,7 +1192,7 @@ class MidtransPay extends PaymentModule
             $payment_options[] = $this->getSnapFullpaymentOption(); }
     	if (Configuration::get('MT_ENABLED_MIGS_BTN') == 1) {
     		$payment_options[] = $this->getSnapMigsOption(); }
-    	if (Configuration::get('MT_ENABLED_PROMO_BTN') == 1) {
+    	if (Configuration::get('MT_ENABLED_PROMO_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT_PROMO')) {
     		$payment_options[] = $this->getSnapPromoOption(); }
     	if (Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') == 1 && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
     		$payment_options[] = $this->getSnapInstallmentMigsOption(); }
@@ -1278,22 +1289,28 @@ class MidtransPay extends PaymentModule
 		if (!$this->checkCurrency($params['cart']))
 			return;
 		$cart = $this->context->cart;
+		$orderTotal = $cart->getOrderTotal();
 
 		// error_log( $cart->getOrderTotal(). " ### " . Configuration::get('MT_MINAMOUNT')); // debugan
 		// check if gross amount is above installment amount threshold && installment is enabled
-		$installment_note = '';
+		$installment_available = '';
 		$installmentEnabled = false;
 		if ( Configuration::get('MT_ENABLED_INSTALLMENTON_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTOFF_BTN') || Configuration::get('MT_ENABLED_INSTALLMENTMIGS_BTN') ){
 			$installmentEnabled = true; }
-		if ($installmentEnabled && $cart->getOrderTotal() >= Configuration::get('MT_MINAMOUNT')) {
-			$installment_note = 'available'; }
+		if ($installmentEnabled && $orderTotal >= Configuration::get('MT_MINAMOUNT')) {
+			$installment_available = 'available'; }
 		else if ($installmentEnabled){
-			$installment_note = 'unavailable'; }
+			$installment_available = 'unavailable'; }
+		
+		$promo_available = '';
+		if( Configuration::get('MT_ENABLED_PROMO_BTN') == 1 && $orderTotal >= intval(Configuration::get('MT_MINAMOUNT_PROMO')) ){
+			$promo_available = 'available'; }
 
 		$this->context->smarty->assign(array(
 			'cart' => $cart,
 			'MT_DISPLAY_TITLE' => Configuration::get('MT_DISPLAY_TITLE'),
-			'installment_note' => $installment_note,
+			'installment_available' => $installment_available,
+			'promo_available' => $promo_available,
 			'MT_ENABLED_MIGS_BTN' => Configuration::get('MT_ENABLED_MIGS_BTN'),
 			'MT_TITLE_MIGS_BTN' => Configuration::get('MT_TITLE_MIGS_BTN'),
 			'MT_DISABLE_NON_MIGS_BTN' => Configuration::get('MT_DISABLE_NON_MIGS_BTN'),

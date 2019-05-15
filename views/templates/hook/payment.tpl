@@ -32,7 +32,7 @@
 </div>
 {/if}
 
-{if isset($MT_ENABLED_PROMO_BTN) && $MT_ENABLED_PROMO_BTN == 1 }
+{if isset($MT_ENABLED_PROMO_BTN) && $MT_ENABLED_PROMO_BTN == 1 && $promo_available == 'available' }
 <div class="row">
   <div class="col-xs-12">
     <p class="payment_module">
@@ -45,7 +45,7 @@
 </div>
 {/if}
 
-{if isset($MT_ENABLED_INSTALLMENTMIGS_BTN) && $MT_ENABLED_INSTALLMENTMIGS_BTN == 1 && $installment_note == 'available'}
+{if isset($MT_ENABLED_INSTALLMENTMIGS_BTN) && $MT_ENABLED_INSTALLMENTMIGS_BTN == 1 && $installment_available == 'available'}
 <div class="row">
   <div class="col-xs-12">
     <p class="payment_module">
@@ -58,7 +58,7 @@
 </div>
 {/if}
 
-{if isset($MT_ENABLED_INSTALLMENTON_BTN) && $MT_ENABLED_INSTALLMENTON_BTN == 1 && $installment_note == 'available'}
+{if isset($MT_ENABLED_INSTALLMENTON_BTN) && $MT_ENABLED_INSTALLMENTON_BTN == 1 && $installment_available == 'available'}
 <div class="row">
   <div class="col-xs-12">
     <p class="payment_module">
@@ -71,7 +71,7 @@
 </div>
 {/if}
 
-{if isset($MT_ENABLED_INSTALLMENTOFF_BTN) && $MT_ENABLED_INSTALLMENTOFF_BTN == 1 && $installment_note == 'available'}
+{if isset($MT_ENABLED_INSTALLMENTOFF_BTN) && $MT_ENABLED_INSTALLMENTOFF_BTN == 1 && $installment_available == 'available'}
 <div class="row">
   <div class="col-xs-12">
     <p class="payment_module">
@@ -84,7 +84,7 @@
 </div>
 {/if}
 
-{if isset($installment_note) && $installment_note == 'unavailable'}
+{if isset($installment_available) && $installment_available == 'unavailable'}
 <div class="row">
   <div class="col-xs-12">
     <p class="payment_module">
