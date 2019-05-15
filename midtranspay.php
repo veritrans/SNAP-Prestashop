@@ -1526,7 +1526,7 @@ class MidtransPay extends PaymentModule
 					intval(
 							Tools::ps_round(
 								$converted_item_price,
-								(Currency::getCurrencyInstance(intval($this->id_currency->decimals)) * _PS_PRICE_DISPLAY_PRECISION_)
+								(intval($this->context->currency->decimals) * _PS_PRICE_DISPLAY_PRECISION_)
 							)
 					);				
 			}
@@ -1535,7 +1535,7 @@ class MidtransPay extends PaymentModule
 				$item['price'] = intval(
 					Tools::ps_round(
 						$item['price'],
-						(Currency::getCurrencyInstance(intval($this->id_currency->decimals)) * _PS_PRICE_DISPLAY_PRECISION_)
+						(intval($this->context->currency->decimals) * _PS_PRICE_DISPLAY_PRECISION_)
 					)
 				);
 			}
