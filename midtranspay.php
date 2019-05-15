@@ -1509,6 +1509,7 @@ class MidtransPay extends PaymentModule
 		$items = $this->addCommodities($cart, $shipping_cost, $usd);
 		
 		// convert the currency
+		$total_item_price = 0;
 		$cart_currency = new Currency($cart->id_currency);
 		if ($cart_currency->iso_code != 'IDR') {
 			// check whether if the IDR is installed or not
@@ -1528,7 +1529,8 @@ class MidtransPay extends PaymentModule
 								$converted_item_price,
 								(intval($this->context->currency->decimals) * _PS_PRICE_DISPLAY_PRECISION_)
 							)
-					);				
+					);	
+				$total_item_price += ($item['price'] * $item['quantity']);
 			}
 		}else if($cart_currency->iso_code == 'IDR') {
 			foreach ($items as &$item) {						
@@ -1538,14 +1540,25 @@ class MidtransPay extends PaymentModule
 						(intval($this->context->currency->decimals) * _PS_PRICE_DISPLAY_PRECISION_)
 					)
 				);
+				$total_item_price += ($item['price'] * $item['quantity']);
 			}
 		}
-		
-		$gross_amount = 0;
 		unset($item);
-		foreach ($items as $item) {				
-			$gross_amount += $item['price'] * $item['quantity'];
-		}	
+		
+		$gross_amount = Tools::ps_round(
+			$cart->getOrderTotal(true, Cart::BOTH),
+			(intval($this->context->currency->decimals) * _PS_PRICE_DISPLAY_PRECISION_)
+		);
+
+		// add item to compensate difference between $items total & gross amount
+		if(intval($gross_amount-$total_item_price) != 0){
+			$items[] = array(
+				"id" => '00000',
+				"price" =>  intval($gross_amount-$total_item_price),
+				"quantity" => 1,
+				"name" => 'Amount Rounding'
+			);
+		}
 		
 
 		$warning_redirect = false;
