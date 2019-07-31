@@ -28,7 +28,7 @@ Payment Method Feature:
 * MySQL version 5.0 or greater
 
 #### Installation & Configuration
-1. [Download](../../archive/prestashop1.7.zip) the modules from this repository.
+1. [Download](../../archive/master.zip) the modules from this repository.
 2. Extract the modules, then rename the folder modules as **midtranspay** and zip this modules as **midtranspay.zip**
 3. Go to your Prestashop administration page and go to **"Modules and Services > Modules and Services"** menu.
 4. Click on the **"Add a new module"** or **"Add a new module"** and locate the **midtranspay.zip** file, then upload it.
