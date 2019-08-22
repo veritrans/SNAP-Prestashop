@@ -157,6 +157,10 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		if (!isset($config['MT_3D_SECURE']))
 			Configuration::set('MT_3D_SECURE', 1);
+		if (!isset($config['MT_PAYMENT_SUCCESS_STATUS_MAP']))
+			Configuration::set('MT_PAYMENT_SUCCESS_STATUS_MAP', 2);
+		if (!isset($config['MT_PAYMENT_FAILURE_STATUS_MAP']))
+			Configuration::set('MT_PAYMENT_FAILURE_STATUS_MAP', 8);
 		if (!isset($config['MT_MINAMOUNT']))
 			Configuration::set('MT_MINAMOUNT', 500000);
 
@@ -294,6 +298,8 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
 		Configuration::updateGlobalValue('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		Configuration::updateGlobalValue('MT_3D_SECURE', 1);
+		Configuration::updateGlobalValue('MT_PAYMENT_SUCCESS_STATUS_MAP', 2);
+		Configuration::updateGlobalValue('MT_PAYMENT_FAILURE_STATUS_MAP', 8);
 		Configuration::updateGlobalValue('MT_MINAMOUNT', 500000);
 		Configuration::updateGlobalValue('MT_ENABLED_ADV', 0);
 		Configuration::updateGlobalValue('MT_ENABLED_MIGS_BTN', 0);
