@@ -300,6 +300,7 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_3D_SECURE', 1);
 		Configuration::updateGlobalValue('MT_PAYMENT_SUCCESS_STATUS_MAP', 2); //id for "payment accepted"
 		Configuration::updateGlobalValue('MT_PAYMENT_FAILURE_STATUS_MAP', 8); //id for "payment error"
+		Configuration::updateGlobalValue('MT_PAYMENT_CHALLENGE_STATUS_MAP', $mt_order_state->id); //id for newly created midtrans custom awaiting status
 		Configuration::updateGlobalValue('MT_MINAMOUNT', 500000);
 		Configuration::updateGlobalValue('MT_ENABLED_ADV', 0);
 		Configuration::updateGlobalValue('MT_ENABLED_MIGS_BTN', 0);
