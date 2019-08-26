@@ -157,6 +157,10 @@ class MidtransPay extends PaymentModule
 			Configuration::set('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		if (!isset($config['MT_3D_SECURE']))
 			Configuration::set('MT_3D_SECURE', 1);
+		if (!isset($config['MT_PAYMENT_SUCCESS_STATUS_MAP']))
+			Configuration::set('MT_PAYMENT_SUCCESS_STATUS_MAP', 2); //id for "payment accepted"
+		if (!isset($config['MT_PAYMENT_FAILURE_STATUS_MAP']))
+			Configuration::set('MT_PAYMENT_FAILURE_STATUS_MAP', 8); //id for "payment error"
 		if (!isset($config['MT_MINAMOUNT']))
 			Configuration::set('MT_MINAMOUNT', 500000);
 
@@ -264,20 +268,20 @@ class MidtransPay extends PaymentModule
 		// create a new order state for Midtrans, since Prestashop won't assign order ID unless it is validated,
 		// and no default order states matches the state we want. Assigning order_id with uniqid() will confuse
 		// users in the future
-		$order_state = new OrderStateCore();
-		$order_state->name = array((int)Configuration::get('PS_LANG_DEFAULT') => 'Awaiting Midtrans payment');;
-		$order_state->module_name = 'midtranspay';
+		$mt_order_state = new OrderStateCore();
+		$mt_order_state->name = array((int)Configuration::get('PS_LANG_DEFAULT') => 'Awaiting Midtrans payment');;
+		$mt_order_state->module_name = 'midtranspay';
 		if ($this->isOldPrestashop()) {
-			$order_state->color = '#0000FF';
+			$mt_order_state->color = '#0000FF';
 		} else
 		{
-			$order_state->color = 'RoyalBlue';
+			$mt_order_state->color = 'RoyalBlue';
 		}
 		
-		$order_state->unremovable = false;
-		$order_state->add();
+		$mt_order_state->unremovable = false;
+		$mt_order_state->add();
 
-		Configuration::updateValue('MT_ORDER_STATE_ID', $order_state->id);
+		Configuration::updateValue('MT_ORDER_STATE_ID', $mt_order_state->id);
 		Configuration::updateValue('MT_API_VERSION', 2);
 
 		if (!parent::install() || 
@@ -294,6 +298,9 @@ class MidtransPay extends PaymentModule
 		Configuration::updateGlobalValue('MT_DISPLAY_TITLE', "Online Payment via Midtrans");	
 		Configuration::updateGlobalValue('MT_DISPLAY_DESCRIPTION', "Payment will be displayed on the next step");	
 		Configuration::updateGlobalValue('MT_3D_SECURE', 1);
+		Configuration::updateGlobalValue('MT_PAYMENT_SUCCESS_STATUS_MAP', 2); //id for "payment accepted"
+		Configuration::updateGlobalValue('MT_PAYMENT_FAILURE_STATUS_MAP', 8); //id for "payment error"
+		Configuration::updateGlobalValue('MT_PAYMENT_CHALLENGE_STATUS_MAP', $mt_order_state->id); //id for newly created midtrans custom awaiting status
 		Configuration::updateGlobalValue('MT_MINAMOUNT', 500000);
 		Configuration::updateGlobalValue('MT_ENABLED_ADV', 0);
 		Configuration::updateGlobalValue('MT_ENABLED_MIGS_BTN', 0);
