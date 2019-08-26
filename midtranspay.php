@@ -268,20 +268,20 @@ class MidtransPay extends PaymentModule
 		// create a new order state for Midtrans, since Prestashop won't assign order ID unless it is validated,
 		// and no default order states matches the state we want. Assigning order_id with uniqid() will confuse
 		// users in the future
-		$order_state = new OrderStateCore();
-		$order_state->name = array((int)Configuration::get('PS_LANG_DEFAULT') => 'Awaiting Midtrans payment');;
-		$order_state->module_name = 'midtranspay';
+		$mt_order_state = new OrderStateCore();
+		$mt_order_state->name = array((int)Configuration::get('PS_LANG_DEFAULT') => 'Awaiting Midtrans payment');;
+		$mt_order_state->module_name = 'midtranspay';
 		if ($this->isOldPrestashop()) {
-			$order_state->color = '#0000FF';
+			$mt_order_state->color = '#0000FF';
 		} else
 		{
-			$order_state->color = 'RoyalBlue';
+			$mt_order_state->color = 'RoyalBlue';
 		}
 		
-		$order_state->unremovable = false;
-		$order_state->add();
+		$mt_order_state->unremovable = false;
+		$mt_order_state->add();
 
-		Configuration::updateValue('MT_ORDER_STATE_ID', $order_state->id);
+		Configuration::updateValue('MT_ORDER_STATE_ID', $mt_order_state->id);
 		Configuration::updateValue('MT_API_VERSION', 2);
 
 		if (!parent::install() || 
