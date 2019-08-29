@@ -133,7 +133,9 @@ var mainMidtransScript = function(event) {
 {if $isUsingMAPFinishUrl}
 						window.location = result.finish_redirect_url;
 {else}
-						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						{literal}
+						window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status; //literal
+						{/literal} 
 {/if}
 					},
 			        onPending: function(result){
@@ -141,7 +143,9 @@ var mainMidtransScript = function(event) {
 						console.log(result?result:'no result');
 			        	if (result.fraud_status == 'challenge'){ // if challenge redirect to finish
 			        		payButton.innerHTML = 'Loading...';
+			        		{literal}
 							window.location = baseRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+							{/literal}
 						}
 						if (typeof result.pdf_url == 'undefined'){ // if no link, hide btn
 							document.getElementById('instruction-button').style.display = "none";
@@ -155,7 +159,9 @@ var mainMidtransScript = function(event) {
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'error', result);
 						console.log(result?result:'no result');
 						payButton.innerHTML = 'Loading...';
+						{literal} 
 						window.location = baseFailureRedirectUrl+"&order_id="+result.order_id+"&status_code="+result.status_code+"&transaction_status="+result.transaction_status;
+						{/literal} 
 					},
 					onClose: function(){
 						MixpanelTrackResult(SNAP_TOKEN, MERCHANT_ID, CMS_NAME, CMS_VERSION, PLUGIN_NAME, PLUGIN_VERSION, 'close', null);
