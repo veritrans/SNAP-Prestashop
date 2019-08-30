@@ -107,8 +107,8 @@ var mainMidtransScript = function(event) {
 	var intervalFunction = 0;
 
 	function execSnapCont(){
-		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall'}";
-		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall'}";
+		var baseRedirectUrl = "{$moduleSuccessUrl|unescape:'htmlall' nofilter}";
+		var baseFailureRedirectUrl = "{$moduleFailureUrl|unescape:'htmlall' nofilter}";
 		try{
 			var locationUrl = document.createElement("a");
 			locationUrl.href = baseRedirectUrl;
