@@ -1478,7 +1478,8 @@ class MidtransPay extends PaymentModule
     		);
 
 		if($cart->isVirtualCart()) {
-			// Don't need to add shipping address, do nothing
+			// make $params_shipping_address same as $params_billing_address to complete $params_customer_details[params_shipping_address]
+			$params_shipping_address = $params_billing_address;
 		} else {
 			if ($cart->id_address_delivery != $cart->id_address_invoice)
 			{
