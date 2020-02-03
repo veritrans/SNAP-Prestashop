@@ -35,7 +35,7 @@
 				{l s='We noticed a problem with your order. Please do re-checkout.
 				If you think this is an error, feel free to contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team' mod='midtranspay'}</a> <br/><br/>
 			</p>
-			<a class="btn btn-primary" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
+			<a class="btn btn-primary" href='{$link->getPageLink("order", true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:"html":"UTF-8"}' title="{l s='Re-Checkout'}"> 
 			<i class="material-icons">refresh</i>&nbsp;{l s='Re-Checkout'}</a>
 		{/if}
 
