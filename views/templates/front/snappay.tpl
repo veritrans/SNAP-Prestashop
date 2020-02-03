@@ -36,7 +36,7 @@
 		{l s='We noticed a problem with your order. Please do re-checkout.
 		If you think this is an error, feel free to contact our' mod='midtranspay'} <a href="{$link->getPageLink('contact', true)}">{l s='expert customer support team' mod='midtranspay'}</a> <br/><br/>
 	</p>
-	<a class="button" href="{$link->getPageLink('order', true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:'html':'UTF-8'}" title="{l s='Re-Checkout'}"> 
+	<a class="button" href='{$link->getPageLink("order", true, NULL, "submitReorder&id_order={$order_id|intval}")|escape:"html":"UTF-8"}' title="{l s='Re-Checkout'}"> 
 	<i class="icon-refresh"></i>&nbsp;{l s='Re-Checkout'}</a>
 {/if}
 
@@ -46,13 +46,17 @@
 
 <div class="text-center" id="pending-notice" style="display:none;">
 	<p>
-		<b><h3 class="alert alert-info">{l s='Awaiting your payment' mod='midtranspay'}</h3></b>
+		<b><h3 class="alert alert-info">{l s='Complete your payment' mod='midtranspay'}</h3></b>
 	</p>
 	<h4 class="warning">
-		{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
+		{l s='Please complete your payment as instructed before, your order status will be updated on our system once payment is complete. Once you have completed your payment check your email or "Order History" menu. You can also check your email for instruction.'}
 	</h4>
 
 	<a  target="_blank" href="#" id='instruction-button' title="{l s='View Payment Instruction'}" class="button-exclusive btn btn-success">{l s='View Payment Instruction'} <i class="icon-chevron-right right"></i></a>
+	<p>
+		<br>
+		<a href="{$moduleSuccessUrl|unescape:'htmlall' nofilter}">I have completed my payment</a>
+	</p>
 </div>
 
 <br/><br/><br/>
