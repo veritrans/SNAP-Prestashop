@@ -43,13 +43,17 @@
 		
 		<div class="text-xs-center" id="pending-notice" style="display:none;">
 			<p>
-				<h3 class="alert alert-info"> <i class="material-icons">schedule</i> {l s='Awaiting your payment ... '}</h3>
+				<h3 class="alert alert-info"> <i class="material-icons">schedule</i> {l s='Complete your payment ... '}</h3>
 			</p>
 			<p class="warning">
-				{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
+				{l s='Please complete your payment as instructed before, your order status will be updated on our system once payment is complete. Once you have completed your payment check your email or "Order History" menu. You can also check your email for instruction.'}
 			</p>
 
 			<a  target="_blank" href="#" id='instruction-button' title="{l s='View Payment Instruction'}" class="button-exclusive btn btn-success">{l s='View Payment Instruction'} <i class="icon-chevron-right right"></i></a>
+			<p>
+				<br>
+				<a href="{$moduleSuccessUrl|unescape:'htmlall' nofilter}">I have completed my payment</a>
+			</p>
 		</div> <br/><br/><br/>
 
 	</section>

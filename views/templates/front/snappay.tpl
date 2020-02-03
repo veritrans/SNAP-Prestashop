@@ -46,13 +46,17 @@
 
 <div class="text-center" id="pending-notice" style="display:none;">
 	<p>
-		<b><h3 class="alert alert-info">{l s='Awaiting your payment' mod='midtranspay'}</h3></b>
+		<b><h3 class="alert alert-info">{l s='Complete your payment' mod='midtranspay'}</h3></b>
 	</p>
 	<h4 class="warning">
-		{l s='Please complete your payment as instructed before. You can also check your email for instruction. Thank You!'}
+		{l s='Please complete your payment as instructed before, your order status will be updated on our system once payment is complete. Once you have completed your payment check your email or "Order History" menu. You can also check your email for instruction.'}
 	</h4>
 
 	<a  target="_blank" href="#" id='instruction-button' title="{l s='View Payment Instruction'}" class="button-exclusive btn btn-success">{l s='View Payment Instruction'} <i class="icon-chevron-right right"></i></a>
+	<p>
+		<br>
+		<a href="{$moduleSuccessUrl|unescape:'htmlall' nofilter}">I have completed my payment</a>
+	</p>
 </div>
 
 <br/><br/><br/>
