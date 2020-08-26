@@ -62,7 +62,14 @@ If you want to hide Midtrans logo or change any wordings, the frontend files are
 * Payment confirmation: `/views/templates/front/payment_execution.tpl`
 * Payment page with popup: `/views/templates/front/snappay.tpl`
 
-For example, if you want to remove logo, just look for `Midtrans.png` or change the logo directly at `/logo/` folder.
+For example, if you want to remove logo, just search for `Midtrans.png` within those files or change the logo directly at `/logo/` folder.
+
+#### Separated Payment Buttons
+If you do not prefer just 1 single payment button/options ("Online Payments") displayed to your customer, you can enable:
+`Enable Separated Bank Transfer Button` from the module configuration menu. It will allow you display additional separated payment buttons like:
+
+<img src="https://user-images.githubusercontent.com/13027142/91282913-250d9c80-e7b4-11ea-90d2-a6516199e9ec.png" width=50% height=50%>
+<img src="https://user-images.githubusercontent.com/13027142/91282881-1b843480-e7b4-11ea-8f85-03b15f692201.png" width=35% height=35%>
 
 ### Get help
 
