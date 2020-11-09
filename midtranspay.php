@@ -1961,6 +1961,7 @@ class MidtransPay extends PaymentModule
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Cancel notification accepted.';
 		     }else if ($midtrans_notification->transaction_status == 'deny'){
+		     	if(Configuration::get('MT_ENABLED_IGNORE_DENY' == 1)){ exit; die('ignored'); }
 		     	$history->changeIdOrderState(Configuration::get('MT_PAYMENT_FAILURE_STATUS_MAP'), $order_id_notif);
 		       	echo 'Valid Deny notification accepted.';
 		     }else if ($midtrans_notification->transaction_status == 'expire'){
