@@ -1,31 +1,4 @@
 <?php
-// TODO
-// v MIGS fullpay
-// v online MIGS installment
-// v offline installment
-// v online installment
-// v bin filter
-// v fix text config fields
-// v test on migs version
-// - certain product
-// - add if else checker
-// v add javascript to handle option toggle hide-show
-// v arrange config
-// v add illegible for installment message in payment.tpl
-// v add throw catch when notif url is opened by get method
-// v add production snap.js url
-// v add client key script tag
-// 
-// TODO 1.7
-// v Add description field
-// v Test notif & url
-// v Additional feature
-// v Test additional feature
-// v Mutiple getPaymentOptions
-// Backward compatibility
-// v Check MT_MINAMOUNT strlen
-// v Prettify payment page
-// v create tutorial
 
 
 if (!defined('_PS_VERSION_'))
@@ -72,7 +45,7 @@ class MidtransPay extends PaymentModule
 	{
 		$this->name = 'midtranspay';
 		$this->tab = 'payments_gateways';
-		$this->version = '2.8.0';
+		$this->version = '2.8.1';
 		$this->author = 'Midtrans';
 		$this->bootstrap = true;
 		
