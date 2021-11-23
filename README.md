@@ -19,6 +19,10 @@ Payment Method Feature:
 - Custom fields
 - Two-click & One-click feature
 
+#### Live Demo
+Want to see Midtrans Magento payment plugins in action? We have some demo web-stores for Magento that you can use to try the payment journey directly, click the link below.
+* [Midtrans CMS Demo Store](https://docs.midtrans.com/en/snap/with-plugins?id=midtrans-payment-plugin-live-demonstration)
+
 ### Installation Instruction
 
 #### Minimum Requirements
@@ -73,6 +77,7 @@ If you do not prefer just 1 single payment button/options ("Online Payments") di
 
 ### Get help
 
+* Please follow [this step by step guide](https://docs.midtrans.com/en/snap/with-plugins?id=prestashop-plugin-installation-and-configuration) for complete configuration. If you have any feedback or request, please [do let us know here](https://docs.midtrans.com/en/snap/with-plugins?id=feedback-and-request).
 * [SNAP-Prestashop Wiki](https://github.com/veritrans/SNAP-Prestashop/wiki)
 * [Veritrans registration](https://dashboard.midtrans.com/register)
 * [SNAP documentation](http://snap-docs.midtrans.com)
