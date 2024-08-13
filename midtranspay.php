@@ -38,7 +38,7 @@ class MidtransPay extends PaymentModule
 	public $midtrans_environment;
 
 	public $config_keys;
-	public $hooks = array('payment','header','backOfficeHeader','orderConfirmation','paymentReturn','paymentOptions');
+	public $hooks = array('payment','displayHeader','displayBackOfficeHeader','orderConfirmation','paymentReturn','paymentOptions');
 
 
 	public function __construct()
@@ -259,8 +259,8 @@ class MidtransPay extends PaymentModule
 
 		if (!parent::install() || 
 			!$this->registerHook('payment') ||
-			!$this->registerHook('header') ||
-			!$this->registerHook('backOfficeHeader') ||
+			!$this->registerHook('displayHeader') ||
+			!$this->registerHook('displayBackOfficeHeader') ||
 			!$this->registerHook('orderConfirmation') || 
 			!$this->registerHook('paymentReturn') || 
 			!$this->registerHook('paymentOptions')
